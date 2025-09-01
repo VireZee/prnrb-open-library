@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'
 import { ApolloProvider } from '@apollo/client/react'
 import { Provider } from 'react-redux'
-// import store from '@store/store'
+import store from '@store/store'
 import App from './App'
 
 const client = new ApolloClient({
