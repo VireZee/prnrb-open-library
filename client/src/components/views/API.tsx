@@ -1,15 +1,16 @@
 import { useEffect, type FC } from 'react'
-import { useQuery, useMutation, ApolloError } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client/react'
 import CHECK from '@features/api/queries/Check'
 import GENERATE from '@features/api/mutations/Generate'
+import type { CheckQuery, GenerateMutation } from '@type/graphql/api'
 import { useSelector, useDispatch } from 'react-redux'
 import { setOnline, setApiKey } from '@store/slices/views/api'
 import type { RootState } from '@store/store'
 import NoInternet from '@components/common/NoInternet'
 
 const API: FC = () => {
-    const { loading, data, error } = useQuery(CHECK)
-    const [generate] = useMutation(GENERATE)
+    const { loading, data, error } = useQuery<CheckQuery>(CHECK)
+    const [generate] = useMutation<GenerateMutation>(GENERATE)
     const dispatch = useDispatch()
     const apiState = useSelector((state: RootState) => state.api)
     const { online, apiKey } = apiState
@@ -34,7 +35,7 @@ const API: FC = () => {
             const { data } = await generate()
             if (data) dispatch(setApiKey(data.generate))
         } catch (err) {
-            if (err instanceof ApolloError) alert(err.message)
+            if (err instanceof Error) alert(err.message)
             else alert('An unexpected error occurred.')
         }
     }

@@ -1,6 +1,6 @@
 import User from '@type/redux/auth/user'
 
-type Auth = {
-    auth: User
+type AuthQuery = {
+    auth: null | User
 }
-export default Auth
+export default AuthQuery

@@ -2,6 +2,7 @@ import { useEffect, type FC } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useQuery } from '@apollo/client/react'
 import AUTH from '@features/auth/queries/Auth'
+import type AuthQuery from '@type/graphql/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUser, setVerified, setSearch } from '@store/slices/core/app'
 import type { RootState } from '@store/store'
@@ -22,7 +23,6 @@ import Auth from '@routes/Auth'
 import Verified from '@routes/Verified'
 import Protected from '@routes/Protected'
 import Load from '@components/common/Load'
-import type AuthQuery from '@type/graphql/auth'
 
 const App: FC = () => {
     const { pathname } = useLocation()
@@ -37,7 +37,7 @@ const App: FC = () => {
         if (!loading) {
             if (data) {
                 dispatch(setUser(data.auth))
-                dispatch(setVerified(data.auth.verified))
+                dispatch(setVerified(data.auth!.verified))
             }
             else if (error) dispatch(setUser(null))
         }

@@ -1,8 +1,9 @@
 import { useEffect, type FC } from 'react'
 import { useParams } from 'react-router-dom'
-import { useQuery, useMutation, ApolloError } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client/react'
 import FETCH from '@features/book/queries/Collection'
 import REMOVE from '@features/book/mutations/Remove'
+import type { FetchQuery, RemoveMutation } from '@type/graphql/collection'
 import { useSelector, useDispatch } from 'react-redux'
 import { setOnline, setLoad, setBooks, setTotalPages } from '@store/slices/views/collection'
 import type { RootState } from '@store/store'
@@ -15,8 +16,8 @@ import type Books from '@type/redux/book/books'
 const Collection: FC<CollectionProps> = ({ search }) => {
     const { query, page } = useParams()
     const pg = Number(page) || 1
-    const { refetch } = useQuery(FETCH, { skip: true })
-    const [remove] = useMutation(REMOVE)
+    const { refetch } = useQuery<FetchQuery>(FETCH, { skip: true })
+    const [remove] = useMutation<RemoveMutation>(REMOVE)
     const dispatch = useDispatch()
     const collectionState = useSelector((state: RootState) => state.collection)
     const { online, load, books, totalPages } = collectionState
@@ -49,9 +50,9 @@ const Collection: FC<CollectionProps> = ({ search }) => {
                         : '',
                 page: pg
             })
-            if (data.collection) collectionData(data.collection)
+            if (data!.collection) collectionData(data!.collection)
         } catch (err) {
-            if (err instanceof ApolloError) alert('Fetch Error: ' + err.message)
+            if (err instanceof Error) alert('Fetch Error: ' + err.message)
             else alert('Fetch Error: An unexpected error occurred.')
         } finally {
             dispatch(setLoad(false))
@@ -60,9 +61,9 @@ const Collection: FC<CollectionProps> = ({ search }) => {
     const removeCollection = async (author_key: string[], cover_edition_key: string, cover_i: number) => {
         try {
             const { data } = await remove({ variables: { author_key, cover_edition_key, cover_i } })
-            if (data.remove) fetchCollection()
+            if (data!.remove) fetchCollection()
         } catch (err) {
-            if (err instanceof ApolloError) alert(err.message)
+            if (err instanceof Error) alert(err.message)
             else alert('An unexpected error occurred.')
         }
     }

@@ -13,7 +13,7 @@ const api = createSlice({
         setOnline: (state, { payload }: PayloadAction<boolean>) => {
             state['online'] = payload
         },
-        setApiKey: (state, { payload }: PayloadAction<string | null>) => {
+        setApiKey: (state, { payload }: PayloadAction<null | string>) => {
             state['apiKey'] = payload
         }
     }

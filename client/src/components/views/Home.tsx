@@ -1,8 +1,9 @@
 import { useEffect, type FC } from 'react'
 import { useParams } from 'react-router-dom'
-import { useQuery, useMutation, ApolloError } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client/react'
 import { HOME, FETCH } from '@features/book/queries/Home'
 import ADD from '@features/book/mutations/Add'
+import type { HomeQuery, FetchQuery, AddMutation } from '@type/graphql/home'
 import { useSelector, useDispatch } from 'react-redux'
 import { setOnline, setLoad, setBooks, setTotalPages, setStatus } from '@store/slices/views/home'
 import type { RootState } from '@store/store'
@@ -15,9 +16,9 @@ import type Books from '@type/redux/book/books'
 const Home: FC<HomeProps> = ({ isUser, search }) => {
     const { query, page } = useParams()
     const pg = Number(page) || 1
-    const { refetch: homeRefetch } = useQuery(HOME, { skip: true })
-    const { refetch: fetchRefetch } = useQuery(FETCH, { skip: true })
-    const [add] = useMutation(ADD)
+    const { refetch: homeRefetch } = useQuery<HomeQuery>(HOME, { skip: true })
+    const { refetch: fetchRefetch } = useQuery<FetchQuery>(FETCH, { skip: true })
+    const [add] = useMutation<AddMutation>(ADD)
     const dispatch = useDispatch()
     const homeState = useSelector((state: RootState) => state.home)
     const { online, load, books, totalPages, status } = homeState
@@ -44,7 +45,7 @@ const Home: FC<HomeProps> = ({ isUser, search }) => {
                             : 'harry potter',
                     page: pg
                 })
-                if (data.home) booksData(data.home)
+                if (data!.home) booksData(data!.home)
                 else dispatch(setBooks([]))
                 dispatch(setLoad(false))
             }
@@ -65,9 +66,9 @@ const Home: FC<HomeProps> = ({ isUser, search }) => {
     const fetchStatus = async (author_key: string[], cover_edition_key: string, cover_i: number) => {
         try {
             const { data } = await fetchRefetch({ author_key, cover_edition_key, cover_i })
-            dispatch(setStatus(data.fetch))
+            dispatch(setStatus(data!.fetch))
         } catch (err) {
-            if (err instanceof ApolloError) alert('Fetch Error: ' + err.message)
+            if (err instanceof Error) alert('Fetch Error: ' + err.message)
             else alert('Fetch Error: An unexpected error occurred.')
         }
     }
@@ -85,9 +86,9 @@ const Home: FC<HomeProps> = ({ isUser, search }) => {
                         author_name
                     }
                 })
-                if (data.add) fetchStatus(author_key, cover_edition_key, cover_i)
+                if (data!.add) fetchStatus(author_key, cover_edition_key, cover_i)
             } catch (err) {
-                if (err instanceof ApolloError) alert(err.message)
+                if (err instanceof Error) alert(err.message)
                 else alert('An unexpected error occurred.')
             }
         }

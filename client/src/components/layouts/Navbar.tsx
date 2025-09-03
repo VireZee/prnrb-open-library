@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
 import type { FC, KeyboardEvent } from 'react'
 import { Link, useLocation, matchPath } from 'react-router-dom'
-import { useMutation, ApolloError } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import LOGOUT from '@features/auth/mutations/Logout'
+import type LogoutMutation from '@type/graphql/logout'
 import { useSelector, useDispatch } from 'react-redux'
 import { setActive, setIsDropdownOpen } from '@store/slices/layouts/navbar'
 import type { RootState } from '@store/store'
@@ -15,7 +16,7 @@ const Navbar: FC<NavbarProps> = ({ isUser, onSearch }) => {
         matchPath('/collection/:page', pathname) ??
         matchPath('/collection/:query/:page', pathname)
     const query = match?.params && 'query' in match.params ? (match.params.query) as string : ''
-    const [logout] = useMutation(LOGOUT)
+    const [logout] = useMutation<LogoutMutation>(LOGOUT)
     const dispatch = useDispatch()
     const navbarState = useSelector((state: RootState) => state.navbar)
     const { active, isDropdownOpen } = navbarState
@@ -39,9 +40,9 @@ const Navbar: FC<NavbarProps> = ({ isUser, onSearch }) => {
     const handleLogOut = async () => {
         try {
             const { data } = await logout()
-            if (data.logout) location.href = '/'
+            if (data!.logout) location.href = '/'
         } catch (err) {
-            if (err instanceof ApolloError) alert(err.message)
+            if (err instanceof Error) alert(err.message)
             else alert('An unexpected error occurred.')
         }
     }
