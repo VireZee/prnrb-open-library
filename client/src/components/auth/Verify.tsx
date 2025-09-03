@@ -1,14 +1,15 @@
 import type { FC, ChangeEvent, FormEvent } from 'react'
-import { useMutation, ApolloError } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import VERIFY from '@features/auth/mutations/Verify'
 import RESEND from '@features/auth/mutations/Resend'
+import type { ResendMutation, VerifyMutation } from '@type/graphql/auth/verify'
 import { useSelector, useDispatch } from 'react-redux'
 import { change, setError } from '@store/slices/auth/verify'
 import type { RootState } from '@store/store'
 
 const Verify: FC = () => {
-    const [verify, { loading: verifyLoad }] = useMutation(VERIFY)
-    const [resend, { loading: resendLoad }] = useMutation(RESEND)
+    const [verify, { loading: verifyLoad }] = useMutation<VerifyMutation>(VERIFY)
+    const [resend, { loading: resendLoad }] = useMutation<ResendMutation>(RESEND)
     const dispatch = useDispatch()
     const verifyState = useSelector((state: RootState) => state.verify)
     const { code, error } = verifyState
@@ -21,9 +22,9 @@ const Verify: FC = () => {
         e.preventDefault()
         try {
             const { data } = await verify({ variables: { code } })
-            if (data.verify) location.href = '/'
+            if (data!.verify) location.href = '/'
         } catch (e) {
-            if (e instanceof ApolloError) dispatch(setError(e.message))
+            if (e instanceof Error) dispatch(setError(e.message))
             else alert('An unexpected error occurred.')
         }
     }
@@ -31,9 +32,9 @@ const Verify: FC = () => {
         e.preventDefault()
         try {
             const { data } = await resend()
-            if (data.resend) dispatch(setError('Code has been sent!'))
+            if (data!.resend) dispatch(setError('Code has been sent!'))
         } catch (e) {
-            if (e instanceof ApolloError) dispatch(setError(e.message))
+            if (e instanceof Error) dispatch(setError(e.message))
             else alert('An unexpected error occurred.')
         }
     }

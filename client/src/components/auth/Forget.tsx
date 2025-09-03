@@ -1,12 +1,13 @@
 import type { FC, ChangeEvent, FormEvent } from 'react'
-import { useMutation, ApolloError } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import FORGET from '@features/auth/mutations/Forget'
+import type ForgetMutation from '@type/graphql/auth/forget'
 import { useSelector, useDispatch } from 'react-redux'
 import { change, setError } from '@store/slices/auth/forget'
 import type { RootState } from '@store/store'
 
 const Forget: FC = () => {
-    const [forget, { loading }] = useMutation(FORGET)
+    const [forget, { loading }] = useMutation<ForgetMutation>(FORGET)
     const dispatch = useDispatch()
     const forgetState = useSelector((state: RootState) => state.forget)
     const { email, error } = forgetState
@@ -19,9 +20,9 @@ const Forget: FC = () => {
         e.preventDefault()
         try {
             const { data } = await forget({ variables: { email } })
-            if (data.forget) dispatch(setError(data.forget))
+            if (data!.forget) dispatch(setError(data!.forget))
         } catch (e) {
-            if (e instanceof ApolloError) dispatch(setError(e.message))
+            if (e instanceof Error) dispatch(setError(e.message))
             else alert('An unexpected error occurred.')
         }
     }

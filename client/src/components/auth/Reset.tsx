@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
 import type { FC, ChangeEvent, FormEvent } from 'react'
 import { useParams } from 'react-router-dom'
-import { useMutation, ApolloError } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import VALIDATE from '@features/auth/mutations/Validate'
 import RESET from '@features/auth/mutations/Reset'
+import type { ValidateMutation, ResetMutation } from '@type/graphql/auth/reset'
 import { useSelector, useDispatch } from 'react-redux'
 import { setIsValidating, change, setShow, setError } from '@store/slices/auth/reset'
 import type { RootState } from '@store/store'
@@ -11,8 +12,8 @@ import Load from '@components/common/Load'
 
 const Reset: FC = () => {
     const { id, token } = useParams()
-    const [validate] = useMutation(VALIDATE)
-    const [reset, { loading }] = useMutation(RESET)
+    const [validate] = useMutation<ValidateMutation>(VALIDATE)
+    const [reset, { loading }] = useMutation<ResetMutation>(RESET)
     const dispatch = useDispatch()
     const resetState = useSelector((state: RootState) => state.reset)
     const { isValidating, pass, rePass, show, error } = resetState
@@ -25,7 +26,7 @@ const Reset: FC = () => {
                         token
                     }
                 })
-                if (!data.validate) location.href = '/invalid'
+                if (!data!.validate) location.href = '/invalid'
                 else dispatch(setIsValidating(false))
             } catch (e) {
                 alert(e)
@@ -50,12 +51,12 @@ const Reset: FC = () => {
                     show
                 }
             })
-            if (data.reset) {
+            if (data!.reset) {
                 alert('Password changed!')
                 location.href = '/login'
             }
         } catch (e) {
-            if (e instanceof ApolloError) dispatch(setError(e.message))
+            if (e instanceof Error) dispatch(setError(e.message))
             else alert('An unexpected error occurred.')
         }
     }

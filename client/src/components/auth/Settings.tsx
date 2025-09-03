@@ -1,16 +1,17 @@
 import { useEffect, useRef } from 'react'
 import type { FC, ChangeEvent, FormEvent } from 'react'
-import { useMutation, ApolloError } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { SETTINGS, TERMINATE } from '@features/auth/mutations/Settings'
+import type { SettingsMutation, TerminateMutation } from '@type/graphql/auth/settings'
 import { useSelector, useDispatch } from 'react-redux'
 import { setIsDropdownOpen, change, setShow, setErrors } from '@store/slices/auth/settings'
 import type { RootState } from '@store/store'
-import type SettingsProps from '@type/components/settings'
+import type SettingsProps from '@type/components/auth/settings'
 import type ExtendedError from '@type/redux/auth/extendedError'
 
 const Settings: FC<SettingsProps> = ({ isUser }) => {
-    const [settings, { loading: settingsLoad }] = useMutation(SETTINGS)
-    const [terminate, { loading: terminateLoad }] = useMutation(TERMINATE)
+    const [settings, { loading: settingsLoad }] = useMutation<SettingsMutation>(SETTINGS)
+    const [terminate, { loading: terminateLoad }] = useMutation<TerminateMutation>(TERMINATE)
     const dispatch = useDispatch()
     const settingsState = useSelector((state: RootState) => state.settings)
     const { isDropdownOpen, photo, name, username, email, oldPass, newPass, rePass, show, errors } = settingsState
@@ -86,13 +87,13 @@ const Settings: FC<SettingsProps> = ({ isUser }) => {
                     show: show['new']
                 }
             })
-            if (data.settings) {
+            if (data!.settings) {
                 alert('Changes saved!')
                 location.href = '/'
             }
         } catch (e) {
-            if (e instanceof ApolloError) {
-                const { errors } = e.cause!.extensions as { errors: ExtendedError }
+            if (e instanceof Error) {
+                const { errors } = (e.cause as { extensions: { errors: ExtendedError } }).extensions
                 dispatch(setErrors(errors))
             } else alert('An unexpected error occurred.')
         }
@@ -100,12 +101,12 @@ const Settings: FC<SettingsProps> = ({ isUser }) => {
     const handleDeleteAccount = async () => {
         try {
             const { data } = await terminate()
-            if (data.terminate) {
+            if (data!.terminate) {
                 alert('Account deleted!')
                 location.href = '/'
             }
         } catch (e) {
-            if (e instanceof ApolloError) alert(e.message)
+            if (e instanceof Error) alert(e.message)
             else alert('An unexpected error occurred.')
         }
     }

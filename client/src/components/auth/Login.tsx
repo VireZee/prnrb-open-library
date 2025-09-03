@@ -1,13 +1,14 @@
 import { useEffect } from 'react'
 import type { FC, ChangeEvent, FormEvent } from 'react'
-import { useMutation, ApolloError } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import LOGIN from '@features/auth/mutations/Login'
+import type LoginMutation from '@type/graphql/auth/login'
 import { useSelector, useDispatch } from 'react-redux'
 import { change, setShow, setError } from '@store/slices/auth/login'
 import type { RootState } from '@store/store'
 
 const Login: FC = () => {
-    const [login, { loading }] = useMutation(LOGIN)
+    const [login, { loading }] = useMutation<LoginMutation>(LOGIN)
     const dispatch = useDispatch()
     const loginState = useSelector((state: RootState) => state.login)
     const { emailOrUsername, pass, show, error } = loginState
@@ -35,9 +36,9 @@ const Login: FC = () => {
                     pass
                 }
             })
-            if (data.login) location.href = '/'
+            if (data!.login) location.href = '/'
         } catch (e) {
-            if (e instanceof ApolloError) dispatch(setError(e.message))
+            if (e instanceof Error) dispatch(setError(e.message))
             else alert('An unexpected error occurred.')
         }
     }

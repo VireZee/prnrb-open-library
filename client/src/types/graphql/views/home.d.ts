@@ -1,4 +1,4 @@
-import { BooksData } from '@type/components/home'
+import { BooksData } from '@type/components/views/home'
 export type HomeQuery = {
     home: BooksData
 }

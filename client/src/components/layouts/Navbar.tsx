@@ -3,11 +3,11 @@ import type { FC, KeyboardEvent } from 'react'
 import { Link, useLocation, matchPath } from 'react-router-dom'
 import { useMutation } from '@apollo/client/react'
 import LOGOUT from '@features/auth/mutations/Logout'
-import type LogoutMutation from '@type/graphql/logout'
+import type LogoutMutation from '@type/graphql/layouts/navbar'
 import { useSelector, useDispatch } from 'react-redux'
 import { setActive, setIsDropdownOpen } from '@store/slices/layouts/navbar'
 import type { RootState } from '@store/store'
-import type NavbarProps from '@type/components/navbar'
+import type NavbarProps from '@type/components/layouts/navbar'
 
 const Navbar: FC<NavbarProps> = ({ isUser, onSearch }) => {
     const { pathname } = useLocation()

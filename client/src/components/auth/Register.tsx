@@ -1,14 +1,15 @@
 import { useEffect } from 'react'
 import type { FC, ChangeEvent, FormEvent } from 'react'
-import { useMutation, ApolloError } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import REGISTER from '@features/auth/mutations/Register'
+import type RegisterMutation from '@type/graphql/auth/register'
 import { useSelector, useDispatch } from 'react-redux'
 import { change, setShow, setErrors } from '@store/slices/auth/register'
 import type { RootState } from '@store/store'
 import type BaseError from '@type/redux/auth/baseError'
 
 const Register: FC = () => {
-    const [register, { loading }] = useMutation(REGISTER)
+    const [register, { loading }] = useMutation<RegisterMutation>(REGISTER)
     const dispatch = useDispatch()
     const registerState = useSelector((state: RootState) => state.register)
     const { name, username, email, pass, rePass, show, errors } = registerState
@@ -40,10 +41,10 @@ const Register: FC = () => {
                     show
                 }
             })
-            if (data.register) location.href = '/verify'
+            if (data!.register) location.href = '/verify'
         } catch (e) {
-            if (e instanceof ApolloError) {
-                const { errors } = e.cause!.extensions as { errors: BaseError }
+            if (e instanceof Error) {
+                const { errors } = (e.cause as { extensions: { errors: BaseError } }).extensions
                 dispatch(setErrors(errors))
             } else alert('An unexpected error occurred.')
         }

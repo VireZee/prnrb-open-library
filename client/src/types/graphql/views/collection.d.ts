@@ -1,4 +1,4 @@
-import { CollectionData } from '@type/components/collection'
+import { CollectionData } from '@type/components/views/collection'
 export type FetchQuery = {
     collection: CollectionData
 }
