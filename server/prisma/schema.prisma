@@ -1,12 +1,10 @@
 generator client {
     provider = "prisma-client-js"
 }
-
 datasource db {
     provider = "postgresql"
     url      = env("DB_URL")
 }
-
 model User {
     id          String       @id @default(uuid())
     googleId    String?      @unique
@@ -21,7 +19,6 @@ model User {
     updated     DateTime?    @updatedAt @db.Timestamptz(6)
     created     DateTime     @default(now()) @db.Timestamptz(6)
 }
-
 model Collection {
     id                String   @id @default(uuid())
     user_id           String?
