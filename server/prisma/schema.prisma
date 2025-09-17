@@ -5,7 +5,7 @@ datasource db {
     provider = "postgresql"
     url      = env("DB_URL")
 }
-model User {
+model user {
     id          String       @id @default(uuid())
     googleId    String?      @unique
     photo       Bytes        @unique
@@ -15,11 +15,11 @@ model User {
     pass        String?
     verified    Boolean      @default(false)
     api_key     Bytes?
-    collections Collection[]
     updated     DateTime?    @updatedAt @db.Timestamptz(6)
     created     DateTime     @default(now()) @db.Timestamptz(6)
+    collections collection[]
 }
-model Collection {
+model collection {
     id                String   @id @default(uuid())
     user_id           String?
     author_key        String[]
@@ -28,5 +28,5 @@ model Collection {
     title             String
     author_name       String[]
     created           DateTime @default(now()) @db.Timestamptz(6)
-    user              User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user              user?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
