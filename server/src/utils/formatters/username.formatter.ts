@@ -1,0 +1,1 @@
+export default (username: string) => username.toLowerCase()
