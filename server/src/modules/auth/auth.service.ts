@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import type { PrismaService } from 'prisma/prisma.service.js'
+import type { PrismaService } from 'database/prisma.service.js'
 import type { Register } from './dto/register.dto.js'
 import nameValidator from '@utils/validators/name.validator.js'
 import usernameValidator from '@utils/validators/username.validator.js'
