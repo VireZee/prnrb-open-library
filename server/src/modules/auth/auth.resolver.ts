@@ -14,7 +14,7 @@ export class AuthResolver {
         private readonly formatterService: FormatterService,
         private readonly miscService: MiscService,
         private readonly hashService: HashService
-    ) { }
+    ) {}
     @Mutation(() => Boolean)
     async register(
         @Args('input') input: Register,
