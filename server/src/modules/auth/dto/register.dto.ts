@@ -12,6 +12,6 @@ export class Register {
     pass: string
     @Field({ nullable: true })
     rePass?: string
-    @Field()
+    @Field(() => Boolean)
     show: boolean
 }

@@ -10,11 +10,11 @@ export class ValidationService {
         else if (name.length >= 75) return 'Name is too long!'
         return
     }
-    async validateUsername(prisma: PrismaService, username: string, id?: string) {
+    async validateUsername(username: string, id?: string) {
         if (!username) return 'Username can\'t be empty!'
         else if (!/^[\w\d]+$/.test(username)) return 'Username can only contain Latin Alphabets, Numbers, and Underscores!'
         else if (username.length >= 20) return 'Username is too long!'
-        else if (await prisma.user.findFirst({
+        else if (await this.prisma.user.findFirst({
             where: {
                 username: this.formatterService.formatUsername(username),
                 ...(id && { id: { not: id } })
