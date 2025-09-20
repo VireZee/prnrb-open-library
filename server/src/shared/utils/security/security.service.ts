@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import argon2 from 'argon2'
 
 @Injectable()
-export class HashService {
+export class SecurityService {
     async hash(pass: string) {
         const generateSalt = () => {
             const ranges = [

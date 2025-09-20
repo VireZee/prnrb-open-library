@@ -3,7 +3,7 @@ import type { PrismaService } from '@database/prisma.service.js'
 import type { ValidationService } from '@shared/utils/validation/validation.service.js'
 import type { FormatterService } from '@shared/utils/formatter/formatter.service.js'
 import type { MiscService } from '@shared/utils/misc/misc.service.js'
-import type { HashService } from '@shared/utils/security/hash.service.js'
+import type { SecurityService } from '@shared/utils/security/security.service.js'
 import type { Register } from './dto/register.dto.js'
 
 @Resolver()
@@ -13,7 +13,7 @@ export class AuthResolver {
         private readonly validationService: ValidationService,
         private readonly formatterService: FormatterService,
         private readonly miscService: MiscService,
-        private readonly hashService: HashService
+        private readonly hashService: SecurityService
     ) {}
     @Mutation(() => Boolean)
     async register(

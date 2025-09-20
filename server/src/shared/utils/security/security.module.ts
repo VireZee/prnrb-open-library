@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
-import { HashService } from './hash.service.js'
+import { SecurityService } from './security.service.js'
 
 @Module({
-    providers: [HashService],
-    exports: [HashService]
+    providers: [SecurityService],
+    exports: [SecurityService]
 })
-export class RedisModule {}
+export class SecurityModule {}

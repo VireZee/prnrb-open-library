@@ -5,4 +5,4 @@ import { ValidationService } from './validation.service.js'
     providers: [ValidationService],
     exports: [ValidationService]
 })
-export class FormatterModule {}
+export class ValidationModule {}
