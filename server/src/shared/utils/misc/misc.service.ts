@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import type { PrismaService } from '@database/prisma.service.js'
-import type { FormatterService } from '@shared/formatter/formatter.service.js'
+import type { FormatterService } from '@shared/utils/formatter/formatter.service.js'
 import { GraphQLError } from 'graphql'
 
 @Injectable()

@@ -1,9 +1,9 @@
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql'
 import type { PrismaService } from '@database/prisma.service.js'
-import type { ValidationService } from '@shared/validation/validation.service.js'
-import type { FormatterService } from '@shared/formatter/formatter.service.js'
-import type { MiscService } from '@shared/misc/misc.service.js'
-import type { HashService } from '@shared/security/hash.service.js'
+import type { ValidationService } from '@shared/utils/validation/validation.service.js'
+import type { FormatterService } from '@shared/utils/formatter/formatter.service.js'
+import type { MiscService } from '@shared/utils/misc/misc.service.js'
+import type { HashService } from '@shared/utils/security/hash.service.js'
 import type { Register } from './dto/register.dto.js'
 
 @Resolver()
