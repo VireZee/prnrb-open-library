@@ -20,35 +20,29 @@ export class AuthResolver {
         @Args('input') input: Register,
         @Context() context: { res: Res }
     ): Promise<boolean> {
-        try {
-            const { name, username, email, pass, rePass, show } = input
-            const { res } = context
-            const errors: Record<string, string> = {}
-            const nameError = this.validationService.validateName(name)
-            const usernameError = await this.validationService.validateUsername(username)
-            const emailError = await this.validationService.validateEmail(email)
-            if (nameError) errors['name'] = nameError
-            if (usernameError) errors['username'] = usernameError
-            if (emailError) errors['email'] = emailError
-            if (!pass) errors['pass'] = 'Password can\'t be empty!'
-            if (!show && pass !== rePass) errors['rePass'] = 'Password do not match!'
-            // if (Object.keys(errs).length > 0) {
-            //     graphqlError('Unprocessable Content', 422, errs);
-            // }
-            await this.prismaService.user.create({
-                data: {
-                    photo: Buffer.from(this.miscService.generateSvg(name), 'base64'),
-                    name: this.formatterService.formatName(name),
-                    username: this.formatterService.formatUsername(username),
-                    email,
-                    pass: await this.hashService.hash(pass),
-                }
-            })
-            // await generateCode('verify', newUser, false)
-            // cookie(newUser, res)
-            return true
-        } catch (e) {
-            throw e
-        }
+        const { name, username, email, pass, rePass, show } = input
+        const { res } = context
+        const errors: Record<string, string> = {}
+        const nameError = this.validationService.validateName(name)
+        const usernameError = await this.validationService.validateUsername(username)
+        const emailError = await this.validationService.validateEmail(email)
+        if (nameError) errors['name'] = nameError
+        if (usernameError) errors['username'] = usernameError
+        if (emailError) errors['email'] = emailError
+        if (!pass) errors['pass'] = 'Password can\'t be empty!'
+        if (!show && pass !== rePass) errors['rePass'] = 'Password do not match!'
+        if (Object.keys(errors).length > 0) this.miscService.graphqlError('Unprocessable Content', errors)
+        await this.prismaService.user.create({
+            data: {
+                photo: Buffer.from(this.miscService.generateAvatar(name), 'base64'),
+                name: this.formatterService.formatName(name),
+                username: this.formatterService.formatUsername(username),
+                email,
+                pass: await this.hashService.hash(pass),
+            }
+        })
+        // await generateCode('verify', newUser, false)
+        // cookie(newUser, res)
+        return true
     }
 }
