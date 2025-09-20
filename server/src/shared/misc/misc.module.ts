@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
-import { GenerateSvgService } from './generate-svg.service.js'
+import { MiscService } from './misc.service.js'
 
 @Module({
-    providers: [GenerateSvgService],
-    exports: [GenerateSvgService]
+    providers: [MiscService],
+    exports: [MiscService]
 })
 export class MiscModule {}

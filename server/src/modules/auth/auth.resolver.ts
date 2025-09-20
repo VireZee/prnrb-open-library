@@ -2,8 +2,9 @@ import { Resolver, Mutation, Args, Context } from '@nestjs/graphql'
 import type { PrismaService } from '@database/prisma.service.js'
 import type { ValidationService } from '@shared/validation/validation.service.js'
 import type { FormatterService } from '@shared/formatter/formatter.service.js'
-import type { GenerateSvgService } from '@shared/misc/generate-svg.service.js'
+import type { MiscService } from '@shared/misc/misc.service.js'
 import type { HashService } from '@shared/security/hash.service.js'
+import type { Register } from './dto/register.dto.js'
 
 @Resolver()
 export class AuthResolver {
@@ -11,21 +12,17 @@ export class AuthResolver {
         private readonly prismaService: PrismaService,
         private readonly validationService: ValidationService,
         private readonly formatterService: FormatterService,
-        private readonly generateSvgService: GenerateSvgService,
+        private readonly miscService: MiscService,
         private readonly hashService: HashService
     ) { }
     @Mutation(() => Boolean)
     async register(
-        @Args('name') name: string,
-        @Args('username') username: string,
-        @Args('email') email: string,
-        @Args('pass') pass: string,
-        @Args('rePass') rePass: string,
-        @Args('show') show: boolean,
-        @Context() context: { res: Res },
-    ) {
+        @Args('input') input: Register,
+        @Context() context: { res: Res }
+    ): Promise<boolean> {
         try {
-            // const { res } = context;
+            const { name, username, email, pass, rePass, show } = input
+            const { res } = context
             const errors: Record<string, string> = {}
             const nameError = this.validationService.validateName(name)
             const usernameError = await this.validationService.validateUsername(username)
@@ -40,7 +37,7 @@ export class AuthResolver {
             // }
             await this.prismaService.user.create({
                 data: {
-                    photo: Buffer.from(this.generateSvgService.generateSvg(name), 'base64'),
+                    photo: Buffer.from(this.miscService.generateSvg(name), 'base64'),
                     name: this.formatterService.formatName(name),
                     username: this.formatterService.formatUsername(username),
                     email,
@@ -49,7 +46,7 @@ export class AuthResolver {
             })
             // await generateCode('verify', newUser, false)
             // cookie(newUser, res)
-            // return true
+            return true
         } catch (e) {
             throw e
         }

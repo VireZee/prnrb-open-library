@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 @Injectable()
-export class GenerateSvgService {
+export class MiscService {
     generateSvg(name: string) {
         const initials = name.split(' ').map(w => w.charAt(0).toUpperCase()).slice(0, 5).join('')
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
