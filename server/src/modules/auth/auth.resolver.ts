@@ -13,13 +13,13 @@ export class AuthResolver {
         private readonly validationService: ValidationService,
         private readonly formatterService: FormatterService,
         private readonly miscService: MiscService,
-        private readonly hashService: SecurityService
+        private readonly securityService: SecurityService
     ) {}
     @Mutation(() => Boolean)
     async register(
         @Args('input') input: Register,
         @Context() context: { res: Res }
-    ): Promise<boolean> {
+    ) {
         const { name, username, email, pass, rePass, show } = input
         const { res } = context
         const errors: Record<string, string> = {}
@@ -38,7 +38,7 @@ export class AuthResolver {
                 name: this.formatterService.formatName(name),
                 username: this.formatterService.formatUsername(username),
                 email,
-                pass: await this.hashService.hash(pass),
+                pass: await this.securityService.hashService.hash(pass)
             }
         })
         // await generateCode('verify', newUser, false)
