@@ -8,4 +8,17 @@ export class FormatterService {
         return name = initials.join(' ')
     }
     formatUsername(username: string): string { return username.toLowerCase() }
+    formatUser(user: { id: string, googleId: string, photo: Buffer, name: string, username: string, email: string, verified: boolean, api_key?: string }) {
+        const { id, googleId, photo, name, username, email, verified, api_key } = user
+        return {
+            id: id.toString(),
+            google: !!googleId,
+            photo: Buffer.from(photo).toString('base64'),
+            name,
+            username,
+            email,
+            verified,
+            ...(api_key && { api_key: Buffer.from(api_key).toString('hex') })
+        }
+    }
 }
