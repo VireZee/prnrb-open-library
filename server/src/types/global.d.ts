@@ -1,4 +1,4 @@
-import type { Request, Response } from '@nestjs/common'
+import type { Request, Response } from 'express'
 import type crypto from 'crypto'
 
 declare global {

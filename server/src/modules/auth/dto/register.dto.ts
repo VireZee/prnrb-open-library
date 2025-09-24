@@ -14,4 +14,4 @@ export class Register {
     rePass?: string
     @Field(() => Boolean)
     show: boolean
-}this
+}

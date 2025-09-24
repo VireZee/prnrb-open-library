@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common'
+import type { User } from '@type/user.d.ts'
+import type Collection from '@type/collection.d.ts'
 
 @Injectable()
 export class FormatterService {
@@ -8,10 +10,10 @@ export class FormatterService {
         return name = initials.join(' ')
     }
     formatUsername(username: string): string { return username.toLowerCase() }
-    formatUser(user: { id: string, googleId: string, photo: Buffer, name: string, username: string, email: string, verified: boolean, api_key?: string }) {
+    formatUser(user: { id: string, googleId: string, photo: Buffer, name: string, username: string, email: string, verified: boolean, api_key?: string }): User {
         const { id, googleId, photo, name, username, email, verified, api_key } = user
         return {
-            id: id.toString(),
+            id,
             google: !!googleId,
             photo: Buffer.from(photo).toString('base64'),
             name,
@@ -21,7 +23,7 @@ export class FormatterService {
             ...(api_key && { api_key: Buffer.from(api_key).toString('hex') })
         }
     }
-    formatBooksMap(books: any) {
+    formatBooksMap(books: Collection[]): Collection[] {
         return books.map(book => ({
             author_key: book.author_key,
             cover_edition_key: book.cover_edition_key,
@@ -30,7 +32,7 @@ export class FormatterService {
             author_name: book.author_name
         }))
     }
-    formatBooksFind(books: any, author_key: string[], cover_edition_key: string, cover_i: number) {
+    formatBooksFind(books: Collection[], author_key: string[], cover_edition_key: string, cover_i: number): Collection | undefined {
         return books.find(book =>
             book.author_key.length === author_key.length &&
             book.author_key.every((val, i) => val === author_key[i]) &&

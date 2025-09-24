@@ -4,6 +4,7 @@ import type { ValidationService } from '@shared/utils/validation/validation.serv
 import type { FormatterService } from '@shared/utils/formatter/formatter.service.js'
 import type { MiscService } from '@shared/utils/misc/misc.service.js'
 import type { SecurityService } from '@shared/utils/security/security.service.js'
+import type { AccountService } from '@shared/account/account.service.js'
 import type { Register } from './dto/register.dto.js'
 
 @Resolver()
@@ -13,13 +14,14 @@ export class AuthResolver {
         private readonly validationService: ValidationService,
         private readonly formatterService: FormatterService,
         private readonly miscService: MiscService,
-        private readonly securityService: SecurityService
+        private readonly securityService: SecurityService,
+        private readonly accountService: AccountService
     ) {}
     @Mutation(() => Boolean)
     async register(
         @Args('input') input: Register,
         @Context() context: { res: Res }
-    ) {
+    ): Promise<boolean> {
         const { name, username, email, pass, rePass, show } = input
         const { res } = context
         const errors: Record<string, string> = {}
@@ -32,7 +34,7 @@ export class AuthResolver {
         if (!pass) errors['pass'] = 'Password can\'t be empty!'
         if (!show && pass !== rePass) errors['rePass'] = 'Password do not match!'
         if (Object.keys(errors).length > 0) this.miscService.graphqlError('Unprocessable Content', errors)
-        await this.prismaService.user.create({
+        const newUser = await this.prismaService.user.create({
             data: {
                 photo: Buffer.from(this.miscService.generateAvatar(name), 'base64'),
                 name: this.formatterService.formatName(name),
@@ -42,7 +44,7 @@ export class AuthResolver {
             }
         })
         // await generateCode('verify', newUser, false)
-        // cookie(newUser, res)
+        this.accountService.cookie(newUser, res)
         return true
     }
 }
