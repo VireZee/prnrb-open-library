@@ -18,7 +18,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     async onModuleDestroy() {
         await this.redisClient.close()
     }
-    protected client() {
+    protected redis() {
         return this.redisClient
     }
 }
