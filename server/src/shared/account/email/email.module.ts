@@ -1,3 +1,4 @@
+import { join } from 'path'
 import { Module } from '@nestjs/common'
 import { MailerModule } from '@nestjs-modules/mailer'
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter.js'
@@ -20,7 +21,7 @@ import { EmailService } from './email.service.js'
                 from: `'No Reply' <${process.env['MAIL_FROM']}>`,
             },
             template: {
-                dir: __dirname + '/templates',
+                dir: join(dirname, 'templates'),
                 adapter: new HandlebarsAdapter(),
                 options: {
                     strict: true

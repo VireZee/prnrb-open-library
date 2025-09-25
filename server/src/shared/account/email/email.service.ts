@@ -4,7 +4,7 @@ import { MailerService } from '@nestjs-modules/mailer'
 @Injectable()
 export class EmailService {
     constructor(private readonly mailerService: MailerService) {}
-    async verifyEmail(email: string, verificationCode: string, id: string) {
+    async verifyEmail(email: string, verificationCode: string, id: string): Promise<void> {
         await this.mailerService.sendMail({
             to: email,
             from: process.env['MAIL_FROM']!,
@@ -16,7 +16,7 @@ export class EmailService {
             }
         })
     }
-    async resetPassword(email: string, verificationCode: string, id: string) {
+    async resetPassword(email: string, verificationCode: string, id: string): Promise<void> {
         await this.mailerService.sendMail({
             to: email,
             from: process.env['MAIL_FROM']!,

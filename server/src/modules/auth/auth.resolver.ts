@@ -43,7 +43,7 @@ export class AuthResolver {
                 pass: await this.securityService.hashService.hash(pass)
             }
         })
-        // await generateCode('verify', newUser, false)
+        await this.accountService.generateCode('verify', newUser, false)
         this.accountService.cookie(newUser, res)
         return true
     }
