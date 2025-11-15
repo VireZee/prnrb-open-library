@@ -12,7 +12,8 @@ import { AppService } from './app.service.js'
         }),
         GraphQLModule.forRoot<ApolloDriverConfig>({
             driver: ApolloDriver,
-            autoSchemaFile: join(process.cwd(), 'src/schema.gql')
+            autoSchemaFile: true,
+            context: ({ req, res }: { req: Req, res: Res }) => ({ req, res })
         })
     ],
     providers: [AppService]
