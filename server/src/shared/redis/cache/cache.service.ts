@@ -14,7 +14,7 @@ export class CacheService extends RedisService {
     ) { super() }
     async createCollection(keyName: string, user: { id: string }): Promise<Collection[]> {
         const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
-        const cache = await this.redis().json.GET(key)
+        const cache = await this.redis.json.GET(key)
         if (cache) return cache as Collection[]
         const collection = await this.prismaService.collection.findMany({
             where: {
@@ -22,8 +22,8 @@ export class CacheService extends RedisService {
             }
         })
         const books = this.formatterService.formatBooksMap(collection)
-        await this.redis().json.SET(key, '$', books)
-        await this.redis().EXPIRE(key, 86400)
+        await this.redis.json.SET(key, '$', books)
+        await this.redis.EXPIRE(key, 86400)
         return books
     }
     async updateCollection(keyName: string, user: { id: string }): Promise<void> {
@@ -34,19 +34,19 @@ export class CacheService extends RedisService {
                 user_id: user.id
             }
         })
-        await this.redis().json.SET(key, '$', this.formatterService.formatBooksMap(updatedBooks))
-        await this.redis().EXPIRE(key, 86400, 'NX')
+        await this.redis.json.SET(key, '$', this.formatterService.formatBooksMap(updatedBooks))
+        await this.redis.EXPIRE(key, 86400, 'NX')
         await this.scanAndDelete(keysToDelete)
     }
     async scanAndDelete(key: string): Promise<void> {
         let cursor = '0'
         do {
-            const result = await this.redis().SCAN(cursor, {
+            const result = await this.redis.SCAN(cursor, {
                 MATCH: key,
                 COUNT: 100
             })
             cursor = result.cursor
-            if (result.keys.length) await this.redis().DEL(result.keys)
+            if (result.keys.length) await this.redis.DEL(result.keys)
         } while (cursor !== '0')
     }
 }
