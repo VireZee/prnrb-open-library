@@ -3,7 +3,7 @@ import argon2 from 'argon2'
 
 @Injectable()
 export class HashService {
-    private generateSalt() {
+    private generateSalt(): string {
         const ranges = [
             { s: 0x0020, e: 0x007E },
             { s: 0x00A1, e: 0x02FF },

@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo'
 import { join } from 'path'
-import { AppService } from './app.service.js'
 
 @Module({
     imports: [
@@ -15,7 +14,6 @@ import { AppService } from './app.service.js'
             autoSchemaFile: true,
             context: ({ req, res }: { req: Req, res: Res }) => ({ req, res })
         })
-    ],
-    providers: [AppService]
+    ]
 })
 export class AppModule {}

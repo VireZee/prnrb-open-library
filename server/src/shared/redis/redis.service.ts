@@ -5,7 +5,7 @@ import { createClient, type RedisClientType } from 'redis'
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
     private redisClient: RedisClientType
-    async onModuleInit() {
+    async onModuleInit(): Promise<void> {
         this.redisClient = createClient({
             socket: {
                 host: process.env['REDIS_HOST'],
@@ -15,10 +15,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         })
         await this.redisClient.connect()
     }
-    async onModuleDestroy() {
+    async onModuleDestroy(): Promise<void> {
         await this.redisClient.close()
     }
-    protected redis() {
+    protected redis(): RedisClientType {
         return this.redisClient
     }
 }

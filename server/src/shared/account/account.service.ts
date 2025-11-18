@@ -9,7 +9,7 @@ export class AccountService extends RedisService {
         private readonly securityService: SecurityService,
         private readonly emailService: EmailService
     ) { super() }
-    async generateCode(keyName: string, user: { id: string, email: string }, isForget: boolean) {
+    async generateCode(keyName: string, user: { id: string, email: string }, isForget: boolean): Promise<void> {
         const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
         const randomString = nodeCrypto.randomBytes(64).toString('hex')
         const verificationCode = nodeCrypto.createHash('sha512').update(randomString).digest('hex')
