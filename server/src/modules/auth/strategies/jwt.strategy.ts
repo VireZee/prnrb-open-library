@@ -24,9 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         const key = this.sanitizeService.sanitizeRedisKey('user', id)
         const cache = await this.redisService.redis.json.GET(key)
         if (cache) return cache
-        const user = await this.prismaService.user.findUnique({
-            where: { id }
-        })
+        const user = await this.prismaService.user.findUnique({ where: { id } })
         if (!user) return null
         await this.redisService.redis.json.SET(key, '$', this.formatterService.formatUser(user))
         await this.redisService.redis.EXPIRE(key, 86400)

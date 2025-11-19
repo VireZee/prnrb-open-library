@@ -10,7 +10,7 @@ export class AuthGuard extends PassportAuthGuard('jwt') {
         const ctx = GqlExecutionContext.create(context)
         return ctx.getContext().req
     }
-    override handleRequest(err: any, user: any) {
+    override handleRequest(err: Error, user: any) {
         if (err) throw err
         if (!user) this.miscService.graphqlError('Unauthorized')
         return user
