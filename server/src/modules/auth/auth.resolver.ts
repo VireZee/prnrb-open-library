@@ -1,8 +1,8 @@
 import { UsePipes } from '@nestjs/common'
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql'
 import { RegisterPipe } from '@common/pipes/register.pipe.js'
-import type { RegisterService } from './services/register.service.js'
-import type { Register } from './dto/register.dto.js'
+import { RegisterService } from './services/register.service.js'
+import { Register } from './dto/register.dto.js'
 
 @Resolver()
 export class AuthResolver {

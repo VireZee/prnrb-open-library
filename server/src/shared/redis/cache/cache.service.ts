@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import type { PrismaService } from '@database/prisma.service.js'
+import { PrismaService } from '@database/prisma.service.js'
 import { RedisService } from '../redis.service.js'
-import type { SecurityService } from '@shared/utils/security/security.service.js'
-import type { FormatterService } from '@shared/utils/formatter/formatter.service.js'
+import { SecurityService } from '@shared/utils/security/security.service.js'
+import { FormatterService } from '@shared/utils/formatter/formatter.service.js'
 import type Collection from '@type/collection.d.ts'
 
 @Injectable()

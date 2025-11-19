@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import type { OnModuleInit, OnModuleDestroy } from '@nestjs/common'
+import { OnModuleInit, OnModuleDestroy } from '@nestjs/common'
 import { createClient, type RedisClientType } from 'redis'
 
 @Injectable()

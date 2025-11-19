@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy, ExtractJwt } from 'passport-jwt'
-import type { PrismaService } from '@database/prisma.service.js'
+import { PrismaService } from '@database/prisma.service.js'
 import { RedisService } from '@shared/redis/redis.service.js'
-import type { SanitizeService } from '@shared/utils/security/sanitize/sanitize.service.js'
-import type { FormatterService } from '@shared/utils/formatter/formatter.service.js'
+import { SanitizeService } from '@shared/utils/security/sanitize/sanitize.service.js'
+import { FormatterService } from '@shared/utils/formatter/formatter.service.js'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
