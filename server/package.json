@@ -1,6 +1,6 @@
 {
     "name": "prnrb-open-library",
-    "description": "A lightweight Open Library System powered by the PRNRB Stack",
+    "description": "An Open Library System powered by the PRNRB Stack",
     "author": "VireZee",
     "private": true,
     "type": "module",
@@ -31,7 +31,6 @@
         "passport": "^0.7.0",
         "passport-google-oauth20": "^2.0.0",
         "passport-jwt": "^4.0.1",
-        "passport-local": "^1.0.0",
         "redis": "^5.8.2",
         "reflect-metadata": "^0.2.2",
         "rxjs": "^7.8.2"

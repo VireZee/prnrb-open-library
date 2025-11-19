@@ -1,9 +1,10 @@
 import { Injectable, type PipeTransform } from '@nestjs/common'
 import type { ValidationService } from '@shared/utils/validation/validation.service.js'
+import { ApolloServerErrorCode } from '@apollo/server/errors'
 
 @Injectable()
 export class RegisterPipe implements PipeTransform {
-    constructor(private readonly validationService: ValidationService) {}
+    constructor(private readonly validationService: ValidationService) { }
     async transform(value: { name: string, username: string, email: string, pass: string, rePass: string, show: boolean }): Promise<{
         name: string
         username: string
@@ -22,7 +23,7 @@ export class RegisterPipe implements PipeTransform {
         if (emailError) errors['email'] = emailError
         if (!pass) errors['pass'] = 'Password can\'t be empty!'
         if (!show && pass !== rePass) errors['rePass'] = 'Password do not match!'
-        if (Object.keys(errors).length > 0) this.miscService.graphqlError('Unprocessable Content', errors)
+        if (Object.keys(errors).length > 0) throw { code: ApolloServerErrorCode.BAD_USER_INPUT, errors }
         return value
     }
 }

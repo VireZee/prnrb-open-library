@@ -13,8 +13,8 @@ export class AccountService extends RedisService {
         const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
         const randomString = nodeCrypto.randomBytes(64).toString('hex')
         const verificationCode = nodeCrypto.createHash('sha512').update(randomString).digest('hex')
-        await this.redis().HSET(key, 'code', verificationCode)
-        await this.redis().HEXPIRE(key, 'code', 300)
+        await this.redis.HSET(key, 'code', verificationCode)
+        await this.redis.HEXPIRE(key, 'code', 300)
         if (isForget) return await this.emailService.resetPassword(user.email, verificationCode, user.id)
         return await this.emailService.verifyEmail(user.email, verificationCode, user.id)
     }
