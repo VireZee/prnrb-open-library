@@ -1,5 +1,5 @@
 import { Injectable, type PipeTransform } from '@nestjs/common'
-import type { ValidationService } from '@shared/utils/validation/validation.service.js'
+import { ValidationService } from '@shared/utils/validation/validation.service.js'
 import { ApolloServerErrorCode } from '@apollo/server/errors'
 
 @Injectable()
