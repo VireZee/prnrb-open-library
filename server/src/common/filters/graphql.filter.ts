@@ -1,17 +1,15 @@
 import { Catch } from '@nestjs/common'
 import type { GqlExceptionFilter } from '@nestjs/graphql'
-import type { MiscService } from '@shared/utils/misc/misc.service.js'
+import { GraphQLError } from 'graphql'
 
 @Catch()
 export class GraphqlFilter implements GqlExceptionFilter {
-    constructor(private readonly miscService: MiscService) { }
     catch(exception: { code: string, errors?: Record<string, string> } | Error) {
         if (typeof exception === 'object' && 'code' in exception) {
             const { code, errors } = exception
-            return errors
-                ? this.miscService.graphqlError(code, errors)
-                : this.miscService.graphqlError(code)
+            if (errors) throw new GraphQLError(code, { extensions: { errors } })
+            throw new GraphQLError(code)
         }
-        return this.miscService.graphqlError(exception.message)
+        throw new GraphQLError(exception.message)
     }
 }

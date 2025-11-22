@@ -1,7 +1,7 @@
 import { Injectable, Res } from '@nestjs/common'
-import type { RedisService } from '@database/services/redis.service.js'
-import type { SecurityService } from '@shared/utils/security/services/security.service.js'
-import type { EmailService } from '@shared/email/email.service.js'
+import { RedisService } from '@database/services/redis.service.js'
+import { SecurityService } from '@shared/utils/security/services/security.service.js'
+import { EmailService } from '@shared/email/email.service.js'
 
 @Injectable()
 export class AccountService {
@@ -9,7 +9,7 @@ export class AccountService {
         private readonly redisService: RedisService,
         private readonly securityService: SecurityService,
         private readonly emailService: EmailService
-    ) {}
+    ) { }
     async generateCode(keyName: string, user: { id: string, email: string }, isForget: boolean): Promise<void> {
         const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
         const randomString = nodeCrypto.randomBytes(64).toString('hex')

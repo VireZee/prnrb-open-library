@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import type { PrismaService } from '@database/services/prisma.service.js'
-import type { SecurityService } from '@shared/utils/security/services/security.service.js'
-import type { FormatterService } from '@shared/utils/formatter/formatter.service.js'
-import type { MiscService } from '@shared/utils/misc/misc.service.js'
-import type { AccountService } from '@shared/account/account.service.js'
+import { PrismaService } from '@database/services/prisma.service.js'
+import { SecurityService } from '@shared/utils/security/services/security.service.js'
+import { FormatterService } from '@shared/utils/formatter/formatter.service.js'
+import { MiscService } from '@shared/utils/misc/misc.service.js'
+import { AccountService } from '@shared/account/account.service.js'
 import type { Register } from '../dto/register.dto.js'
 
 @Injectable()

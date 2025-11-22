@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import type { PrismaService } from '@database/services/prisma.service.js'
-import type { FormatterService } from '@shared/utils/formatter/formatter.service.js'
-import { GraphQLError } from 'graphql'
+import { PrismaService } from '@database/services/prisma.service.js'
+import { FormatterService } from '@shared/utils/formatter/formatter.service.js'
 
 @Injectable()
 export class MiscService {
@@ -26,8 +25,5 @@ export class MiscService {
             suffix++
         }
         return username
-    }
-    graphqlError(message: string, errors?: Record<string, string>): void {
-        throw new GraphQLError(message, { extensions: { errors } })
     }
 }
