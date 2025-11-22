@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import type { OnModuleInit, OnModuleDestroy } from '@nestjs/common'
 import { createClient, type RedisClientType } from 'redis'
-import { CacheService } from './cache/cache.service.js'
 
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
-    constructor(readonly cacheService: CacheService) {}
     redis: RedisClientType
     async onModuleInit(): Promise<void> {
         this.redis = createClient({

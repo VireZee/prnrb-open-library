@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { HashService } from './hash/hash.service.js'
-import { SanitizeService } from './sanitize/sanitize.service.js'
+import type { HashService } from './hash.service.js'
+import type { SanitizeService } from './sanitize.service.js'
 import jwt from 'jsonwebtoken'
 
 @Injectable()

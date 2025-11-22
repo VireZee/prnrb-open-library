@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy, ExtractJwt } from 'passport-jwt'
-import { PrismaService } from '@database/prisma.service.js'
-import { RedisService } from '@shared/redis/redis.service.js'
-import { SanitizeService } from '@shared/utils/security/sanitize/sanitize.service.js'
-import { FormatterService } from '@shared/utils/formatter/formatter.service.js'
+import type { PrismaService } from '@database/services/prisma.service.js'
+import type { RedisService } from '@database/services/redis.service.js'
+import type { SecurityService } from '@shared/utils/security/services/security.service.js'
+import type { FormatterService } from '@shared/utils/formatter/formatter.service.js'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly redisService: RedisService,
-        private readonly sanitizeService: SanitizeService,
+        private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService
     ) {
         super({
@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
     async validate(payload: { id: string }): Promise<unknown> {
         const { id } = payload
-        const key = this.sanitizeService.sanitizeRedisKey('user', id)
+        const key = this.securityService.sanitizeService.sanitizeRedisKey('user', id)
         const cache = await this.redisService.redis.json.GET(key)
         if (cache) return cache
         const user = await this.prismaService.user.findUnique({ where: { id } })

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
-import { SecurityService } from './security.service.js'
-import { HashService } from './hash/hash.service.js'
-import { SanitizeService } from './sanitize/sanitize.service.js'
+import { SecurityService } from './services/security.service.js'
+import { HashService } from './services/hash.service.js'
+import { SanitizeService } from './services/sanitize.service.js'
 
 @Module({
     providers:  [SecurityService, HashService, SanitizeService],

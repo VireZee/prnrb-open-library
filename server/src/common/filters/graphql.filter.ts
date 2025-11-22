@@ -7,7 +7,7 @@ export class GraphqlFilter implements GqlExceptionFilter {
     constructor(private readonly miscService: MiscService) { }
     catch(exception: { code: string, errors?: Record<string, string> } | Error) {
         if (typeof exception === 'object' && 'code' in exception) {
-            const { code, errors } = exception as { code: string; errors?: Record<string, string> }
+            const { code, errors } = exception
             return errors
                 ? this.miscService.graphqlError(code, errors)
                 : this.miscService.graphqlError(code)

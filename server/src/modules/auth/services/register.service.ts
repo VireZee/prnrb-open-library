@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '@database/prisma.service.js'
-import { FormatterService } from '@shared/utils/formatter/formatter.service.js'
-import { MiscService } from '@shared/utils/misc/misc.service.js'
-import { SecurityService } from '@shared/utils/security/security.service.js'
-import { AccountService } from '@shared/account/account.service.js'
-import { Register } from '../dto/register.dto.js'
+import type { PrismaService } from '@database/services/prisma.service.js'
+import type { SecurityService } from '@shared/utils/security/services/security.service.js'
+import type { FormatterService } from '@shared/utils/formatter/formatter.service.js'
+import type { MiscService } from '@shared/utils/misc/misc.service.js'
+import type { AccountService } from '@shared/account/account.service.js'
+import type { Register } from '../dto/register.dto.js'
 
 @Injectable()
 export class RegisterService {
     constructor(
         private readonly prismaService: PrismaService,
+        private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService,
         private readonly miscService: MiscService,
-        private readonly securityService: SecurityService,
         private readonly accountService: AccountService
     ) {}
     async register(args: Register, res: Res): Promise<boolean> {

@@ -1,20 +1,21 @@
 import { Injectable, Res } from '@nestjs/common'
-import { RedisService } from '@shared/redis/redis.service.js'
-import type { SecurityService } from '@shared/utils/security/security.service.js'
-import type { EmailService } from './email/email.service.js'
+import type { RedisService } from '@database/services/redis.service.js'
+import type { SecurityService } from '@shared/utils/security/services/security.service.js'
+import type { EmailService } from '@shared/email/email.service.js'
 
 @Injectable()
-export class AccountService extends RedisService {
+export class AccountService {
     constructor(
+        private readonly redisService: RedisService,
         private readonly securityService: SecurityService,
         private readonly emailService: EmailService
-    ) { super() }
+    ) {}
     async generateCode(keyName: string, user: { id: string, email: string }, isForget: boolean): Promise<void> {
         const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
         const randomString = nodeCrypto.randomBytes(64).toString('hex')
         const verificationCode = nodeCrypto.createHash('sha512').update(randomString).digest('hex')
-        await this.redis.HSET(key, 'code', verificationCode)
-        await this.redis.HEXPIRE(key, 'code', 300)
+        await this.redisService.redis.HSET(key, 'code', verificationCode)
+        await this.redisService.redis.HEXPIRE(key, 'code', 300)
         if (isForget) return await this.emailService.resetPassword(user.email, verificationCode, user.id)
         return await this.emailService.verifyEmail(user.email, verificationCode, user.id)
     }

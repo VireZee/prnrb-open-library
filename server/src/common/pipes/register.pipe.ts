@@ -1,6 +1,6 @@
 import { Injectable, type PipeTransform } from '@nestjs/common'
-import { ValidationService } from '@shared/utils/validation/validation.service.js'
 import { ApolloServerErrorCode } from '@apollo/server/errors'
+import type { ValidationService } from '@shared/utils/validation/validation.service.js'
 
 @Injectable()
 export class RegisterPipe implements PipeTransform {

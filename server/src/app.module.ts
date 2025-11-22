@@ -1,25 +1,21 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { join } from 'path'
 import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo'
-import { join } from 'path'
+import { DatabaseModule } from '@database/database.module.js'
 import { GraphqlFilter } from '@common/filters/graphql.filter.js'
-import { AuthModule } from '@modules/auth/auth.module.js'
 
 @Module({
     imports: [
-        ConfigModule.forRoot({
-            envFilePath: join(dirname, '..', '.env')
-        }),
+        ConfigModule.forRoot({ envFilePath: join(dirname, '..', '.env') }),
         GraphQLModule.forRoot<ApolloDriverConfig>({
             driver: ApolloDriver,
             autoSchemaFile: true,
             context: ({ req, res }: { req: Req, res: Res }) => ({ req, res })
         }),
-        AuthModule
+        DatabaseModule
     ],
-    providers: [
-        GraphqlFilter
-    ]
+    providers: [GraphqlFilter]
 })
 export class AppModule {}
