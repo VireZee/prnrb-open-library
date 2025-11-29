@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '@database/services/prisma.service.js'
+import { PrismaService } from '@infrastructure/database/services/prisma.service.js'
 import { FormatterService } from '../formatter/formatter.service.js'
 
 @Injectable()
@@ -27,7 +27,7 @@ export class ValidationService {
     }
     async validateEmail(email: string, id?: string): Promise<string | undefined> {
         if (!email) return "Email can't be empty!"
-        else if (!/^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) return 'Email must be valid!'
+        else if (!/^[\w.-]+@([\w-]+\.)+[A-Za-z]{2,}$/.test(email)) return 'Email must be valid!'
         else if (await this.prismaService.user.findFirst({
             where: {
                 email,

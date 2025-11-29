@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 import { join } from 'path'
 import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo'
-import { DatabaseModule } from '@database/database.module.js'
+import { DatabaseModule } from '@infrastructure/database/database.module.js'
 import { GraphqlFilter } from '@common/filters/graphql.filter.js'
 
 @Module({
