@@ -4,6 +4,7 @@ import { join } from 'path'
 import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo'
 import { DatabaseModule } from '@infrastructure/database/database.module.js'
+import { GraphqlFilter } from '@common/filters/graphql.filter.js'
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { DatabaseModule } from '@infrastructure/database/database.module.js'
             context: ({ req, res }: { req: Req, res: Res }) => ({ req, res })
         }),
         DatabaseModule
-    ]
+    ],
+    providers: [GraphqlFilter]
 })
 export class AppModule {}
