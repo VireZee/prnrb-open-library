@@ -25,7 +25,7 @@ export class AccountService {
             maxAge: 1000 * 60 * 60 * 24 * 30,
             httpOnly: true,
             secure: true,
-            sameSite: "lax",
+            sameSite: "strict",
             priority: "high"
         })
     }

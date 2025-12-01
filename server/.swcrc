@@ -24,7 +24,7 @@
         "keepClassNames": true,
         "baseUrl": "./src",
         "paths": {
-            "@database/*": ["database/*"],
+            "@infrastructure/*": ["infrastructure/*"],
             "@modules/*": ["modules/*"],
             "@common/*": ["common/*"],
             "@shared/*": ["shared/*"],

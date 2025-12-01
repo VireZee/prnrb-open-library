@@ -2,7 +2,9 @@ datasource db {
     provider = "postgresql"
 }
 generator client {
-    provider = "prisma-client"
+    provider     = "prisma-client"
+    output       = "./generated"
+    moduleFormat = "esm"
 }
 model user {
     id          String       @id @default(uuid())
