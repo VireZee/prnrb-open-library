@@ -2,13 +2,17 @@ import { Injectable, Res } from '@nestjs/common'
 import { RedisService } from '@infrastructure/database/services/redis.service.js'
 import { SecurityService } from '@shared/utils/security/services/security.service.js'
 import { EmailService } from '@shared/email/email.service.js'
+import { PrismaService } from '@infrastructure/database/services/prisma.service.js'
+import type { FormatterService } from '@shared/utils/formatter/formatter.service.js'
 
 @Injectable()
 export class AccountService {
     constructor(
+        private readonly prismaService: PrismaService,
         private readonly redisService: RedisService,
         private readonly securityService: SecurityService,
-        private readonly emailService: EmailService
+        private readonly emailService: EmailService,
+        private readonly formatService: FormatterService
     ) { }
     async generateCode(keyName: string, user: { id: string, email: string }, isForget: boolean): Promise<void> {
         const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
@@ -29,7 +33,29 @@ export class AccountService {
             priority: "high"
         })
     }
-    setToVerified() { }
-    rateLimiter() { }
+    async setToVerified(id: string) {
+        const userKey = this.securityService.sanitizeService.sanitizeRedisKey('user', id)
+        const verifyKey = this.securityService.sanitizeService.sanitizeRedisKey('verify', id)
+        const resendKey = this.securityService.sanitizeService.sanitizeRedisKey('resend', id)
+        const user = await this.prismaService.user.update({
+            where: { id },
+            data: { verified: true }
+        })
+        await this.redisService.redis.json.SET(userKey, '$.verified', user.verified)
+        await this.redisService.redis.DEL([verifyKey, resendKey])
+    }
+    async rateLimiter(keyName: string, user: { id: string }, minutes: number, otherKeyName = keyName) {
+        const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
+        const otherKey = this.securityService.sanitizeService.sanitizeRedisKey(otherKeyName, user.id)
+        const increment = await this.redisService.redis.HINCRBY(key, 'attempts', 1)
+        if (increment % 3 === 0) {
+            await this.redisService.redis.HDEL(otherKey, 'code')
+            await this.redisService.redis.HSET(key, 'block', '')
+            const blockDuration = 60 * minutes * (2 ** ((increment / 3) - 1))
+            this.redisService.redis.HEXPIRE(key, 'block', blockDuration)
+            const timeLeft = this.formatService.formatTimeLeft(blockDuration)
+            throw { code: 'RATE_LIMITED', errors: `Too many attempts! Try again in ${timeLeft}!` }
+        }
+    }
     checkBlock() { }
 }

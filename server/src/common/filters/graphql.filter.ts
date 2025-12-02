@@ -4,7 +4,7 @@ import { GraphQLError } from 'graphql'
 
 @Catch()
 export class GraphqlFilter implements GqlExceptionFilter {
-    catch(exception: { code: string, errors?: Record<string, string> } | Error): never {
+    catch(exception: { code: string, errors?: Record<string, string> | string } | Error): never {
         if (typeof exception === 'object' && 'code' in exception) {
             const { code, errors } = exception
             if (errors) throw new GraphQLError(code, { extensions: { errors } })
