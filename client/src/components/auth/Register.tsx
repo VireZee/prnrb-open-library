@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { change, setShow, setErrors } from '@store/slices/auth/register'
 import type { RootState } from '@store/store'
 import type BaseError from '@type/redux/auth/baseError'
-
+import { CombinedGraphQLErrors } from '@apollo/client'
 const Register: FC = () => {
     const [register, { loading }] = useMutation<RegisterMutation>(REGISTER)
     const dispatch = useDispatch()
@@ -43,7 +43,7 @@ const Register: FC = () => {
             })
             if (data!.register) location.href = '/verify'
         } catch (e) {
-            if (e instanceof Error) {
+            if (e instanceof CombinedGraphQLErrors) {
                 const { errors } = (e.cause as { extensions: { errors: BaseError } }).extensions
                 dispatch(setErrors(errors))
             } else alert('An unexpected error occurred.')

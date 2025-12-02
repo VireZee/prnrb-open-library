@@ -3,7 +3,7 @@ import { RedisService } from '@infrastructure/database/services/redis.service.js
 import { SecurityService } from '@shared/utils/security/services/security.service.js'
 import type { Verify } from '../dto/verify.dto.js'
 import type { User } from '@type/user.js'
-import type { AccountService } from '@shared/account/account.service.js';
+import { AccountService } from '@shared/account/account.service.js';
 
 @Injectable()
 export class VerifyService {

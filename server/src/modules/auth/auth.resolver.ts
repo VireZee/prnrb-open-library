@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Context } from '@nestjs/graphql'
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql'
 import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
 import { RegisterService } from './services/register.service.js'
 import { VerifyService } from './services/verify.service.js'
@@ -17,6 +17,10 @@ export class AuthResolver {
         private readonly resendService: ResendService,
         private readonly loginService: LoginService
     ) { }
+    @Query(() => Boolean)
+    halt() {
+        return true
+    }
     @Mutation(() => Boolean)
     async register(
         @Args(RegisterPipe) args: Register,
@@ -26,7 +30,7 @@ export class AuthResolver {
     }
     @Mutation(() => Boolean)
     async verify(
-        @Args() args: Verify,
+        @Args('args') args: Verify,
         @Context() context: { user: User }
     ): Promise<boolean> {
         return this.verifyService.verify(args, context.user)
@@ -39,7 +43,7 @@ export class AuthResolver {
     }
     @Mutation(() => Boolean)
     async login(
-        @Args() args: Login,
+        @Args('args') args: Login,
         @Context() context: { res: Res }
     ): Promise<boolean> {
         return this.loginService.login(args, context.res)
