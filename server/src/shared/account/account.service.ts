@@ -57,5 +57,13 @@ export class AccountService {
             throw { code: 'RATE_LIMITED', errors: `Too many attempts! Try again in ${timeLeft}!` }
         }
     }
-    checkBlock() { }
+    async checkBlock(keyName: string, user: { id: string }, message: string) {
+        const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
+        const block = await this.redisService.redis.HEXISTS(key, 'block')
+        if (block) {
+            const blockTTL = await this.redisService.redis.HTTL(key, 'block')
+            const timeLeft = this.formatService.formatTimeLeft(blockTTL![0]!)
+            throw { code: 'RATE_LIMITED', errors: `${message} ${timeLeft}!` }
+        }
+    }
 }
