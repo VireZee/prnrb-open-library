@@ -44,7 +44,7 @@ const Register: FC = () => {
             if (data!.register) location.href = '/verify'
         } catch (e) {
             if (e instanceof CombinedGraphQLErrors) {
-                const { errors } = (e.cause as { extensions: { errors: BaseError } }).extensions
+                const { errors } = e.errors[0]!.extensions
                 dispatch(setErrors(errors))
             } else alert('An unexpected error occurred.')
         }
