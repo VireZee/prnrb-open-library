@@ -13,6 +13,10 @@ export class CacheService {
         private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService
     ) {}
+    async publish(key: string) {
+            this.redisService.pub.publish('collection:update', key)
+
+    }
     async createCollection(keyName: string, user: { id: string }): Promise<Collection[]> {
         const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
         const cache = await this.redisService.redis.json.GET(key)
