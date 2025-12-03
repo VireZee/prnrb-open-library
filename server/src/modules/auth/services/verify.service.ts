@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RedisService } from '@infrastructure/database/services/redis.service.js'
+import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/security/services/security.service.js'
 import type { Verify } from '../dto/verify.dto.js'
 import type { User } from '@type/user.js'

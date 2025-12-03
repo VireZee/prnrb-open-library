@@ -15,10 +15,10 @@ import { EmailService } from './email.service.js'
                     secure: false
                 },
                 defaults: {
-                    from: `'No Reply' <${process.env['MAIL_FROM']}>`,
+                    from: `'No Reply' <${process.env['MAIL_FROM']}>`
                 },
                 template: {
-                    dir: join(dirname, 'shared', 'email', 'templates'),
+                    dir: join(dirname, 'infrastructure', 'email', 'templates'),
                     adapter: new HandlebarsAdapter(),
                     options: {
                         strict: true

@@ -12,7 +12,7 @@ export class EmailService {
             template: './verify',
             context: {
                 verificationCode,
-                link: `http://${process.env['DOMAIN']}:${process.env['PORT']}/verify/${id}/${verificationCode}`,
+                link: `http://${process.env['DOMAIN']}:${process.env['PORT']}/verify/${id}/${verificationCode}`
             }
         })
     }
@@ -23,7 +23,7 @@ export class EmailService {
             subject: 'Reset Your Password',
             template: './reset',
             context: {
-                link: `http://${process.env['DOMAIN']}:${process.env['CLIENT_PORT']}/reset/${id}/${verificationCode}`,
+                link: `http://${process.env['DOMAIN']}:${process.env['CLIENT_PORT']}/reset/${id}/${verificationCode}`
             }
         })
     }
