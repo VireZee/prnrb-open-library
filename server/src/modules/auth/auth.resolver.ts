@@ -30,7 +30,7 @@ export class AuthResolver {
     }
     @Mutation(() => Boolean)
     async verify(
-        @Args('args') args: Verify,
+        @Args() args: Verify,
         @Context() context: { user: User }
     ): Promise<boolean> {
         return this.verifyService.verify(args, context.user)
@@ -43,7 +43,7 @@ export class AuthResolver {
     }
     @Mutation(() => Boolean)
     async login(
-        @Args('args') args: Login,
+        @Args() args: Login,
         @Context() context: { res: Res }
     ): Promise<boolean> {
         return this.loginService.login(args, context.res)

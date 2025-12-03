@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import argon2 from 'argon2'
+import HASH from '@shared/constants/hash.constant.js'
 
 @Injectable()
 export class HashService {
@@ -12,18 +13,20 @@ export class HashService {
         const char: string[] = []
         for (const r of ranges) for (let i = r.s; i <= r.e; i++) char.push(String.fromCharCode(i))
         let result = ''
-        for (let i = 0; i < 512; i++) {
-            const shuffle = Math.floor(Math.random() * char.length)
-            result += char[shuffle]
+        for (let i = 0; i < 2048; i++) {
+            const random = nodeCrypto.randomBytes(8)
+            const decimal = random.readBigUInt64BE(0)
+            const index = decimal * BigInt(char.length) / (1n << 64n)
+            result += char[Number(index)]
         }
         return result
     }
     async hash(pass: string): Promise<string> {
         return await argon2.hash(pass + process.env['PEPPER'], {
-            hashLength: 64,
-            timeCost: 6,
-            memoryCost: 64 * 1024,
-            parallelism: 4,
+            hashLength: HASH.HASH_LENGTH,
+            timeCost: HASH.TIME_COST,
+            memoryCost: HASH.MEMORY_COST,
+            parallelism: HASH.PARALLELISM,
             type: 2,
             salt: Buffer.from(this.generateSalt(), 'utf-8')
         })

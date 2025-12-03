@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/services/prisma.service.js'
 import { FormatterService } from '../formatter/formatter.service.js'
-import { USERNAME_REGEX, EMAIL_REGEX } from '@shared/constants/regex.constant.js'
+import REGEX from '@shared/constants/regex.constant.js'
 
 @Injectable()
 export class ValidationService {
@@ -16,7 +16,7 @@ export class ValidationService {
     }
     async validateUsername(username: string, id?: string): Promise<string | undefined> {
         if (!username) return 'Username can\'t be empty!'
-        else if (!USERNAME_REGEX.test(username)) return 'Username can only contain Latin Alphabets, Numbers, and Underscores!'
+        else if (!REGEX.USERNAME_REGEX.test(username)) return 'Username can only contain Latin Alphabets, Numbers, and Underscores!'
         else if (username.length >= 20) return 'Username is too long!'
         else if (await this.prismaService.user.findFirst({
             where: {
@@ -28,7 +28,7 @@ export class ValidationService {
     }
     async validateEmail(email: string, id?: string): Promise<string | undefined> {
         if (!email) return "Email can't be empty!"
-        else if (!EMAIL_REGEX.test(email)) return 'Email must be valid!'
+        else if (!REGEX.EMAIL_REGEX.test(email)) return 'Email must be valid!'
         else if (await this.prismaService.user.findFirst({
             where: {
                 email,
