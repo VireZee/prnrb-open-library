@@ -6,7 +6,7 @@ import type { OnModuleInit, OnModuleDestroy } from '@nestjs/common'
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
     constructor() {
-        const adapter = new PrismaPg({ url: process.env['DB_URL'] })
+        const adapter = new PrismaPg({ connectionString: `${process.env['DB_URL']}` })
         super({ adapter })
     }
     async onModuleInit(): Promise<void> {

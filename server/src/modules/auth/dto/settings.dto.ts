@@ -1,6 +1,6 @@
-import { InputType, Field } from '@nestjs/graphql'
+import { ArgsType, Field } from '@nestjs/graphql'
 
-@InputType()
+@ArgsType()
 export class Settings {
     @Field(() => String) photo: string
     @Field(() => String) name: string

@@ -6,27 +6,25 @@ import { EmailService } from './email.service.js'
 
 @Module({
     imports: [
-        MailerModule.forRoot({
-            transport: {
-                host: process.env['MAIL_HOST'],
-                port: Number(process.env['MAIL_PORT'])!,
-                ignoreTLS: true,
-                secure: false,
-                auth: {
-                    user: process.env['MAIL_USER'],
-                    pass: process.env['MAIL_PASS']
+        MailerModule.forRootAsync({
+            useFactory: () => ({
+                transport: {
+                    host: process.env['MAIL_HOST'],
+                    port: Number(process.env['MAIL_PORT'])!,
+                    ignoreTLS: true,
+                    secure: false
+                },
+                defaults: {
+                    from: `'No Reply' <${process.env['MAIL_FROM']}>`,
+                },
+                template: {
+                    dir: join(dirname, 'shared', 'email', 'templates'),
+                    adapter: new HandlebarsAdapter(),
+                    options: {
+                        strict: true
+                    }
                 }
-            },
-            defaults: {
-                from: `'No Reply' <${process.env['MAIL_FROM']}>`,
-            },
-            template: {
-                dir: join(dirname, 'templates'),
-                adapter: new HandlebarsAdapter(),
-                options: {
-                    strict: true
-                }
-            }
+            })
         })
     ],
     providers: [EmailService],
