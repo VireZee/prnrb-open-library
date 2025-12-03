@@ -1,4 +1,4 @@
-import { setTimeout as sleep } from 'node:timers/promises'
+import { setTimeout } from 'node:timers/promises'
 
 export async function retry<T>(fn: () => Promise<T>, opts: {
     retries?: number
@@ -19,7 +19,7 @@ export async function retry<T>(fn: () => Promise<T>, opts: {
             if (attempt === retries) break
             let wait = delay
             if (jitter) wait = wait * (1 + Math.random() * 0.3)
-            await sleep(wait)
+            await setTimeout(wait)
             delay *= backoff
         }
     }
