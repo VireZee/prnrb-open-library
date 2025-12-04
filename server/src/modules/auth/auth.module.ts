@@ -15,4 +15,4 @@ import { ValidationModule } from '@shared/utils/validation/validation.module.js'
     imports: [SecurityModule, ValidationModule, FormatterModule, MiscModule, AccountModule],
     providers: [RegisterPipe, AuthResolver, RegisterService, VerifyService, ResendService, LoginService]
 })
-export class AuthModule { }
+export class AuthModule {}
