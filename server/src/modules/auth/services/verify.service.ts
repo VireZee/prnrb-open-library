@@ -12,7 +12,7 @@ export class VerifyService {
         private readonly redisService: RedisService,
         private readonly securityService: SecurityService,
         private readonly accountService: AccountService
-    ) { }
+    ) {}
     async verify(args: Verify, user: User) {
         const { code } = args
         const key = this.securityService.sanitizeService.sanitizeRedisKey('verify', user.id)

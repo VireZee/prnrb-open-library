@@ -11,7 +11,7 @@ export class LoginService {
         private readonly prismaService: PrismaService,
         private readonly securityService: SecurityService,
         private readonly accountService: AccountService
-    ) { }
+    ) {}
     async login(args: Login, res: Res) {
         const { emailOrUsername, pass } = args
         const user = await this.prismaService.user.findFirst({
