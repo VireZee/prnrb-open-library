@@ -16,7 +16,7 @@ export class CacheService {
         private readonly formatterService: FormatterService
     ) { }
     async publish(key: string): Promise<void> {
-        await this.retryService.retry(() => this.redisService.pub.publish('collection:update', key), {retryOn(e) => true})
+        await this.retryService.retry(() => this.redisService.pub.publish('collection:update', key), {})
     }
     async createCollection(keyName: string, user: { id: string }): Promise<Collection[]> {
         const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
