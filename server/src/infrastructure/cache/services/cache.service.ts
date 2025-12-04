@@ -4,18 +4,19 @@ import { RedisService } from './redis.service.js'
 import { SecurityService } from '@shared/utils/security/services/security.service.js'
 import { FormatterService } from '@shared/utils/formatter/formatter.service.js'
 import type Collection from '@type/collection.d.ts'
+import { RetryService } from '@common/utils/workers/services/retry.service.js'
 
 @Injectable()
 export class CacheService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly redisService: RedisService,
+        private readonly retryService: RetryService,
         private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService
-    ) {}
-    async publish(key: string) {
-            this.redisService.pub.publish('collection:update', key)
-
+    ) { }
+    async publish(key: string): Promise<void> {
+        await this.retryService.retry(() => this.redisService.pub.publish('collection:update', key), {retryOn(e) => true})
     }
     async createCollection(keyName: string, user: { id: string }): Promise<Collection[]> {
         const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)

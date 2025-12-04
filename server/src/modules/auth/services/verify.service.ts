@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/security/services/security.service.js'
 import type { Verify } from '../dto/verify.dto.js'
 import type { User } from '@type/user.js'
-import { AccountService } from '@shared/account/account.service.js';
+import { AccountService } from '@shared/account/account.service.js'
+import ERROR from '@common/constants/error.constant.js'
 
 @Injectable()
 export class VerifyService {
@@ -16,12 +17,12 @@ export class VerifyService {
         const { code } = args
         const key = this.securityService.sanitizeService.sanitizeRedisKey('verify', user.id)
         const getVerify = await this.redisService.redis.HGETALL(key)
-        if (user.verified) throw { code: 'ALREADY_VERIFIED' }
-        if (!getVerify['code']) throw { code: 'VERIFICATION_CODE_EXPIRED' }
+        if (user.verified) throw { code: ERROR.ALREADY_VERIFIED }
+        if (!getVerify['code']) throw { code: ERROR.VERIFICATION_CODE_EXPIRED }
         await this.accountService.checkBlock('verify', user, 'You have been temporarily blocked from verifying your code due to too many failed attempts! Try again in')
         if (code !== getVerify['code']) {
             await this.accountService.rateLimiter('verify', user, 60)
-            throw { code: 'INVALID_VERIFICATION_CODE' }
+            throw { code: ERROR.INVALID_VERIFICATION_CODE }
         }
         await this.accountService.setToVerified(user.id)
         return true

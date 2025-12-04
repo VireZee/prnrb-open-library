@@ -2,6 +2,7 @@ import { Injectable, type ExecutionContext } from '@nestjs/common'
 import { AuthGuard as PassportAuthGuard } from '@nestjs/passport'
 import { GqlExecutionContext } from '@nestjs/graphql'
 import type { User } from '@type/user.js'
+import ERROR from '../constants/error.constant.js'
 
 @Injectable()
 export class AuthGuard extends PassportAuthGuard('jwt') {
@@ -11,7 +12,7 @@ export class AuthGuard extends PassportAuthGuard('jwt') {
     }
     override handleRequest<T = User>(err: Error, user: User): T | never {
         if (err) throw err
-        if (!user) throw { code: 'UNAUTHENTICATED' }
+        if (!user) throw { code: ERROR.UNAUTHENTICATED }
         return user as T
     }
 }
