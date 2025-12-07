@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { RedisService } from './redis.service.js'
-import { SecurityService } from '@shared/utils/security/services/security.service.js'
+import { RetryService } from '@common/utils/workers/services/retry.service.js'
+import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import type Collection from '@type/collection.d.ts'
-import { RetryService } from '@common/utils/workers/services/retry.service.js'
 
 @Injectable()
 export class CacheService {
@@ -14,12 +14,12 @@ export class CacheService {
         private readonly retryService: RetryService,
         private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService
-    ) { }
+    ) {}
     async publish(key: string): Promise<void> {
         await this.retryService.retry(() => this.redisService.pub.publish('collection:update', key), {})
     }
     async createCollection(keyName: string, user: { id: string }): Promise<Collection[]> {
-        const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
+        const key = this.securityService.sanitizeRedisKey(keyName, user.id)
         const cache = await this.redisService.redis.json.GET(key)
         if (cache) return cache as Collection[]
         const collection = await this.prismaService.collection.findMany({ where: { user_id: user.id } })
@@ -29,7 +29,7 @@ export class CacheService {
         return books
     }
     async updateCollection(keyName: string, user: { id: string }): Promise<void> {
-        const key = this.securityService.sanitizeService.sanitizeRedisKey(keyName, user.id)
+        const key = this.securityService.sanitizeRedisKey(keyName, user.id)
         const keysToDelete = `${key}|*`
         const updatedBooks = await this.prismaService.collection.findMany({ where: { user_id: user.id } })
         await this.redisService.redis.json.SET(key, '$', this.formatterService.formatBooksMap(updatedBooks))
