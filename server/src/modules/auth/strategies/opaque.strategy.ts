@@ -1,26 +1,21 @@
 import { Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
-import { Strategy, ExtractJwt } from 'passport-jwt'
+import { Strategy } from 'passport-custom'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
-import { SecurityService } from '@shared/utils/security/services/security.service.js'
+import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class OpaqueStrategy extends PassportStrategy(Strategy) {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly redisService: RedisService,
         private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService
-    ) {
-        super({
-            jwtFromRequest: ExtractJwt.fromExtractors([req => req.cookies['!']]),
-            secretOrKey: process.env['SECRET_KEY']!
-        })
-    }
-    async validate(payload: { id: string }): Promise<unknown> {
-        const { id } = payload
+    ) { super() }
+    async validate(req: Req): Promise<unknown> {
+        const token = req.cookies['!']
         const key = this.securityService.sanitizeService.sanitizeRedisKey('user', id)
         const cache = await this.redisService.redis.json.GET(key)
         if (cache) return cache
