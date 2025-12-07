@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import argon2 from 'argon2'
 import HASH from '@shared/constants/hash.constant.js'
+import REGEX from '@shared/constants/regex.constant.js'
 
 @Injectable()
-export class HashService {
+export class SecurityService {
     private generateSalt(): string {
         const ranges = [
             { s: 0x0020, e: 0x007E },
@@ -32,4 +33,6 @@ export class HashService {
         })
     }
     async verifyHash(pass: string, hashedPass: string): Promise<boolean> { return await argon2.verify(hashedPass, pass + process.env['PEPPER']) }
+    sanitize(id: string): string { return `${id.replace(REGEX.SANITIZE_REGEX, '')}` }
+    sanitizeRedisKey(name: string, key: string): string { return `${name}:${this.sanitize(key)}` }
 }

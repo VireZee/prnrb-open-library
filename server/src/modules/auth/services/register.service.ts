@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { SecurityService } from '@shared/utils/security/services/security.service.js'
-import { FormatterService } from '@shared/utils/formatter/formatter.service.js'
-import { MiscService } from '@shared/utils/misc/misc.service.js'
+import { FormatterService } from '@shared/utils/services/formatter.service.js'
+import { MiscService } from '@shared/utils/services/misc.service.js'
 import { AccountService } from '@shared/account/account.service.js'
 import type { Register } from '../dto/register.dto.js'
 

@@ -3,7 +3,7 @@ import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/security/services/security.service.js'
 import { EmailService } from '@infrastructure/email/email.service.js'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
-import { FormatterService } from '@shared/utils/formatter/formatter.service.js'
+import { FormatterService } from '@shared/utils/services/formatter.service.js'
 
 @Injectable()
 export class AccountService {

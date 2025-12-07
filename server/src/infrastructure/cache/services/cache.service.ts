@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { RedisService } from './redis.service.js'
 import { SecurityService } from '@shared/utils/security/services/security.service.js'
-import { FormatterService } from '@shared/utils/formatter/formatter.service.js'
+import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import type Collection from '@type/collection.d.ts'
 import { RetryService } from '@common/utils/workers/services/retry.service.js'
 
