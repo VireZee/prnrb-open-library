@@ -24,9 +24,10 @@ export class AuthResolver {
     @Mutation(() => Boolean)
     async register(
         @Args(RegisterPipe) args: Register,
-        @Context() context: { res: Res }
+        @Context() context: { req: Req, res: Res }
     ): Promise<boolean> {
-        return this.registerService.register(args, context.res)
+        const { req, res } = context
+        return this.registerService.register(args, req, res)
     }
     @Mutation(() => Boolean)
     async verify(

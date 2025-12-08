@@ -3,7 +3,7 @@ import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import { MiscService } from '@shared/utils/services/misc.service.js'
-import { AccountService } from '@shared/account/account.service.js'
+import { VerificationService } from './verification.service.js'
 import type { Register } from '../dto/register.dto.js'
 
 @Injectable()
@@ -13,9 +13,9 @@ export class RegisterService {
         private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService,
         private readonly miscService: MiscService,
-        private readonly accountService: AccountService
-    ) {}
-    async register(args: Register, res: Res): Promise<boolean> {
+        private readonly verificationService: VerificationService
+    ) { }
+    async register(args: Register, req: Req, res: Res): Promise<boolean> {
         const { name, username, email, pass } = args
         const newUser = await this.prismaService.user.create({
             data: {
@@ -26,8 +26,8 @@ export class RegisterService {
                 pass: await this.securityService.hash(pass)
             }
         })
-        await this.accountService.generateCode('verify', newUser, false)
-        this.accountService.cookie(newUser, res)
+        await this.verificationService.generateCode('verify', newUser, false)
+        this.verificationService.cookie(req, res, newUser.id)
         return true
     }
 }
