@@ -1,8 +1,8 @@
 import { Injectable, type ExecutionContext } from '@nestjs/common'
 import { AuthGuard as PassportAuthGuard } from '@nestjs/passport'
 import { GqlExecutionContext } from '@nestjs/graphql'
-import type { User } from '@type/user.js'
 import ERROR from '../constants/error.constant.js'
+import type { User } from '@type/user.js'
 
 @Injectable()
 export class AuthGuard extends PassportAuthGuard('jwt') {
