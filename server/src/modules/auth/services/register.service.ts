@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
-import { SecurityService } from '@shared/utils/security/services/security.service.js'
+import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import { MiscService } from '@shared/utils/services/misc.service.js'
 import { AccountService } from '@shared/account/account.service.js'
@@ -23,7 +23,7 @@ export class RegisterService {
                 name: this.formatterService.formatName(name),
                 username: this.formatterService.formatUsername(username),
                 email,
-                pass: await this.securityService.hashService.hash(pass)
+                pass: await this.securityService.hash(pass)
             }
         })
         await this.accountService.generateCode('verify', newUser, false)

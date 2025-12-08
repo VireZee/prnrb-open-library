@@ -33,15 +33,4 @@ export class AccountService {
             priority: "high"
         })
     }
-    async setToVerified(id: string) {
-        const userKey = this.securityService.sanitizeRedisKey('user', id)
-        const verifyKey = this.securityService.sanitizeRedisKey('verify', id)
-        const resendKey = this.securityService.sanitizeRedisKey('resend', id)
-        const user = await this.prismaService.user.update({
-            where: { id },
-            data: { verified: true }
-        })
-        await this.redisService.redis.json.SET(userKey, '$.verified', user.verified)
-        await this.redisService.redis.DEL([verifyKey, resendKey])
-    }
 }

@@ -1,30 +1,43 @@
 import { Injectable } from '@nestjs/common'
+import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
-import { SecurityService } from '@shared/utils/security/services/security.service.js'
+import { SecurityService } from '@shared/utils/services/security.service.js'
+import { RateLimiterService } from './rate-limiter.service.js'
+import ERROR from '@common/constants/error.constant.js'
 import type { Verify } from '../dto/verify.dto.js'
 import type { User } from '@type/user.js'
-import { AccountService } from '@shared/account/account.service.js'
-import ERROR from '@common/constants/error.constant.js'
 
 @Injectable()
 export class VerifyService {
     constructor(
+        private readonly prismaService: PrismaService,
         private readonly redisService: RedisService,
         private readonly securityService: SecurityService,
-        private readonly accountService: AccountService
+        private readonly rateLimiterService: RateLimiterService,
     ) {}
-    async verify(args: Verify, user: User) {
+    private async setToVerified(id: string): Promise<void> {
+        const userKey = this.securityService.sanitizeRedisKey('user', id)
+        const verifyKey = this.securityService.sanitizeRedisKey('verify', id)
+        const resendKey = this.securityService.sanitizeRedisKey('resend', id)
+        const user = await this.prismaService.user.update({
+            where: { id },
+            data: { verified: true }
+        })
+        await this.redisService.redis.json.SET(userKey, '$.verified', user.verified)
+        await this.redisService.redis.DEL([verifyKey, resendKey])
+    }
+    async verify(args: Verify, user: User): Promise<boolean> {
         const { code } = args
-        const key = this.securityService.sanitizeService.sanitizeRedisKey('verify', user.id)
+        const key = this.securityService.sanitizeRedisKey('verify', user.id)
         const getVerify = await this.redisService.redis.HGETALL(key)
         if (user.verified) throw { code: ERROR.ALREADY_VERIFIED }
         if (!getVerify['code']) throw { code: ERROR.VERIFICATION_CODE_EXPIRED }
-        await this.accountService.checkBlock('verify', user, 'You have been temporarily blocked from verifying your code due to too many failed attempts! Try again in')
+        await this.rateLimiterService.checkBlock('verify', user, 'You have been temporarily blocked from verifying your code due to too many failed attempts! Try again in')
         if (code !== getVerify['code']) {
-            await this.accountService.rateLimiter('verify', user, 60)
+            await this.rateLimiterService.rateLimiter('verify', user, 60)
             throw { code: ERROR.INVALID_VERIFICATION_CODE }
         }
-        await this.accountService.setToVerified(user.id)
+        await this.setToVerified(user.id)
         return true
     }
 }
