@@ -9,7 +9,7 @@ export class VerificationService {
         private readonly redisService: RedisService,
         private readonly securityService: SecurityService,
         private readonly emailService: EmailService
-    ) { }
+    ) {}
     async generateCode(keyName: string, user: { id: string, email: string }, isForget: boolean): Promise<void> {
         const { id, email } = user
         const key = this.securityService.sanitizeRedisKey(keyName, id)

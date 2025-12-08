@@ -14,7 +14,7 @@ export class RegisterService {
         private readonly formatterService: FormatterService,
         private readonly miscService: MiscService,
         private readonly verificationService: VerificationService
-    ) { }
+    ) {}
     async register(args: Register, req: Req, res: Res): Promise<boolean> {
         const { name, username, email, pass } = args
         const newUser = await this.prismaService.user.create({
