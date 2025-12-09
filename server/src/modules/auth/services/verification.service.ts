@@ -23,7 +23,6 @@ export class VerificationService {
     }
     async cookie(req: Req, res: Res, identity: Identity, id: string): Promise<void> {
         const token = nodeCrypto.randomBytes(32).toString('base64url')
-        const ip = (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim().split(':')[0] || req.ip || ''
         const ua = req.headers['user-agent'] ?? ''
         const lang = req.headers['accept-language'] ?? ''
         const encoding = req.headers['accept-encoding'] ?? ''
@@ -39,7 +38,6 @@ export class VerificationService {
         const fingerprint = nodeCrypto.createHash('sha256').update(ua + lang + encoding + secChUa + secChUaPlatform + platform + tz + screenRes + colorDepth + devicePixelRatio + touchSupport + hardwareConcurrency).digest('hex')
         await this.redisService.redis.HSET(`session:${token}`, {
             id,
-            ip,
             fingerprint
         })
         await this.redisService.redis.EXPIRE(`session:${token}`, 60 * 60 * 24 * 30)
