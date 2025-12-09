@@ -14,11 +14,38 @@ export class OpaqueStrategy extends PassportStrategy(Strategy) {
     ) { super() }
     async validate(req: Req): Promise<unknown> {
         const token = req.cookies['!']
-        if (token) return null
+        if (!token) return null
         const session = await this.redisService.redis.HGETALL(`session:${token}`)
         if (!session) return null
         const ua = req.headers['user-agent'] ?? ''
-        const ip = (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim().split(':')[0] || req.ip || ''
-        const deviceId = nodeCrypto.createHash('sha256').update(ua + ip).digest('hex')
+        const lang = req.headers['accept-language'] ?? ''
+        const encoding = req.headers['accept-encoding'] ?? ''
+        const secChUa = req.headers['sec-ch-ua'] ?? ''
+        const secChUaPlatform = req.headers['sec-ch-ua-platform'] ?? ''
+        const identity = {
+            platform: session['platform'] ?? '',
+            tz: session['tz'] ?? '',
+            screenRes: session['screenRes'] ?? '',
+            colorDepth: session['colorDepth'] ?? '',
+            devicePixelRatio: session['devicePixelRatio'] ?? '',
+            touchSupport: session['touchSupport'] ?? '',
+            hardwareConcurrency: session['hardwareConcurrency'] ?? ''
+        }
+        const fingerprint = nodeCrypto.createHash('sha256').update(
+            ua +
+            lang +
+            encoding +
+            secChUa +
+            secChUaPlatform +
+            identity.platform +
+            identity.tz +
+            identity.screenRes +
+            identity.colorDepth +
+            identity.devicePixelRatio +
+            identity.touchSupport +
+            identity.hardwareConcurrency
+        ).digest('hex')
+        if (fingerprint !== session['fingerprint']) return null
+        return this.formatterService.formatUser(user)
     }
 }

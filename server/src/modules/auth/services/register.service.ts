@@ -16,7 +16,7 @@ export class RegisterService {
         private readonly verificationService: VerificationService
     ) {}
     async register(args: Register, req: Req, res: Res): Promise<boolean> {
-        const { name, username, email, pass } = args
+        const { name, username, email, pass, identity } = args
         const newUser = await this.prismaService.user.create({
             data: {
                 photo: Buffer.from(this.miscService.generateAvatar(name), 'base64'),
@@ -27,7 +27,7 @@ export class RegisterService {
             }
         })
         await this.verificationService.generateCode('verify', newUser, false)
-        this.verificationService.cookie(req, res, newUser.id)
+        await this.verificationService.cookie(req, res, identity, newUser.id)
         return true
     }
 }

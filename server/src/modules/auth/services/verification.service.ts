@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { EmailService } from '@infrastructure/email/email.service.js'
+import type Identity from '@type/identity.js'
 
 @Injectable()
 export class VerificationService {
@@ -20,7 +21,7 @@ export class VerificationService {
         if (isForget) return await this.emailService.resetPassword(email, verificationCode, id)
         return await this.emailService.verifyEmail(email, verificationCode, id)
     }
-    async cookie(req: Req, res: Res, fp: { platform: string, tz: string, screenRes: string, colorDepth: string, devicePixelRatio: string, touchSupport: string, hardwareConcurrency: string }, id: string): Promise<void> {
+    async cookie(req: Req, res: Res, identity: Identity, id: string): Promise<void> {
         const token = nodeCrypto.randomBytes(32).toString('base64url')
         const ip = (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim().split(':')[0] || req.ip || ''
         const ua = req.headers['user-agent'] ?? ''
@@ -28,13 +29,13 @@ export class VerificationService {
         const encoding = req.headers['accept-encoding'] ?? ''
         const secChUa = req.headers['sec-ch-ua'] ?? ''
         const secChUaPlatform = req.headers['sec-ch-ua-platform'] ?? ''
-        const platform = fp.platform ?? ''
-        const tz = fp.tz ?? ''
-        const screenRes = fp.screenRes ?? ''
-        const colorDepth = fp.colorDepth ?? ''
-        const devicePixelRatio = fp.devicePixelRatio ?? ''
-        const touchSupport = fp.touchSupport ?? ''
-        const hardwareConcurrency = fp.hardwareConcurrency ?? ''
+        const platform = identity.platform ?? ''
+        const tz = identity.tz ?? ''
+        const screenRes = identity.screenRes ?? ''
+        const colorDepth = identity.colorDepth ?? ''
+        const devicePixelRatio = identity.devicePixelRatio ?? ''
+        const touchSupport = identity.touchSupport ?? ''
+        const hardwareConcurrency = identity.hardwareConcurrency ?? ''
         const fingerprint = nodeCrypto.createHash('sha256').update(ua + lang + encoding + secChUa + secChUaPlatform + platform + tz + screenRes + colorDepth + devicePixelRatio + touchSupport + hardwareConcurrency).digest('hex')
         await this.redisService.redis.HSET(`session:${token}`, {
             id,
