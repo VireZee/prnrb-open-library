@@ -16,27 +16,38 @@ export class VerificationService {
         const randomString = nodeCrypto.randomBytes(32).toString('hex')
         const verificationCode = nodeCrypto.createHash('sha256').update(randomString).digest('hex')
         await this.redisService.redis.HSET(key, 'code', verificationCode)
-        await this.redisService.redis.HEXPIRE(key, 'code', 300)
+        await this.redisService.redis.HEXPIRE(key, 'code', 60 * 5)
         if (isForget) return await this.emailService.resetPassword(email, verificationCode, id)
         return await this.emailService.verifyEmail(email, verificationCode, id)
     }
-    async cookie(req: Req, res: Res, id: string): Promise<void> {
+    async cookie(req: Req, res: Res, fp: { platform: string, tz: string, screenRes: string, colorDepth: string, devicePixelRatio: string, touchSupport: string, hardwareConcurrency: string }, id: string): Promise<void> {
         const token = nodeCrypto.randomBytes(32).toString('base64url')
-        const ua = req.headers['user-agent'] ?? ''
         const ip = (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim().split(':')[0] || req.ip || ''
-        const deviceId = nodeCrypto.createHash('sha256').update(ua + ip).digest('hex')
-        this.redisService.redis.HSET(`session:${token}`, {
+        const ua = req.headers['user-agent'] ?? ''
+        const lang = req.headers['accept-language'] ?? ''
+        const encoding = req.headers['accept-encoding'] ?? ''
+        const secChUa = req.headers['sec-ch-ua'] ?? ''
+        const secChUaPlatform = req.headers['sec-ch-ua-platform'] ?? ''
+        const platform = fp.platform ?? ''
+        const tz = fp.tz ?? ''
+        const screenRes = fp.screenRes ?? ''
+        const colorDepth = fp.colorDepth ?? ''
+        const devicePixelRatio = fp.devicePixelRatio ?? ''
+        const touchSupport = fp.touchSupport ?? ''
+        const hardwareConcurrency = fp.hardwareConcurrency ?? ''
+        const fingerprint = nodeCrypto.createHash('sha256').update(ua + lang + encoding + secChUa + secChUaPlatform + platform + tz + screenRes + colorDepth + devicePixelRatio + touchSupport + hardwareConcurrency).digest('hex')
+        await this.redisService.redis.HSET(`session:${token}`, {
             id,
-            ua,
             ip,
-            deviceId
+            fingerprint
         })
+        await this.redisService.redis.EXPIRE(`session:${token}`, 60 * 60 * 24 * 30)
         res.cookie('!', token, {
+            path: '/auth',
             maxAge: 1000 * 60 * 60 * 24 * 30,
             httpOnly: true,
             secure: true,
             sameSite: 'lax',
-            path: '/auth',
             priority: 'high'
         })
     }

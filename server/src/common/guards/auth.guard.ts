@@ -5,7 +5,7 @@ import ERROR from '../constants/error.constant.js'
 import type { User } from '@type/user.js'
 
 @Injectable()
-export class AuthGuard extends PassportAuthGuard('jwt') {
+export class AuthGuard extends PassportAuthGuard() {
     override getRequest(context: ExecutionContext): Req {
         const ctx = GqlExecutionContext.create(context)
         return ctx.getContext().req
