@@ -13,7 +13,7 @@ export class LoginService {
         private readonly verificationService: VerificationService
     ) {}
     async login(args: Login, req: Req, res: Res) {
-        const { emailOrUsername, pass } = args
+        const { emailOrUsername, pass, identity } = args
         const user = await this.prismaService.user.findFirst({
             where: {
                 OR: [
@@ -24,7 +24,7 @@ export class LoginService {
         })
         if (user!.pass === null) throw { code: ERROR.OAUTH_ONLY_ACCOUNT }
         if ((!user || !(await this.securityService.verifyHash(pass, user.pass!)))) throw { code: ERROR.UNAUTHENTICATED }
-        this.verificationService.cookie(req, res, user.id)
+        this.verificationService.cookie(req, res, identity, user.id)
         return true
     }
 }

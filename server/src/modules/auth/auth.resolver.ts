@@ -5,6 +5,7 @@ import { VerifyService } from './services/verify.service.js'
 import { ResendService } from './services/resend.service.js'
 import { LoginService } from './services/login.service.js'
 import { Register } from './dto/register.dto.js'
+import { Settings } from './dto/settings.dto.js'
 import { Verify } from './dto/verify.dto.js'
 import { Login } from './dto/login.dto.js'
 import type { User } from '@type/user.d.ts'
@@ -16,7 +17,7 @@ export class AuthResolver {
         private readonly verifyService: VerifyService,
         private readonly resendService: ResendService,
         private readonly loginService: LoginService
-    ) {}
+    ) { }
     @Query(() => Boolean)
     halt() {
         return true
@@ -49,5 +50,12 @@ export class AuthResolver {
     ): Promise<boolean> {
         const { req, res } = context
         return this.loginService.login(args, req, res)
+    }
+    @Mutation(() => Boolean)
+    async settings(
+        @Args() args: Settings,
+        @Context() context: { res: Res, user: User }
+    ): Promise<boolean> {
+        return false
     }
 }

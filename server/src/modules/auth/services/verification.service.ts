@@ -35,7 +35,20 @@ export class VerificationService {
         const devicePixelRatio = identity.devicePixelRatio ?? ''
         const touchSupport = identity.touchSupport ?? ''
         const hardwareConcurrency = identity.hardwareConcurrency ?? ''
-        const fingerprint = nodeCrypto.createHash('sha256').update(ua + lang + encoding + secChUa + secChUaPlatform + platform + tz + screenRes + colorDepth + devicePixelRatio + touchSupport + hardwareConcurrency).digest('hex')
+        const fingerprint = nodeCrypto.createHash('sha256').update(
+            ua +
+            lang +
+            encoding +
+            secChUa +
+            secChUaPlatform +
+            platform +
+            tz +
+            screenRes +
+            colorDepth +
+            devicePixelRatio +
+            touchSupport +
+            hardwareConcurrency
+        ).digest('hex')
         await this.redisService.redis.HSET(`session:${token}`, {
             id,
             fingerprint
