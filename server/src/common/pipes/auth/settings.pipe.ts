@@ -16,8 +16,8 @@ export class SettingsPipe implements PipeTransform {
         if (nameError) errors['name'] = nameError
         if (usernameError) errors['username'] = usernameError
         if (emailError) errors['email'] = emailError
-        if (Object.keys(errors).length > 0) throw { code: ApolloServerErrorCode.BAD_USER_INPUT, errors }
         if (!show && newPass !== rePass) errors['rePass'] = 'Password do not match!'
+        if (Object.keys(errors).length > 0) throw { code: ApolloServerErrorCode.BAD_USER_INPUT, errors }
         return value
     }
 }

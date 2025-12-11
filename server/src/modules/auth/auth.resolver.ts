@@ -17,7 +17,7 @@ export class AuthResolver {
         private readonly verifyService: VerifyService,
         private readonly resendService: ResendService,
         private readonly loginService: LoginService
-    ) { }
+    ) {}
     @Query(() => Boolean)
     halt() {
         return true
@@ -54,7 +54,7 @@ export class AuthResolver {
     @Mutation(() => Boolean)
     async settings(
         @Args() args: Settings,
-        @Context() context: { res: Res, user: User }
+        @Context() context: { user: User }
     ): Promise<boolean> {
         return false
     }
