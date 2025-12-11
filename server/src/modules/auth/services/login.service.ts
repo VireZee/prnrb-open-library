@@ -12,7 +12,7 @@ export class LoginService {
         private readonly securityService: SecurityService,
         private readonly verificationService: VerificationService
     ) {}
-    async login(args: Login, req: Req, res: Res) {
+    async login(args: Login, req: Req, res: Res): Promise<boolean> {
         const { emailOrUsername, pass, identity } = args
         const user = await this.prismaService.user.findFirst({
             where: {
