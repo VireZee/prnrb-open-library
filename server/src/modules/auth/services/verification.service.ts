@@ -21,8 +21,9 @@ export class VerificationService {
         if (isForget) return await this.emailService.resetPassword(email, verificationCode, id)
         return await this.emailService.verifyEmail(email, verificationCode, id)
     }
-    async cookie(req: Req, res: Res, identity: Identity, id: string): Promise<void> {
-        const token = nodeCrypto.randomBytes(32).toString('base64url')
+    async generateToken(req: Req, res: Res, identity: Identity, id: string): Promise<string> {
+        const rt = nodeCrypto.randomBytes(32).toString('base64url')
+        const key = `session:${rt}`
         const ua = req.headers['user-agent'] ?? ''
         const lang = req.headers['accept-language'] ?? ''
         const encoding = req.headers['accept-encoding'] ?? ''
@@ -49,12 +50,15 @@ export class VerificationService {
             touchSupport +
             hardwareConcurrency
         ).digest('hex')
-        await this.redisService.redis.HSET(`session:${token}`, {
+        const at = nodeCrypto.randomBytes(32).toString('base64url')
+        await this.redisService.redis.HSET(key, {
             id,
-            fingerprint
+            fingerprint,
+            at
         })
-        await this.redisService.redis.EXPIRE(`session:${token}`, 60 * 60 * 24 * 30)
-        res.cookie('!', token, {
+        await this.redisService.redis.EXPIRE(key, 60 * 60 * 24 * 30)
+        await this.redisService.redis.HEXPIRE(key, 'at', 60 * 5)
+        res.cookie('!', rt, {
             path: '/auth',
             maxAge: 1000 * 60 * 60 * 24 * 30,
             httpOnly: true,
@@ -62,5 +66,6 @@ export class VerificationService {
             sameSite: 'lax',
             priority: 'high'
         })
+        return at
     }
 }
