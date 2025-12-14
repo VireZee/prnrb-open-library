@@ -23,7 +23,7 @@ export class VerificationService {
     }
     async generateToken(req: Req, res: Res, identity: Identity, id: string): Promise<string> {
         const rt = nodeCrypto.randomBytes(32).toString('base64url')
-        const key = `session:${rt}`
+        const refreshKey = `refresh:${rt}`
         const ua = req.headers['user-agent'] ?? ''
         const lang = req.headers['accept-language'] ?? ''
         const encoding = req.headers['accept-encoding'] ?? ''
@@ -50,14 +50,14 @@ export class VerificationService {
             touchSupport +
             hardwareConcurrency
         ).digest('hex')
-        const at = nodeCrypto.randomBytes(32).toString('base64url')
-        await this.redisService.redis.HSET(key, {
+        await this.redisService.redis.HSET(refreshKey, {
             id,
-            fingerprint,
-            at
+            fingerprint
         })
-        await this.redisService.redis.EXPIRE(key, 60 * 60 * 24 * 30)
-        await this.redisService.redis.HEXPIRE(key, 'at', 60 * 5)
+        await this.redisService.redis.EXPIRE(refreshKey, 60 * 60 * 24 * 30)
+        const at = nodeCrypto.randomBytes(32).toString('base64url')
+        const accessKey = `access:${rt}`
+        await this.redisService.redis.SET(accessKey, id, { expiration: { type: 'EX', value: 60 * 5 } })
         res.cookie('!', rt, {
             path: '/auth',
             maxAge: 1000 * 60 * 60 * 24 * 30,
