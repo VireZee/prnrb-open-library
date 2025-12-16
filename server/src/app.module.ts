@@ -16,7 +16,7 @@ import { GraphqlFilter } from '@common/filters/graphql.filter.js'
             path: '/gql',
             driver: ApolloDriver,
             autoSchemaFile: true,
-            context: ({ req, res }: { req: Req, res: Res }) => ({ req, res })
+            context: ({ req, res }: ReqRes) => ({ req, res })
         }),
         DatabaseModule,
         CacheModule,

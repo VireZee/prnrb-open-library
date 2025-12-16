@@ -15,8 +15,9 @@ export class RegisterService {
         private readonly miscService: MiscService,
         private readonly verificationService: VerificationService
     ) {}
-    async register(args: Register, req: Req, res: Res): Promise<string> {
+    async register(args: Register, ctx: { req: Req, res: Res }): Promise<string> {
         const { name, username, email, pass, identity } = args
+        const { req, res } = ctx
         const newUser = await this.prismaService.user.create({
             data: {
                 photo: Buffer.from(this.miscService.generateAvatar(name), 'base64'),
