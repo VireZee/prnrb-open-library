@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
+import { SecurityService } from '@shared/utils/services/security.service.js'
 import type { User } from '@type/user.d.ts'
 
 @Injectable()
 export class LogoutService {
-    constructor(private readonly redisService: RedisService) { }
+    constructor(
+        private readonly redisService: RedisService,
+        private readonly securityService: SecurityService
+    ) {}
     async logout(ctx: ReqRes & { user: User }): Promise<boolean> {
         const { req, res, user } = ctx
         let key: string[] = []
@@ -16,9 +20,12 @@ export class LogoutService {
             user: user.id
         }
         for (const source in sources) {
-
+            const value = sources[source]
+            if (!value) continue
+            key.push(this.securityService.sanitizeRedisKey(source, value))
         }
-        await this.redisService.redis.DEL(key)
+        if (key.length) await this.redisService.redis.DEL(key)
+        res.clearCookie('!')
         return true
     }
 }
