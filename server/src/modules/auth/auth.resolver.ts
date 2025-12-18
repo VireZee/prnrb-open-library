@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql'
+import { Resolver, Mutation, Args, Context } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@common/guards/auth.guard.js'
 import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
@@ -25,10 +25,6 @@ export class AuthResolver {
         private readonly settingService: SettingService,
         private readonly logoutService: LogoutService
     ) {}
-    @Query(() => Boolean)
-    halt() {
-        return true
-    }
     @Mutation(() => Boolean)
     async register(
         @Args(RegisterPipe) args: Register,
