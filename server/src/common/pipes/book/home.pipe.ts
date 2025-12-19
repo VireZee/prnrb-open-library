@@ -4,12 +4,12 @@ import REGEX from '@shared/constants/regex.constant.js'
 
 @Injectable()
 export class HomePipe implements PipeTransform {
-    transform(value: Search): { page: number, type: string, formattedSearch: string } {
+    transform(value: Search): Search & { type: string } {
         const isIsbn = REGEX.ISBN.test(value.search)
         return {
+            search: value.search.replace(REGEX.WHITESPACES, '+'),
             page: value.page,
-            type: isIsbn ? 'isbn' : 'title',
-            formattedSearch: value.search.replace(REGEX.WHITESPACES, '+')
+            type: isIsbn ? 'isbn' : 'title'
         }
     }
 }

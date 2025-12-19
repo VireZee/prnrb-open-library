@@ -11,7 +11,7 @@ export class HomeInterceptor implements NestInterceptor {
     constructor(
         private readonly redisService: RedisService,
         private readonly formatterService: FormatterService
-    ) { }
+    ) {}
     intercept(context: ExecutionContext, next: CallHandler) {
         const ctx = GqlExecutionContext.create(context)
         const args = ctx.getArgs()
@@ -24,14 +24,20 @@ export class HomeInterceptor implements NestInterceptor {
                     docs: this.formatterService.formatBooksMap((cache as { docs: Collection[] }).docs)
                 })
                 return next.handle().pipe(
-                    map(book => ({
-                        numFound: book.numFound,
-                        docs: book.docs.map(b => ({
-                            author_key: b.author_key ?? [],
-                            cover_edition_key: b.cover_edition_key ?? '',
-                            cover_i: b.cover_i ?? 0,
-                            title: b.title ?? 'Unknown Title',
-                            author_name: b.author_name ?? ['Unknown Author']
+                    map(books => ({
+                        numFound: books.numFound,
+                        docs: books.docs.map((book: {
+                            author_key: string[]
+                            cover_edition_key: string
+                            cover_i: number
+                            title: string
+                            author_name: string[]
+                        }) => ({
+                            author_key: book.author_key ?? [],
+                            cover_edition_key: book.cover_edition_key ?? '',
+                            cover_i: book.cover_i ?? 0,
+                            title: book.title ?? 'Unknown Title',
+                            author_name: book.author_name ?? ['Unknown Author']
                         }))
                     })),
                     tap(result => {
