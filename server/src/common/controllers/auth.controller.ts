@@ -10,7 +10,7 @@ export class AuthController {
         private readonly securityService: SecurityService
     ) {}
     @Post()
-    async auth(@Req() req: Req, @Res({ passthrough: true }) res: Res) {
+    async auth(@Req() req: Req, @Res({ passthrough: true }) res: Res): Promise<string | never> {
         const rt = req.cookies['!']
         if (!rt) throw { code: ERROR.UNAUTHENTICATED }
         const refreshKey = this.securityService.sanitizeRedisKey('refresh', rt)

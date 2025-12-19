@@ -1,6 +1,7 @@
 import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql'
 import { Home } from './dto/home.dto.js'
-import type { HomeService } from './services/home.service.js'
+import { HomeService } from './services/home.service.js'
+import { Search } from './dto/search.dto.js'
 
 @Resolver()
 export class BookResolver {
@@ -8,7 +9,9 @@ export class BookResolver {
         private readonly homeService: HomeService
     ) { }
     @Query(() => Home)
-    async home() {
-        return this.homeService.home()
+    async home(
+        @Args() args: Search
+    ) {
+        return this.homeService.home(args)
     }
 }

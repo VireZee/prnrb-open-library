@@ -6,7 +6,11 @@ import type { BaseUser } from '@type/user.d.ts'
 @Injectable()
 export class SettingsPipe implements PipeTransform {
     constructor(private readonly validationService: ValidationService) {}
-    async transform(value: BaseUser & { newPass: string, rePass: string, show: boolean }) {
+    async transform(value: BaseUser & { newPass: string, rePass: string, show: boolean }): Promise<BaseUser & {
+        newPass: string
+        rePass: string
+        show: boolean
+    }> {
         const { photo, name, username, email, newPass, rePass, show } = value
         const errors: Record<string, string> = {}
         const nameError = this.validationService.validateName(name)

@@ -1,13 +1,12 @@
 import { Injectable, type PipeTransform } from '@nestjs/common'
 import { ApolloServerErrorCode } from '@apollo/server/errors'
 import { ValidationService } from '@shared/utils/services/validation.service.js'
-import type { BaseUser } from '@type/user.js'
+import type { BaseUser } from '@type/user.d.ts'
 
 @Injectable()
 export class RegisterPipe implements PipeTransform {
     constructor(private readonly validationService: ValidationService) {}
-    async transform(value: Omit<BaseUser, 'photo'> & { pass: string, rePass: string, show: boolean }
-    ): Promise<Omit<BaseUser, 'photo'> & {
+    async transform(value: Omit<BaseUser, 'photo'> & { pass: string, rePass: string, show: boolean }): Promise<Omit<BaseUser, 'photo'> & {
         pass: string
         rePass: string
         show: boolean
