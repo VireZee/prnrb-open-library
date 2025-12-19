@@ -41,9 +41,7 @@ export class AuthResolver {
         return this.verifyService.verify(args, ctx.user)
     }
     @Mutation(() => Boolean)
-    async resend(
-        @Context() ctx: { user: User }
-    ): Promise<boolean> {
+    async resend(@Context() ctx: { user: User }): Promise<boolean> {
         return this.resendService.resend(ctx.user)
     }
     @Mutation(() => Boolean)
@@ -63,9 +61,7 @@ export class AuthResolver {
     }
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
-    async logout(
-        @Context() ctx: ReqRes & { user: User }
-    ): Promise<boolean> {
+    async logout(@Context() ctx: ReqRes & { user: User }): Promise<boolean> {
         return this.logoutService.logout(ctx)
     }
 }
