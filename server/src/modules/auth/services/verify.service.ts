@@ -26,7 +26,7 @@ export class VerifyService {
         await this.redisService.redis.json.SET(userKey, '$.verified', user.verified)
         await this.redisService.redis.DEL([verifyKey, resendKey])
     }
-    async verify(args: Verify, user: User): Promise<boolean> {
+    async verify(args: Verify, user: User): Promise<true> {
         const { code } = args
         const key = this.securityService.sanitizeRedisKey('verify', user.id)
         const verify = await this.redisService.redis.HGETALL(key)

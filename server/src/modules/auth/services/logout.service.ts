@@ -9,8 +9,8 @@ export class LogoutService {
         private readonly redisService: RedisService,
         private readonly securityService: SecurityService
     ) {}
-    async logout(ctx: ReqRes & { user: User }): Promise<boolean> {
-        const { req, res, user } = ctx
+    async logout(ctx: { req: Req, user: User }): Promise<true> {
+        const { req, user } = ctx
         let key: string[] = []
         const sources: Record<string, string | null | undefined> = {
             access: req.headers.authorization?.startsWith('Bearer ')
@@ -25,7 +25,6 @@ export class LogoutService {
             key.push(this.securityService.sanitizeRedisKey(source, value))
         }
         if (key.length) await this.redisService.redis.DEL(key)
-        res.clearCookie('!')
         return true
     }
 }

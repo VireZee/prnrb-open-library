@@ -16,7 +16,7 @@ import { Verify } from './dto/verify.dto.js'
 import { Login } from './dto/login.dto.js'
 import { Settings } from './dto/settings.dto.js'
 import type { RegisterResult, LoginResult } from '@type/auth/auth-result.d.ts'
-import type { User, UserSettings } from '@type/auth/user.d.ts'
+import type { User } from '@type/auth/user.d.ts'
 
 @Resolver()
 export class AuthResolver {
@@ -38,12 +38,12 @@ export class AuthResolver {
     async verify(
         @Args() args: Verify,
         @Context() ctx: { user: User }
-    ): Promise<boolean> {
+    ): Promise<true> {
         return this.verifyService.verify(args, ctx.user)
     }
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
-    async resend(@Context() ctx: { user: User }): Promise<boolean> {
+    async resend(@Context() ctx: { user: User }): Promise<true> {
         return this.resendService.resend(ctx.user)
     }
     @Mutation(() => String)
@@ -62,7 +62,7 @@ export class AuthResolver {
     }
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
-    async logout(@Context() ctx: ReqRes & { user: User }): Promise<boolean> {
+    async logout(@Context() ctx: { req: Req, user: User }): Promise<true> {
         return this.logoutService.logout(ctx)
     }
 }
