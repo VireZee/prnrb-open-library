@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import type { Search } from '../dto/search.dto.js'
 import got from 'got'
-import type Collection from '@type/collection.d.ts'
+import type Collection from '@type/book/collection.js'
 
 @Injectable()
 export class HomeService {

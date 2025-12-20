@@ -4,7 +4,7 @@ import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import type { Settings } from '../dto/settings.dto.js'
-import type { User, UserSettings } from '@type/user.js'
+import type { User, UserSettings } from '@type/auth/user.js'
 
 @Injectable()
 export class SettingService {

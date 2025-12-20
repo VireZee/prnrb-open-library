@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { EmailService } from '@infrastructure/email/email.service.js'
-import type Identity from '@type/identity.js'
+import type Identity from '@type/auth/identity.d.ts'
 
 @Injectable()
 export class VerificationService {

@@ -4,7 +4,7 @@ import { RedisService } from './redis.service.js'
 import { RetryService } from '@common/utils/workers/services/retry.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
-import type Collection from '@type/collection.d.ts'
+import type Collection from '@type/book/collection.js'
 
 @Injectable()
 export class CacheService {

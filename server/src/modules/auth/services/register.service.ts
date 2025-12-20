@@ -3,8 +3,8 @@ import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import { MiscService } from '@shared/utils/services/misc.service.js'
-import { VerificationService } from './verification.service.js'
 import type { Register } from '../dto/register.dto.js'
+import type RegisterResult from '@type/auth/register-result.d.ts'
 
 @Injectable()
 export class RegisterService {
@@ -12,12 +12,10 @@ export class RegisterService {
         private readonly prismaService: PrismaService,
         private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService,
-        private readonly miscService: MiscService,
-        private readonly verificationService: VerificationService
+        private readonly miscService: MiscService
     ) {}
-    async register(args: Register, ctx: { req: Req, res: Res }): Promise<string> {
+    async register(args: Register): Promise<RegisterResult> {
         const { name, username, email, pass, identity } = args
-        const { req, res } = ctx
         const newUser = await this.prismaService.user.create({
             data: {
                 photo: Buffer.from(this.miscService.generateAvatar(name), 'base64'),
@@ -27,7 +25,9 @@ export class RegisterService {
                 pass: await this.securityService.hash(pass)
             }
         })
-        await this.verificationService.generateCode('verify', newUser, false)
-        return this.verificationService.generateToken(req, res, identity, newUser.id)
+        return {
+            user: { id: newUser.id, email: newUser.email },
+            identity
+        }
     }
 }

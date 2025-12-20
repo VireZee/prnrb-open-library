@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { VerificationService } from './verification.service.js'
 import { RateLimiterService } from './rate-limiter.service.js'
-import type { User } from '@type/user.js'
+import type { User } from '@type/auth/user.js'
 
 @Injectable()
 export class ResendService {

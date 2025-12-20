@@ -1,5 +1,5 @@
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql'
-import { UseGuards } from '@nestjs/common'
+import { UseGuards, UseInterceptors } from '@nestjs/common'
 import { AuthGuard } from '@common/guards/auth.guard.js'
 import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
 import { SettingsPipe } from '@common/pipes/auth/settings.pipe.js'
@@ -13,7 +13,9 @@ import { Register } from './dto/register.dto.js'
 import { Settings } from './dto/settings.dto.js'
 import { Verify } from './dto/verify.dto.js'
 import { Login } from './dto/login.dto.js'
-import type { User } from '@type/user.d.ts'
+import type { User } from '@type/auth/user.js'
+import { RegisterInterceptor } from '@common/interceptors/register.interceptor.js'
+import type RegisterResult from '@type/auth/register-result.js'
 
 @Resolver()
 export class AuthResolver {
@@ -25,12 +27,10 @@ export class AuthResolver {
         private readonly settingService: SettingService,
         private readonly logoutService: LogoutService
     ) {}
+    @UseInterceptors(RegisterInterceptor)
     @Mutation(() => Boolean)
-    async register(
-        @Args(RegisterPipe) args: Register,
-        @Context() ctx: ReqRes
-    ): Promise<string> {
-        return this.registerService.register(args, ctx)
+    async register(@Args(RegisterPipe) args: Register): Promise<RegisterResult> {
+        return this.registerService.register(args)
     }
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
