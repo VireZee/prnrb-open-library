@@ -11,11 +11,11 @@ import { LoginService } from './services/login.service.js'
 import { SettingService } from './services/settings.service.js'
 import { LogoutService } from './services/logout.service.js'
 import { Register } from './dto/register.dto.js'
-import { Settings } from './dto/settings.dto.js'
 import { Verify } from './dto/verify.dto.js'
 import { Login } from './dto/login.dto.js'
+import { Settings } from './dto/settings.dto.js'
+import type { RegisterResult, LoginResult } from '@type/auth/auth-result.d.ts'
 import type { User } from '@type/auth/user.d.ts'
-import type { LoginResult, RegisterResult } from '@type/auth/auth-result.d.ts'
 
 @Resolver()
 export class AuthResolver {
