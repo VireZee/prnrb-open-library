@@ -1,11 +1,15 @@
 import { Injectable, type PipeTransform } from '@nestjs/common'
 import { ApolloServerErrorCode } from '@apollo/server/errors'
 import { ValidationService } from '@shared/utils/services/validation.service.js'
+import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import type { BaseUser } from '@type/auth/user.js'
 
 @Injectable()
 export class SettingsPipe implements PipeTransform {
-    constructor(private readonly validationService: ValidationService) {}
+    constructor(
+        private readonly validationService: ValidationService,
+        private readonly formatterService: FormatterService
+    ) {}
     async transform(value: BaseUser & { newPass: string, rePass: string, show: boolean }): Promise<BaseUser & {
         newPass: string
         rePass: string
@@ -22,6 +26,10 @@ export class SettingsPipe implements PipeTransform {
         if (emailError) errors['email'] = emailError
         if (!show && newPass !== rePass) errors['rePass'] = 'Password do not match!'
         if (Object.keys(errors).length > 0) throw { code: ApolloServerErrorCode.BAD_USER_INPUT, errors }
-        return value
+        return {
+            ...value,
+            name: this.formatterService.formatName(name),
+            username: this.formatterService.formatUsername(username)
+        }
     }
 }

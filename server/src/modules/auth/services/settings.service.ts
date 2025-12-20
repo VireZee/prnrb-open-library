@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
-import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import type { Settings } from '../dto/settings.dto.js'
 import type { User, UserSettings } from '@type/auth/user.js'
 
@@ -11,8 +10,7 @@ export class SettingService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly redisService: RedisService,
-        private readonly securityService: SecurityService,
-        private readonly formatterService: FormatterService,
+        private readonly securityService: SecurityService
     ) {}
     async settings(args: Settings, user: User): Promise<boolean> {
         const { photo, name, username, email, oldPass, newPass } = args
@@ -26,8 +24,8 @@ export class SettingService {
         const updateData: Partial<UserSettings> = {}
         const photoBuf = Buffer.from(photo, 'base64')
         if (photo && Buffer.from(authUser!.photo).equals(photoBuf)) updateData.photo = photo
-        if (name && name !== authUser!.name) updateData.name = this.formatterService.formatName(name)
-        if (username && username !== authUser!.username) updateData.username = this.formatterService.formatUsername(username)
+        if (name && name !== authUser!.name) updateData.name = name
+        if (username && username !== authUser!.username) updateData.username = username
         if (email && email !== authUser!.email) updateData.email = email
         if (newPass) updateData.pass = await this.securityService.hash(newPass)
         if (Object.keys(updateData).length > 0) {
