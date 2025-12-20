@@ -4,7 +4,7 @@ import { GqlExecutionContext } from '@nestjs/graphql'
 import { tap, type Observable } from 'rxjs'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
-import type { BaseUser } from '@type/auth/user.d.ts'
+import type { UserSettings } from '@type/auth/user.d.ts'
 
 @Injectable()
 export class SettingsInterceptor implements NestInterceptor {
@@ -12,7 +12,7 @@ export class SettingsInterceptor implements NestInterceptor {
         private readonly redisService: RedisService,
         private readonly securityService: SecurityService
     ) {}
-    intercept(context: ExecutionContext, next: CallHandler<BaseUser>): Observable<BaseUser> {
+    intercept(context: ExecutionContext, next: CallHandler<Partial<UserSettings>>): Observable<Partial<UserSettings>> {
         const ctx = GqlExecutionContext.create(context)
         const { user } = ctx.getContext()
         return next.handle().pipe(

@@ -4,6 +4,7 @@ import { AuthGuard } from '@common/guards/auth.guard.js'
 import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
 import { RegisterInterceptor } from '@common/interceptors/auth/register.interceptor.js'
 import { SettingsPipe } from '@common/pipes/auth/settings.pipe.js'
+import { SettingsInterceptor } from '@common/interceptors/auth/settings.interceptor.js'
 import { RegisterService } from './services/register.service.js'
 import { VerifyService } from './services/verify.service.js'
 import { ResendService } from './services/resend.service.js'
@@ -15,7 +16,7 @@ import { Verify } from './dto/verify.dto.js'
 import { Login } from './dto/login.dto.js'
 import { Settings } from './dto/settings.dto.js'
 import type { RegisterResult, LoginResult } from '@type/auth/auth-result.d.ts'
-import type { User } from '@type/auth/user.d.ts'
+import type { User, UserSettings } from '@type/auth/user.d.ts'
 
 @Resolver()
 export class AuthResolver {
@@ -50,12 +51,14 @@ export class AuthResolver {
         return this.loginService.login(args)
     }
     @UseGuards(AuthGuard)
+    @UseInterceptors(SettingsInterceptor)
     @Mutation(() => Boolean)
     async settings(
         @Args(SettingsPipe) args: Settings,
         @Context() ctx: { user: User }
-    ): Promise<boolean> {
-        return this.settingService.settings(args, ctx.user)
+    ): Promise<true> {
+        await this.settingService.settings(args, ctx.user)
+        return true
     }
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
