@@ -1,7 +1,9 @@
 import type Identity from '@type/auth/identity.d.ts'
-
-type RegisterResult = {
+export type RegisterResult = {
     user: { id: string, email: string }
     identity: Identity
 }
-export default RegisterResult
+export type LoginResult = {
+    id: string
+    identity: Identity
+}

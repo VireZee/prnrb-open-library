@@ -15,7 +15,7 @@ import { Settings } from './dto/settings.dto.js'
 import { Verify } from './dto/verify.dto.js'
 import { Login } from './dto/login.dto.js'
 import type { User } from '@type/auth/user.d.ts'
-import type RegisterResult from '@type/auth/register-result.d.ts'
+import type { LoginResult, RegisterResult } from '@type/auth/auth-result.d.ts'
 
 @Resolver()
 export class AuthResolver {
@@ -46,11 +46,8 @@ export class AuthResolver {
         return this.resendService.resend(ctx.user)
     }
     @Mutation(() => Boolean)
-    async login(
-        @Args() args: Login,
-        @Context() ctx: ReqRes
-    ): Promise<string> {
-        return this.loginService.login(args, ctx)
+    async login(@Args() args: Login): Promise<LoginResult> {
+        return this.loginService.login(args)
     }
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
