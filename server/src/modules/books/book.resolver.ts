@@ -4,7 +4,7 @@ import { HomeService } from './services/home.service.js'
 import { Search } from './dto/search.dto.js'
 import { HomePipe } from '@common/pipes/book/home.pipe.js'
 import { UseInterceptors } from '@nestjs/common'
-import { HomeInterceptor } from '@common/interceptors/home.interceptor.js'
+import { HomeInterceptor } from '@common/interceptors/book/home.interceptor.js'
 
 @Resolver()
 export class BookResolver {

@@ -3,8 +3,8 @@ import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { RateLimiterService } from './rate-limiter.service.js'
-import ERROR from '@common/constants/error.constant.js'
 import type { Verify } from '../dto/verify.dto.js'
+import ERROR from '@common/constants/error.constant.js'
 import type { User } from '@type/auth/user.js'
 
 @Injectable()
@@ -29,11 +29,11 @@ export class VerifyService {
     async verify(args: Verify, user: User): Promise<boolean> {
         const { code } = args
         const key = this.securityService.sanitizeRedisKey('verify', user.id)
-        const getVerify = await this.redisService.redis.HGETALL(key)
+        const verify = await this.redisService.redis.HGETALL(key)
         if (user.verified) throw { code: ERROR.ALREADY_VERIFIED }
-        if (!getVerify['code']) throw { code: ERROR.VERIFICATION_CODE_EXPIRED }
+        if (!verify['code']) throw { code: ERROR.VERIFICATION_CODE_EXPIRED }
         await this.rateLimiterService.checkBlock('verify', user.id, 'You have been temporarily blocked from verifying your code due to too many failed attempts! Try again in')
-        if (code !== getVerify['code']) {
+        if (code !== verify['code']) {
             await this.rateLimiterService.rateLimiter('verify', user.id, 60)
             throw { code: ERROR.INVALID_VERIFICATION_CODE }
         }
