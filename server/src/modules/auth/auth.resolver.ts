@@ -28,7 +28,7 @@ export class AuthResolver {
         private readonly logoutService: LogoutService
     ) {}
     @UseInterceptors(RegisterInterceptor)
-    @Mutation(() => Boolean)
+    @Mutation(() => String)
     async register(@Args(RegisterPipe) args: Register): Promise<RegisterResult> {
         return this.registerService.register(args)
     }
@@ -45,7 +45,7 @@ export class AuthResolver {
     async resend(@Context() ctx: { user: User }): Promise<boolean> {
         return this.resendService.resend(ctx.user)
     }
-    @Mutation(() => Boolean)
+    @Mutation(() => String)
     async login(@Args() args: Login): Promise<LoginResult> {
         return this.loginService.login(args)
     }
