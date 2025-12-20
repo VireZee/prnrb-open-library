@@ -5,7 +5,7 @@ import { SecurityService } from '@shared/utils/services/security.service.js'
 import { RateLimiterService } from './rate-limiter.service.js'
 import type { Verify } from '../dto/verify.dto.js'
 import ERROR from '@common/constants/error.constant.js'
-import type { User } from '@type/auth/user.js'
+import type { User } from '@type/auth/user.d.ts'
 
 @Injectable()
 export class VerifyService {

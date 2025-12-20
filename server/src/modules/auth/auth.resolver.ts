@@ -40,6 +40,7 @@ export class AuthResolver {
     ): Promise<boolean> {
         return this.verifyService.verify(args, ctx.user)
     }
+    @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
     async resend(@Context() ctx: { user: User }): Promise<boolean> {
         return this.resendService.resend(ctx.user)
