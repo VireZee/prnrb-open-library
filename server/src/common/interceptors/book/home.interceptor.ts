@@ -11,7 +11,7 @@ export class HomeInterceptor implements NestInterceptor {
     constructor(
         private readonly redisService: RedisService,
         private readonly formatterService: FormatterService
-    ) { }
+    ) {}
     intercept(context: ExecutionContext, next: CallHandler<{ numFound: number, docs: Collection[] }>): Observable<{ numFound: number, docs: Collection[] }> {
         const ctx = GqlExecutionContext.create(context)
         const args = ctx.getArgs()

@@ -9,9 +9,7 @@ export class LogoutInterceptor implements NestInterceptor {
         const ctx = GqlExecutionContext.create(context)
         const { res } = ctx.getContext()
         return next.handle().pipe(
-            tap(() => {
-                res.clearCookie('!')
-            })
+            tap(() => res.clearCookie('!'))
         )
     }
 }
