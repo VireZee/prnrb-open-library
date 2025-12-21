@@ -9,7 +9,7 @@ import { FetchService } from './services/fetch.service.js'
 import { Home } from './dto/home.dto.js'
 import { Fetch } from './dto/fetch.dto.js'
 import { Added } from './dto/added.dto.js'
-import type { Search } from './dto/search.dto.js'
+import { Search } from './dto/search.dto.js'
 import type { User } from '@type/auth/user.d.ts'
 
 @Resolver()
