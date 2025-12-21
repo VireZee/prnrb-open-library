@@ -1,10 +1,13 @@
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql'
 import { UseGuards, UseInterceptors } from '@nestjs/common'
 import { AuthGuard } from '@common/guards/auth.guard.js'
-import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
 import { RegisterInterceptor } from '@common/interceptors/auth/register.interceptor.js'
-import { SettingsPipe } from '@common/pipes/auth/settings.pipe.js'
+import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
+import { LoginInterceptor } from '@common/interceptors/auth/login.interceptor.js'
+import { LoginPipe } from '@common/pipes/auth/login.pipe.js'
 import { SettingsInterceptor } from '@common/interceptors/auth/settings.interceptor.js'
+import { SettingsPipe } from '@common/pipes/auth/settings.pipe.js'
+import { LogoutInterceptor } from '@common/interceptors/auth/logout.interceptor.js'
 import { RegisterService } from './services/register.service.js'
 import { VerifyService } from './services/verify.service.js'
 import { ResendService } from './services/resend.service.js'
@@ -46,8 +49,9 @@ export class AuthResolver {
     async resend(@Context() ctx: { user: User }): Promise<true> {
         return this.resendService.resend(ctx.user)
     }
+    @UseInterceptors(LoginInterceptor)
     @Mutation(() => String)
-    async login(@Args() args: Login): Promise<LoginResult> {
+    async login(@Args(LoginPipe) args: Login): Promise<LoginResult> {
         return this.loginService.login(args)
     }
     @UseGuards(AuthGuard)
@@ -61,6 +65,7 @@ export class AuthResolver {
         return true
     }
     @UseGuards(AuthGuard)
+    @UseInterceptors(LogoutInterceptor)
     @Mutation(() => Boolean)
     async logout(@Context() ctx: { req: Req, user: User }): Promise<true> {
         return this.logoutService.logout(ctx)

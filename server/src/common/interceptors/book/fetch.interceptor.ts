@@ -14,7 +14,7 @@ export class FetchInterceptor implements NestInterceptor {
         private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService
     ) {}
-    intercept(context: ExecutionContext, next: CallHandler) {
+    intercept(context: ExecutionContext, next: CallHandler<boolean>): Observable<{ id: string, added: boolean }> {
         const ctx = GqlExecutionContext.create(context)
         const { author_key, cover_edition_key, cover_i } = ctx.getArgs()
         const { user } = ctx.getContext()
@@ -22,11 +22,17 @@ export class FetchInterceptor implements NestInterceptor {
         return from(this.redisService.redis.json.GET(key)).pipe(
             switchMap(rawCache => {
                 const cache = rawCache as Collection[]
-                if (Array.isArray(cache)) return of(this.formatterService.formatBooksFind(cache, author_key, cover_edition_key, cover_i))
+                if (Array.isArray(cache)) {
+                    const bookCollection = this.formatterService.formatBooksFind(cache, author_key, cover_edition_key, cover_i)
+                    return of({
+                        id: `${[...author_key].sort().join(',')}|${cover_edition_key}|${cover_i}`,
+                        added: !!bookCollection,
+                    })
+                }
                 return next.handle().pipe(
-                    map(bookCollection => ({
-                        id: `${author_key.sort().join(',')}|${cover_edition_key}|${cover_i}`,
-                        added: bookCollection
+                    map(added => ({
+                        id: `${[...author_key].sort().join(',')}|${cover_edition_key}|${cover_i}`,
+                        added
                     }))
                 )
             })
