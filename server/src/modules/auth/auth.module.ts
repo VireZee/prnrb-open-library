@@ -2,6 +2,11 @@ import { Module } from '@nestjs/common'
 import { AuthController } from '@common/controllers/auth.controller.js'
 import { UtilModule } from '@shared/utils/util.module.js'
 import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
+import { LoginPipe } from '@common/pipes/auth/login.pipe.js'
+import { SettingsPipe } from '@common/pipes/auth/settings.pipe.js'
+import { RegisterInterceptor } from '@common/interceptors/auth/register.interceptor.js'
+import { LoginInterceptor } from '@common/interceptors/auth/login.interceptor.js'
+import { SettingsInterceptor } from '@common/interceptors/auth/settings.interceptor.js'
 import { AuthResolver } from './auth.resolver.js'
 import { VerificationService } from './services/verification.service.js'
 import { RateLimiterService } from './services/rate-limiter.service.js'
@@ -14,6 +19,21 @@ import { SettingService } from './services/settings.service.js'
 @Module({
     controllers: [AuthController],
     imports: [UtilModule],
-    providers: [RegisterPipe, AuthResolver, VerificationService, RateLimiterService, RegisterService, VerifyService, ResendService, LoginService, SettingService]
+    providers: [
+        RegisterPipe,
+        LoginPipe,
+        SettingsPipe,
+        RegisterInterceptor,
+        LoginInterceptor,
+        SettingsInterceptor,
+        AuthResolver,
+        VerificationService,
+        RateLimiterService,
+        RegisterService,
+        VerifyService,
+        ResendService,
+        LoginService,
+        SettingService
+    ]
 })
 export class AuthModule {}
