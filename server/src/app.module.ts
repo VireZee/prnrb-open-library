@@ -7,6 +7,7 @@ import { DatabaseModule } from '@infrastructure/database/database.module.js'
 import { CacheModule } from '@infrastructure/cache/cache.module.js'
 import { WorkerModule } from '@common/utils/workers/worker.module.js'
 import { AuthModule } from '@modules/auth/auth.module.js'
+import { BookModule } from '@modules/books/book.module.js'
 import { GraphqlFilter } from '@common/filters/graphql.filter.js'
 
 @Module({
@@ -21,7 +22,8 @@ import { GraphqlFilter } from '@common/filters/graphql.filter.js'
         DatabaseModule,
         CacheModule,
         WorkerModule,
-        AuthModule
+        AuthModule,
+        BookModule
     ],
     providers: [GraphqlFilter]
 })

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { AuthController } from '@common/controllers/auth.controller.js'
+import { PassportModule } from '@nestjs/passport'
 import { EmailModule } from '@infrastructure/email/email.module.js'
 import { UtilModule } from '@shared/utils/util.module.js'
 import { RegisterInterceptor } from '@common/interceptors/auth/register.interceptor.js'
@@ -21,7 +22,7 @@ import { LogoutService } from './services/logout.service.js'
 
 @Module({
     controllers: [AuthController],
-    imports: [EmailModule, UtilModule],
+    imports: [PassportModule, EmailModule, UtilModule],
     providers: [
         RegisterInterceptor,
         RegisterPipe,

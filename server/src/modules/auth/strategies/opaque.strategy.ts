@@ -7,7 +7,7 @@ import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 
 @Injectable()
-export class OpaqueStrategy extends PassportStrategy(Strategy) {
+export class OpaqueStrategy extends PassportStrategy(Strategy, 'opaque') {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly redisService: RedisService,

@@ -1,7 +1,7 @@
-import { ArgsType, Field, Int } from '@nestjs/graphql'
+import { ObjectType, Field, Int } from '@nestjs/graphql'
 import { Book } from './book.dto.js'
 
-@ArgsType()
+@ObjectType()
 export class Home {
     @Field(() => Int) numFound: number
     @Field(() => [Book]) docs: Book[]

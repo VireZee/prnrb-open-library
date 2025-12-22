@@ -2,7 +2,6 @@ import { UseGuards, UseInterceptors } from '@nestjs/common'
 import { Resolver, Query, Args, Context } from '@nestjs/graphql'
 import { AuthGuard } from '@common/guards/auth.guard.js'
 import { HomeInterceptor } from '@common/interceptors/book/home.interceptor.js'
-import { HomePipe } from '@common/pipes/book/home.pipe.js'
 import { FetchInterceptor } from '@common/interceptors/book/fetch.interceptor.js'
 import { HomeService } from './services/home.service.js'
 import { FetchService } from './services/fetch.service.js'
@@ -20,7 +19,7 @@ export class BookResolver {
     ) {}
     @UseInterceptors(HomeInterceptor)
     @Query(() => Home)
-    async home(@Args(HomePipe) args: Search & { type: 'isbn' | 'title' }) {
+    async home(@Args() args: Search) {
         return this.homeService.home(args)
     }
     @UseGuards(AuthGuard)
