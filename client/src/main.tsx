@@ -5,7 +5,21 @@ import { ApolloProvider } from '@apollo/client/react'
 import { Provider } from 'react-redux'
 import store from '@store/store'
 import App from './App'
+import { SetContextLink } from '@apollo/client/link/context'
 
+const httpLink = new HttpLink({
+    uri: `http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/gql`,
+    credentials: 'include'
+})
+const authLink = new SetContextLink((_, { headers }) => {
+    const accessToken = store.getState().app.accessToken
+    return {
+        headers: {
+            ...headers,
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        }
+    }
+})
 const client = new ApolloClient({
     link: new HttpLink({
         uri: `http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/gql`,
