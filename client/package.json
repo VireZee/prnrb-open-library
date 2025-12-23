@@ -1,6 +1,6 @@
 {
     "name": "prnrb-open-library",
-    "description": "A lightweight Open Library System powered by the PRNRB Stack",
+    "description": "An Open Library System powered by the PRNRB Stack",
     "author": "Zee",
     "private": true,
     "type": "module",
@@ -18,17 +18,13 @@
         "react-dom": "^19.2.3",
         "react-redux": "^9.2.0",
         "react-router-dom": "^7.11.0",
-        "serve": "^14.2.5",
         "tailwindcss": "^4.1.18"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.2",
         "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",
         "@vitejs/plugin-react-swc": "^4.2.2",
-        "globals": "^16.5.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.50.1",
         "vite": "^7.3.0"
     }
 }

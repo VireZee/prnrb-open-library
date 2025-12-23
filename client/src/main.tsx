@@ -1,24 +1,30 @@
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'
+import { HttpLink, ApolloLink, ApolloClient, InMemoryCache } from '@apollo/client'
+import { ErrorLink } from '@apollo/client/link/error'
 import { ApolloProvider } from '@apollo/client/react'
 import { Provider } from 'react-redux'
 import store from '@store/store'
 import App from './App'
-import { SetContextLink } from '@apollo/client/link/context'
 
 const httpLink = new HttpLink({
     uri: `http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/gql`,
     credentials: 'include'
 })
-const authLink = new SetContextLink((_, { headers }) => {
-    const accessToken = store.getState().app.accessToken
-    return {
-        headers: {
-            ...headers,
-            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
-        }
+const authLink = new ApolloLink((operation, forward) => {
+    const at = store.getState().app.accessToken
+    if (at) {
+        operation.setContext(({ headers = {} }) => ({
+            headers: {
+                ...headers,
+                Authorization: `Bearer ${at}`
+            }
+        }))
     }
+    return forward(operation)
+})
+const errorLink = new ErrorLink(({ error, operation, forward }) => {
+
 })
 const client = new ApolloClient({
     link: new HttpLink({
