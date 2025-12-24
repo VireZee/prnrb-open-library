@@ -1,9 +1,12 @@
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { HttpLink, ApolloLink, ApolloClient, InMemoryCache } from '@apollo/client'
+import { HttpLink, ApolloLink, ApolloClient, InMemoryCache, Observable } from '@apollo/client'
 import { ErrorLink } from '@apollo/client/link/error'
+import { CombinedGraphQLErrors } from '@apollo/client/errors'
+import axios from 'axios'
 import { ApolloProvider } from '@apollo/client/react'
 import { Provider } from 'react-redux'
+import { setAccessToken, setUser } from '@store/slices/core/app'
 import store from '@store/store'
 import App from './App'
 
@@ -24,7 +27,46 @@ const authLink = new ApolloLink((operation, forward) => {
     return forward(operation)
 })
 const errorLink = new ErrorLink(({ error, operation, forward }) => {
-
+    if (!(CombinedGraphQLErrors.is(error) && error.errors.find(e => e.extensions?.['code'] === 'UNAUTHENTICATED'))) return
+    return new Observable(observer => {
+        (async () => {
+            try {
+                const res = await axios.post(
+                    `http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/auth`,
+                    {
+                        identity: {
+                            platform: navigator.platform || '',
+                            tz: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+                            screenRes: `${window.screen.width}x${window.screen.height}`,
+                            colorDepth: String(window.screen.colorDepth),
+                            devicePixelRatio: String(window.devicePixelRatio || 1),
+                            touchSupport: ('ontouchstart' in window).toString(),
+                            hardwareConcurrency: String(navigator.hardwareConcurrency || '')
+                        }
+                    },
+                    { withCredentials: true }
+                )
+                const newAt = res.data
+                store.dispatch(setAccessToken(newAt))
+                const prev = operation.getContext()
+                operation.setContext({
+                    headers: {
+                        ...prev['headers'],
+                        Authorization: `Bearer ${newAt}`
+                    }
+                })
+                forward(operation).subscribe({
+                    next: v => observer.next(v),
+                    error: e => observer.error(e),
+                    complete: () => observer.complete()
+                })
+            } catch {
+                store.dispatch(setAccessToken(null))
+                store.dispatch(setUser(null))
+                return
+            }
+        })()
+    })
 })
 const client = new ApolloClient({
     link: new HttpLink({
