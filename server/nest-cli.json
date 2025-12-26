@@ -9,7 +9,7 @@
         "assets": [
             {
                 "include": "src/infrastructure/email/templates/**/*",
-                "watchAssets": true
+                "outDir": "dist/infrastructure/email/templates"
             }
         ]
     }

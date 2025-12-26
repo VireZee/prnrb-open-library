@@ -14,15 +14,11 @@ import { EmailService } from './email.service.js'
                     ignoreTLS: true,
                     secure: false
                 },
-                defaults: {
-                    from: `'No Reply' <${process.env['MAIL_FROM']}>`
-                },
+                defaults: { from: `'No Reply' <${process.env['MAIL_FROM']}>` },
                 template: {
                     dir: join(dirname, 'infrastructure', 'email', 'templates'),
                     adapter: new HandlebarsAdapter(),
-                    options: {
-                        strict: true
-                    }
+                    options: { strict: true }
                 }
             })
         })
