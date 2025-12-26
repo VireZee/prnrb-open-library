@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
-import type { User } from '@type/auth/user.js'
+import type { User } from '@type/auth/user.d.ts'
 
 @Injectable()
 export class LogoutService {
