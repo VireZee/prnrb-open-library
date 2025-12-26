@@ -1,6 +1,7 @@
-import { Resolver, Mutation, Args, Context } from '@nestjs/graphql'
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql'
 import { UseGuards, UseInterceptors } from '@nestjs/common'
 import { AuthGuard } from '@common/guards/auth.guard.js'
+import { Auth } from './dto/auth.dto.js'
 import { RegisterInterceptor } from '@common/interceptors/auth/register.interceptor.js'
 import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
 import { LoginInterceptor } from '@common/interceptors/auth/login.interceptor.js'
@@ -31,6 +32,11 @@ export class AuthResolver {
         private readonly settingService: SettingService,
         private readonly logoutService: LogoutService
     ) {}
+    @UseGuards(AuthGuard)
+    @Query(() => Auth)
+    auth(@Context('req') req: Req): Express.User | undefined {
+        return req.user
+    }
     @UseInterceptors(RegisterInterceptor)
     @Mutation(() => String)
     async register(@Args(RegisterPipe) args: Register): Promise<RegisterResult> {

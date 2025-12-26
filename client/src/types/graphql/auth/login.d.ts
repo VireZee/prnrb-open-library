@@ -1,4 +1,4 @@
 type LoginMutation = {
-    login: boolean
+    login: string
 }
 export default LoginMutation

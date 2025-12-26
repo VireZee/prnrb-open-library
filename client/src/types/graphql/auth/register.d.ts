@@ -1,4 +1,4 @@
 type RegisterMutation = {
-    register: boolean
+    register: string
 }
 export default RegisterMutation
