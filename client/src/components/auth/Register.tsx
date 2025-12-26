@@ -38,7 +38,15 @@ const Register: FC = () => {
                     email,
                     pass,
                     rePass: show ? null : rePass,
-                    show
+                    show,
+                    identity: {
+                        tz: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+                        screenRes: `${window.screen.width}x${window.screen.height}`,
+                        colorDepth: String(window.screen.colorDepth),
+                        devicePixelRatio: String(window.devicePixelRatio || 1),
+                        touchSupport: ('ontouchstart' in window).toString(),
+                        hardwareConcurrency: String(navigator.hardwareConcurrency || '')
+                    }
                 }
             })
             if (data!.register) location.href = '/verify'

@@ -2,7 +2,6 @@ import { InputType, Field } from '@nestjs/graphql'
 
 @InputType()
 export class Identity {
-    @Field(() => String) platform: string
     @Field(() => String) tz: string
     @Field(() => String) screenRes: string
     @Field(() => String) colorDepth: string

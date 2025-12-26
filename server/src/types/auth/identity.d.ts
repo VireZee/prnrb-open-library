@@ -1,5 +1,4 @@
 type Identity = {
-    platform: string
     tz: string
     screenRes: string
     colorDepth: string

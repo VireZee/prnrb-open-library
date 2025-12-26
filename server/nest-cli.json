@@ -8,8 +8,7 @@
         "typeCheck": true,
         "assets": [
             {
-                "include": "shared/email/templates",
-                "outDir": "dist/shared/email/templates"
+                "include": "infrastructure/email/templates"
             }
         ]
     }
