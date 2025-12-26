@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import type { Search } from '../dto/search.dto.js'
 import got from 'got'
 import REGEX from '@shared/constants/regex.constant.js'
-import type Collection from '@type/book/collection.js'
+import type Collection from '@type/book/collection.d.ts'
 
 @Injectable()
 export class HomeService {

@@ -3,11 +3,11 @@ import { BrowserRouter } from 'react-router-dom'
 import { HttpLink, ApolloLink, ApolloClient, InMemoryCache, Observable } from '@apollo/client'
 import { ErrorLink } from '@apollo/client/link/error'
 import { CombinedGraphQLErrors } from '@apollo/client/errors'
-import axios from 'axios'
 import { ApolloProvider } from '@apollo/client/react'
 import { Provider } from 'react-redux'
 import { setAccessToken, setUser } from '@store/slices/core/app'
 import store from '@store/store'
+import axios from 'axios'
 import App from './App'
 
 const httpLink = new HttpLink({
