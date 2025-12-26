@@ -8,8 +8,7 @@
         "typeCheck": true,
         "assets": [
             {
-                "include": "src/infrastructure/email/templates/**/*",
-                "outDir": "dist/infrastructure/email/templates"
+                "include": "infrastructure/email/templates/**/*"
             }
         ]
     }
