@@ -35,7 +35,6 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
                     `http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/auth`,
                     {
                         identity: {
-                            platform: navigator.platform || '',
                             tz: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
                             screenRes: `${window.screen.width}x${window.screen.height}`,
                             colorDepth: String(window.screen.colorDepth),

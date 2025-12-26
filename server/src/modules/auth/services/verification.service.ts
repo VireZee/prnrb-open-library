@@ -29,7 +29,6 @@ export class VerificationService {
         const encoding = req.headers['accept-encoding'] ?? ''
         const secChUa = req.headers['sec-ch-ua'] ?? ''
         const secChUaPlatform = req.headers['sec-ch-ua-platform'] ?? ''
-        const platform = identity.platform ?? ''
         const tz = identity.tz ?? ''
         const screenRes = identity.screenRes ?? ''
         const colorDepth = identity.colorDepth ?? ''
@@ -42,7 +41,6 @@ export class VerificationService {
             encoding +
             secChUa +
             secChUaPlatform +
-            platform +
             tz +
             screenRes +
             colorDepth +

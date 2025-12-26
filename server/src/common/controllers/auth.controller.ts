@@ -19,14 +19,13 @@ export class AuthController {
         const encoding = req.headers['accept-encoding'] ?? ''
         const secChUa = req.headers['sec-ch-ua'] ?? ''
         const secChUaPlatform = req.headers['sec-ch-ua-platform'] ?? ''
-        const { platform = '', tz = '', screenRes = '', colorDepth = '', devicePixelRatio = '', touchSupport = '', hardwareConcurrency = '' } = req.body.identity
+        const { tz = '', screenRes = '', colorDepth = '', devicePixelRatio = '', touchSupport = '', hardwareConcurrency = '' } = req.body.identity
         const fingerprint = nodeCrypto.createHash('sha256').update(
             ua +
             lang +
             encoding +
             secChUa +
             secChUaPlatform +
-            platform +
             tz +
             screenRes +
             colorDepth +
