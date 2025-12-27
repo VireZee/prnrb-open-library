@@ -34,6 +34,7 @@ const App: FC = () => {
     const appState = useSelector((state: RootState) => state.app)
     const { search, user, verified } = appState
     useEffect(() => {
+        console.log(data, data?.auth)
         if (!loading) {
             if (data) {
                 dispatch(setUser(data.auth))

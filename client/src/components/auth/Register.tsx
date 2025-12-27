@@ -49,7 +49,7 @@ const Register: FC = () => {
                     }
                 }
             })
-            if (data!.register) location.href = '/verify'
+            // if (data!.register) location.href = '/verify'
         } catch (e) {
             if (e instanceof CombinedGraphQLErrors) {
                 const { errors } = e.errors[0]!.extensions as { errors: Record<string, string> }
