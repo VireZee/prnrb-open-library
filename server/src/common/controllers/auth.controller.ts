@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Res } from '@nestjs/common'
+import { Controller, HttpException, HttpStatus, Post, Req, Res } from '@nestjs/common'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import ERROR from '../constants/error.constant.js'
@@ -12,7 +12,7 @@ export class AuthController {
     @Post()
     async auth(@Req() req: Req, @Res({ passthrough: true }) res: Res): Promise<string | never> {
         const rt = req.cookies['!']
-        if (!rt) throw { code: ERROR.UNAUTHENTICATED }
+        if (!rt) throw new HttpException(ERROR.UNAUTHENTICATED, HttpStatus.UNAUTHORIZED)
         const refreshKey = this.securityService.sanitizeRedisKey('refresh', rt)
         const ua = req.headers['user-agent'] ?? ''
         const lang = req.headers['accept-language'] ?? ''
@@ -34,7 +34,7 @@ export class AuthController {
             hardwareConcurrency
         ).digest('hex')
         const session = await this.redisService.redis.HGETALL(refreshKey)
-        if (fingerprint !== session['fingerprint']) throw { code: ERROR.UNAUTHENTICATED }
+        if (fingerprint !== session['fingerprint']) throw new HttpException(ERROR.UNAUTHENTICATED, HttpStatus.UNAUTHORIZED)
         const newRt = nodeCrypto.randomBytes(32).toString('base64url')
         const newRefreshKey = `refresh:${newRt}`
         await this.redisService.redis.HSET(newRefreshKey, {
@@ -42,7 +42,7 @@ export class AuthController {
             fingerprint
         })
         const ttl = await this.redisService.redis.TTL(refreshKey)
-        if (ttl <= 0) throw { code: ERROR.UNAUTHENTICATED }
+        if (ttl <= 0) throw new HttpException(ERROR.UNAUTHENTICATED, HttpStatus.UNAUTHORIZED)
         await this.redisService.redis.EXPIRE(newRefreshKey, ttl)
         await this.redisService.redis.DEL(refreshKey)
         const at = nodeCrypto.randomBytes(32).toString('base64url')

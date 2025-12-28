@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import type { FC, ChangeEvent, FormEvent } from 'react'
+import { CombinedGraphQLErrors } from '@apollo/client'
 import { useMutation } from '@apollo/client/react'
 import REGISTER from '@features/auth/mutations/Register'
 import type RegisterMutation from '@type/graphql/auth/register'
@@ -7,8 +8,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setAccessToken } from '@store/slices/core/app'
 import { change, setShow, setErrors } from '@store/slices/auth/register'
 import type { RootState } from '@store/store'
-import { CombinedGraphQLErrors } from '@apollo/client'
-import store from '@store/store'
 
 const Register: FC = () => {
     const [register, { loading }] = useMutation<RegisterMutation>(REGISTER)
@@ -53,7 +52,6 @@ const Register: FC = () => {
             })
             if (data!.register) {
                 dispatch(setAccessToken(data!.register))
-                console.log('[Reg] ', store.getState().app.accessToken)
                 // location.href = '/verify'x
             }
         } catch (e) {

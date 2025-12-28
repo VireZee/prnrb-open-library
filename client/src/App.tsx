@@ -29,13 +29,16 @@ const App: FC = () => {
     const showNavbar = ['/', '/collection', '/API'].some(path => pathname === path) || pathname.startsWith('/search/') || pathname.startsWith('/collection/')
     const showBackLink = ['/register', '/login', '/forget-password'].includes(pathname)
     const noHeader = ['/settings', '/verify'].includes(pathname)
-    const { loading, data, error } = useQuery<AuthQuery>(AUTH)
+    const { loading, data, error, refetch } = useQuery<AuthQuery>(AUTH)
     const dispatch = useDispatch()
     const appState = useSelector((state: RootState) => state.app)
     const { accessToken, search, user, verified } = appState
     useEffect(() => {
-        console.log('[App] ',accessToken)
         console.log(data, data?.auth)
+        if (accessToken && !loading && (!data || error)) {
+            refetch()
+            return
+        }
         if (!loading) {
             if (data) {
                 dispatch(setUser(data.auth))
@@ -43,7 +46,7 @@ const App: FC = () => {
             }
             else if (error) dispatch(setUser(null))
         }
-    }, [data, error])
+    }, [accessToken, loading, data, error])
     const searchHandler = (search: string) => dispatch(setSearch(search))
     if (loading) return <Load />
     return (

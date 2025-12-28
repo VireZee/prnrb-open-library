@@ -8,7 +8,7 @@ import { CacheModule } from '@infrastructure/cache/cache.module.js'
 import { WorkerModule } from '@common/utils/workers/worker.module.js'
 import { AuthModule } from '@modules/auth/auth.module.js'
 import { BookModule } from '@modules/books/book.module.js'
-import { GraphqlFilter } from '@common/filters/graphql.filter.js'
+import { GraphqlFilter, HttpExceptionFilter } from '@common/filters/exception.filter.js'
 
 @Module({
     imports: [
@@ -25,6 +25,6 @@ import { GraphqlFilter } from '@common/filters/graphql.filter.js'
         AuthModule,
         BookModule
     ],
-    providers: [GraphqlFilter]
+    providers: [GraphqlFilter, HttpExceptionFilter]
 })
 export class AppModule {}
