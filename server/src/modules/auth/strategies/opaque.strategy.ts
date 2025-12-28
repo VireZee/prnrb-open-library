@@ -5,6 +5,7 @@ import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
+import ERROR from '@common/constants/error.constant.js'
 
 @Injectable()
 export class OpaqueStrategy extends PassportStrategy(Strategy, 'opaque') {
@@ -21,7 +22,7 @@ export class OpaqueStrategy extends PassportStrategy(Strategy, 'opaque') {
         if (!bearer!.startsWith('Bearer ') || !token) return null
         const accessKey = this.securityService.sanitizeRedisKey('access', token)
         const session = await this.redisService.redis.GET(accessKey)
-        if (!session) return null
+        if (!session) throw { code: ERROR.TOKEN_EXPIRED }
         const userKey = this.securityService.sanitizeRedisKey('user', session)
         const cache = await this.redisService.redis.json.GET(userKey)
         if (cache) return cache

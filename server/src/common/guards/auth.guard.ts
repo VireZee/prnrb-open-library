@@ -12,7 +12,7 @@ export class AuthGuard extends PassportAuthGuard('opaque') {
     }
     override handleRequest<T = User>(err: Error, user: User): T | never {
         if (err) throw err
-        if (!user) throw { code: ERROR.TOKEN_EXPIRED }
+        if (!user) throw { code: ERROR.UNAUTHENTICATED }
         return user as T
     }
 }
