@@ -17,9 +17,12 @@ export class OpaqueStrategy extends PassportStrategy(Strategy, 'opaque') {
     ) { super() }
     async validate(req: Req): Promise<unknown> {
         const at = req.headers.authorization
-        if (!at) return null
-        const [bearer, token] = at.split(' ')
-        if (!bearer!.startsWith('Bearer ') || !token) return null
+        const rt = req.cookies['!']
+        if (!at && !rt) return null
+        else if (!at && rt) throw { code: ERROR.TOKEN_EXPIRED }
+        if (!at!.startsWith('Bearer ')) return null
+        const token = at!.slice(7)
+        if (!token) return null
         const accessKey = this.securityService.sanitizeRedisKey('access', token)
         const session = await this.redisService.redis.GET(accessKey)
         if (!session) throw { code: ERROR.TOKEN_EXPIRED }
