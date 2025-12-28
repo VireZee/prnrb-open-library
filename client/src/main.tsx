@@ -12,7 +12,7 @@ import App from './App'
 
 const httpLink = new HttpLink({
     uri: `http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/gql`,
-    credentials: 'include'
+    credentials: 'omit'
 })
 const authLink = new ApolloLink((operation, forward) => {
     const at = store.getState().app.accessToken

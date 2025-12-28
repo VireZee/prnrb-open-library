@@ -49,7 +49,7 @@ export class AuthController {
         const accessKey = `access:${at}`
         await this.redisService.redis.SET(accessKey, session['id']!, { expiration: { type: 'EX', value: 60 * 5 } })
         res.cookie('!', newRt, {
-            path: '/auth',
+            path: '/',
             maxAge: 1000 * ttl,
             httpOnly: true,
             secure: true,

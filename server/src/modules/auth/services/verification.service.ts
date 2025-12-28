@@ -57,7 +57,7 @@ export class VerificationService {
         const accessKey = `access:${rt}`
         await this.redisService.redis.SET(accessKey, id, { expiration: { type: 'EX', value: 60 * 5 } })
         res.cookie('!', rt, {
-            path: '/auth',
+            path: '/',
             maxAge: 1000 * 60 * 60 * 24 * 30,
             httpOnly: true,
             secure: true,
