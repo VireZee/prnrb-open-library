@@ -10,10 +10,19 @@ import store from '@store/store'
 import axios from 'axios'
 import App from './App'
 
-const httpLink = new HttpLink({
+const httpLinkOmit = new HttpLink({
     uri: `http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/gql`,
     credentials: 'omit'
 })
+const httpLinkInclude = new HttpLink({
+    uri: `http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/gql`,
+    credentials: 'include'
+})
+const splitLink = ApolloLink.split(
+    operation => operation.operationName === 'Register' || operation.operationName == 'Login',
+    httpLinkInclude,
+    httpLinkOmit
+)
 const authLink = new ApolloLink((operation, forward) => {
     const at = store.getState().app.accessToken
     if (at) {
@@ -68,7 +77,7 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
     })
 })
 const client = new ApolloClient({
-    link: ApolloLink.from([errorLink, authLink, httpLink]),
+    link: ApolloLink.from([errorLink, authLink, splitLink]),
     cache: new InMemoryCache()
 })
 createRoot(document.getElementById('root')!).render(

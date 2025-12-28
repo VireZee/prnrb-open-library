@@ -54,7 +54,7 @@ export class VerificationService {
         })
         await this.redisService.redis.EXPIRE(refreshKey, 60 * 60 * 24 * 30)
         const at = nodeCrypto.randomBytes(32).toString('base64url')
-        const accessKey = `access:${rt}`
+        const accessKey = `access:${at}`
         await this.redisService.redis.SET(accessKey, id, { expiration: { type: 'EX', value: 60 * 5 } })
         res.cookie('!', rt, {
             path: '/',

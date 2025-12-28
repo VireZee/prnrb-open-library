@@ -6,7 +6,6 @@ import type RegisterMutation from '@type/graphql/auth/register'
 import { useSelector, useDispatch } from 'react-redux'
 import { setAccessToken } from '@store/slices/core/app'
 import { change, setShow, setErrors } from '@store/slices/auth/register'
-import store from '@store/store'
 import type { RootState } from '@store/store'
 import { CombinedGraphQLErrors } from '@apollo/client'
 
@@ -51,8 +50,10 @@ const Register: FC = () => {
                     }
                 }
             })
-            console.log(data?.register)
-            // if (data!.register) location.href = '/verify'
+            if (data!.register) {
+                dispatch(setAccessToken(data!.register))
+                // location.href = '/verify'x
+            }
         } catch (e) {
             if (e instanceof CombinedGraphQLErrors) {
                 const { errors } = e.errors[0]!.extensions as { errors: Record<string, string> }
