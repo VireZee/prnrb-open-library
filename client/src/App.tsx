@@ -32,8 +32,9 @@ const App: FC = () => {
     const { loading, data, error } = useQuery<AuthQuery>(AUTH)
     const dispatch = useDispatch()
     const appState = useSelector((state: RootState) => state.app)
-    const { search, user, verified } = appState
+    const { accessToken, search, user, verified } = appState
     useEffect(() => {
+        console.log('[App] ',accessToken)
         console.log(data, data?.auth)
         if (!loading) {
             if (data) {

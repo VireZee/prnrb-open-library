@@ -36,8 +36,7 @@ const authLink = new ApolloLink((operation, forward) => {
     return forward(operation)
 })
 const errorLink = new ErrorLink(({ error, operation, forward }) => {
-    if (!(CombinedGraphQLErrors.is(error) && error.errors.find(e => e.extensions?.['code'] === 'UNAUTHENTICATED'))) return
-    return new Observable(observer => {
+    if (!(CombinedGraphQLErrors.is(error) && error.errors.find(e => e.extensions?.['code'] === 'TOKEN_EXPIRED'))) return new Observable(observer => {
         (async () => {
             try {
                 const res = await axios.post(
@@ -75,6 +74,7 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
             }
         })()
     })
+    return
 })
 const client = new ApolloClient({
     link: ApolloLink.from([errorLink, authLink, splitLink]),

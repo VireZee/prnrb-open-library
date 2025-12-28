@@ -8,6 +8,7 @@ import { setAccessToken } from '@store/slices/core/app'
 import { change, setShow, setErrors } from '@store/slices/auth/register'
 import type { RootState } from '@store/store'
 import { CombinedGraphQLErrors } from '@apollo/client'
+import store from '@store/store'
 
 const Register: FC = () => {
     const [register, { loading }] = useMutation<RegisterMutation>(REGISTER)
@@ -52,6 +53,7 @@ const Register: FC = () => {
             })
             if (data!.register) {
                 dispatch(setAccessToken(data!.register))
+                console.log('[Reg] ', store.getState().app.accessToken)
                 // location.href = '/verify'x
             }
         } catch (e) {

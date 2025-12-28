@@ -22,7 +22,7 @@ export class LoginService {
             }
         })
         if (user!.pass === null) throw { code: ERROR.OAUTH_ONLY_ACCOUNT }
-        if ((!user || !(await this.securityService.verifyHash(pass, user.pass!)))) throw { code: ERROR.UNAUTHENTICATED }
+        if ((!user || !(await this.securityService.verifyHash(pass, user.pass!)))) throw { code: ERROR.INVALID_CREDENTIALS }
         return {
             id: user.id,
             identity
