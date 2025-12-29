@@ -8,7 +8,7 @@ export class GraphqlFilter implements GqlExceptionFilter {
     catch(exception: { message?: string, code: string, errors?: Record<string, string> | string } | Error): never {
         if (typeof exception === 'object' && 'code' in exception) {
             const { message, code, errors } = exception
-            if (errors) throw new GraphQLError(code, { extensions: { errors, code } })
+            if (errors) throw new GraphQLError(code, { extensions: { code, errors } })
             throw new GraphQLError(message ?? code, { extensions: { code } })
         }
         throw new GraphQLError(exception.message)

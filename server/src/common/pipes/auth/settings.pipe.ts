@@ -10,16 +10,16 @@ export class SettingsPipe implements PipeTransform {
         private readonly validationService: ValidationService,
         private readonly formatterService: FormatterService
     ) {}
-    async transform(value: BaseUser & { newPass: string, rePass: string, show: boolean }): Promise<BaseUser & {
+    async transform(value: BaseUser & { id: string, newPass: string, rePass: string, show: boolean }): Promise<BaseUser & {
         newPass: string
         rePass: string
         show: boolean
     }> {
-        const { photo, name, username, email, newPass, rePass, show } = value
+        const { id, photo, name, username, email, newPass, rePass, show } = value
         const errors: Record<string, string> = {}
         const nameError = this.validationService.validateName(name)
-        const usernameError = await this.validationService.validateUsername(username)
-        const emailError = await this.validationService.validateEmail(email)
+        const usernameError = await this.validationService.validateUsername(username, id)
+        const emailError = await this.validationService.validateEmail(email, id)
         if (Buffer.byteLength(photo, 'base64') > 5592405) errors['photo'] = 'Image size must not exceed 8MB (MiB)'
         if (nameError) errors['name'] = nameError
         if (usernameError) errors['username'] = usernameError

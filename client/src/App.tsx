@@ -38,20 +38,16 @@ const App: FC = () => {
         if (accessToken) return
         (async () => {
             try {
-                const res = await axios.post(
-                    `http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/auth`,
-                    {
-                        identity: {
-                            tz: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
-                            screenRes: `${window.screen.width}x${window.screen.height}`,
-                            colorDepth: String(window.screen.colorDepth),
-                            devicePixelRatio: String(window.devicePixelRatio || 1),
-                            touchSupport: ('ontouchstart' in window).toString(),
-                            hardwareConcurrency: String(navigator.hardwareConcurrency || '')
-                        }
-                    },
-                    { withCredentials: true }
-                )
+                const res = await axios.post(`http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/auth`, {
+                    identity: {
+                        tz: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+                        screenRes: `${window.screen.width}x${window.screen.height}`,
+                        colorDepth: String(window.screen.colorDepth),
+                        devicePixelRatio: String(window.devicePixelRatio || 1),
+                        touchSupport: ('ontouchstart' in window).toString(),
+                        hardwareConcurrency: String(navigator.hardwareConcurrency || '')
+                    }
+                }, { withCredentials: true })
                 dispatch(setAccessToken(res.data))
             } catch {
                 dispatch(setAccessToken(null))

@@ -73,7 +73,7 @@ export class AuthResolver {
     @UseGuards(AuthGuard)
     @UseInterceptors(LogoutInterceptor)
     @Mutation(() => Boolean)
-    async logout(@Context('req') ctx: { req: Req & { user: User } }): Promise<true> {
+    async logout(@Context('req') ctx: Req & { user: User }): Promise<true> {
         return this.logoutService.logout(ctx)
     }
 }

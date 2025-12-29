@@ -39,20 +39,16 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
     if ((CombinedGraphQLErrors.is(error) && error.errors.find(e => e.extensions?.['code'] === 'TOKEN_EXPIRED'))) return new Observable(observer => {
         (async () => {
             try {
-                const res = await axios.post(
-                    `http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/auth`,
-                    {
-                        identity: {
-                            tz: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
-                            screenRes: `${window.screen.width}x${window.screen.height}`,
-                            colorDepth: String(window.screen.colorDepth),
-                            devicePixelRatio: String(window.devicePixelRatio || 1),
-                            touchSupport: ('ontouchstart' in window).toString(),
-                            hardwareConcurrency: String(navigator.hardwareConcurrency || '')
-                        }
-                    },
-                    { withCredentials: true }
-                )
+                const res = await axios.post(`http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/auth`, {
+                    identity: {
+                        tz: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+                        screenRes: `${window.screen.width}x${window.screen.height}`,
+                        colorDepth: String(window.screen.colorDepth),
+                        devicePixelRatio: String(window.devicePixelRatio || 1),
+                        touchSupport: ('ontouchstart' in window).toString(),
+                        hardwareConcurrency: String(navigator.hardwareConcurrency || '')
+                    }
+                }, { withCredentials: true })
                 const newAt = res.data
                 store.dispatch(setAccessToken(newAt))
                 const prev = operation.getContext()
