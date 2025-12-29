@@ -65,7 +65,7 @@ export class AuthResolver {
     @Mutation(() => Boolean)
     async settings(
         @Args(SettingsPipe) args: Settings,
-        @Context('req') ctx: { user: User }
+        @Context('req') ctx: Req & { user: User }
     ): Promise<true> {
         await this.settingService.settings(args, ctx.user)
         return true

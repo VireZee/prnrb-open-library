@@ -17,7 +17,8 @@ export class FetchInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler<boolean>): Observable<{ id: string, added: boolean }> {
         const ctx = GqlExecutionContext.create(context)
         const { author_key, cover_edition_key, cover_i } = ctx.getArgs()
-        const { user } = ctx.getContext()
+        const { req } = ctx.getContext()
+        const { user } = req
         const key = this.securityService.sanitizeRedisKey('collection', user.id)
         return from(this.redisService.redis.json.GET(key)).pipe(
             switchMap(rawCache => {

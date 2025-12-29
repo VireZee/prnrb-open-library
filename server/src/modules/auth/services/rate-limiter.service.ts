@@ -21,7 +21,7 @@ export class RateLimiterService {
             const blockDuration = 60 * minutes * (2 ** ((increment / 3) - 1))
             this.redisService.redis.HEXPIRE(key, 'block', blockDuration)
             const timeLeft = this.formatService.formatTimeLeft(blockDuration)
-            throw { code: ERROR.RATE_LIMITED, errors: `Too many attempts! Try again in ${timeLeft}!` }
+            throw { message: `Too many attempts! Try again in ${timeLeft}!`, code: ERROR.RATE_LIMITED }
         }
     }
     async checkBlock(keyName: string, id: string, message: string) {
@@ -30,7 +30,7 @@ export class RateLimiterService {
         if (block) {
             const blockTTL = await this.redisService.redis.HTTL(key, 'block')
             const timeLeft = this.formatService.formatTimeLeft(blockTTL![0]!)
-            throw { code: ERROR.RATE_LIMITED, errors: `${message} ${timeLeft}!` }
+            throw { message: `${message} ${timeLeft}!`, code: ERROR.RATE_LIMITED }
         }
     }
 }

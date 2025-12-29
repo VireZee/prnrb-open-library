@@ -27,7 +27,7 @@ export class BookResolver {
     @Query(() => Added)
     async fetch(
         @Args() args: Fetch,
-        @Context() ctx: { user: User }
+        @Context('req') ctx: Req & { user: User }
     ): Promise<Boolean> {
         return this.fetchService.fetch(args, ctx.user)
     }

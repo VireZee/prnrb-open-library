@@ -5,11 +5,11 @@ import { GraphQLError } from 'graphql'
 
 @Catch()
 export class GraphqlFilter implements GqlExceptionFilter {
-    catch(exception: { code: string, errors?: Record<string, string> | string } | Error): never {
+    catch(exception: { message?: string, code: string, errors?: Record<string, string> | string } | Error): never {
         if (typeof exception === 'object' && 'code' in exception) {
-            const { code, errors } = exception
-            if (errors) throw new GraphQLError(code, { extensions: { errors } })
-            throw new GraphQLError(code)
+            const { message, code, errors } = exception
+            if (errors) throw new GraphQLError(code, { extensions: { errors, code } })
+            throw new GraphQLError(message ?? code, { extensions: { code } })
         }
         throw new GraphQLError(exception.message)
     }

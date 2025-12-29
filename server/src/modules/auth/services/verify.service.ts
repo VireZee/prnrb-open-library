@@ -30,12 +30,12 @@ export class VerifyService {
         const { code } = args
         const key = this.securityService.sanitizeRedisKey('verify', user.id)
         const verify = await this.redisService.redis.HGETALL(key)
-        if (user.verified) throw { code: ERROR.ALREADY_VERIFIED }
-        if (!verify['code']) throw { code: ERROR.VERIFICATION_CODE_EXPIRED }
+        if (user.verified) throw { message: 'Already verified!', code: ERROR.ALREADY_VERIFIED }
+        if (!verify['code']) throw { message: 'Verification code expired!', code: ERROR.VERIFICATION_CODE_EXPIRED }
         await this.rateLimiterService.checkBlock('verify', user.id, 'You have been temporarily blocked from verifying your code due to too many failed attempts! Try again in')
         if (code !== verify['code']) {
             await this.rateLimiterService.rateLimiter('verify', user.id, 60)
-            throw { code: ERROR.INVALID_VERIFICATION_CODE }
+            throw { message: 'Invalid verification code!', code: ERROR.INVALID_VERIFICATION_CODE }
         }
         await this.setToVerified(user.id)
         return true
