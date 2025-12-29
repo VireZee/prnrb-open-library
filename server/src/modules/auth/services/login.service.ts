@@ -21,8 +21,9 @@ export class LoginService {
                 ]
             }
         })
-        if (user!.pass === null) throw { code: ERROR.OAUTH_ONLY_ACCOUNT }
-        if ((!user || !(await this.securityService.verifyHash(pass, user.pass!)))) throw { code: ERROR.INVALID_CREDENTIALS }
+        if (!user) throw { message: 'Invalid login credentials!', code: ERROR.INVALID_CREDENTIALS }
+        if (user.pass === null) throw { message: 'Account is registered using Google! Try logging in with Google!', code: ERROR.OAUTH_ONLY_ACCOUNT }
+        if (!(await this.securityService.verifyHash(pass, user.pass))) throw { message: 'Invalid login credentials!', code: ERROR.INVALID_CREDENTIALS }
         return {
             id: user.id,
             identity

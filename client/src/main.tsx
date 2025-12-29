@@ -19,10 +19,10 @@ const httpLinkInclude = new HttpLink({
     credentials: 'include'
 })
 const splitLink = ApolloLink.split(
-    operation => operation.operationName === 'Register' || operation.operationName == 'Login',
+    operation => ['Register', 'Login', 'Logout'].includes(operation.operationName!),
     httpLinkInclude,
     httpLinkOmit
-)
+  )
 const authLink = new ApolloLink((operation, forward) => {
     const at = store.getState().app.accessToken
     if (at) {
