@@ -15,24 +15,16 @@ export class AuthController {
         if (!rt) throw new HttpException(ERROR.UNAUTHENTICATED, HttpStatus.UNAUTHORIZED)
         const refreshKey = this.securityService.sanitizeRedisKey('refresh', rt)
         const ua = req.headers['user-agent'] ?? ''
-        const lang = req.headers['accept-language'] ?? ''
-        const encoding = req.headers['accept-encoding'] ?? ''
-        const secChUa = req.headers['sec-ch-ua'] ?? ''
-        const secChUaPlatform = req.headers['sec-ch-ua-platform'] ?? ''
         const { tz = '', screenRes = '', colorDepth = '', devicePixelRatio = '', touchSupport = '', hardwareConcurrency = '' } = req.body.identity
-        const fingerprint = nodeCrypto.createHash('sha256').update(
-            ua +
-            lang +
-            encoding +
-            secChUa +
-            secChUaPlatform +
-            tz +
-            screenRes +
-            colorDepth +
-            devicePixelRatio +
-            touchSupport +
+        const fingerprint = nodeCrypto.createHash('sha256').update(JSON.stringify({
+            ua,
+            tz,
+            screenRes,
+            colorDepth,
+            devicePixelRatio,
+            touchSupport,
             hardwareConcurrency
-        ).digest('hex')
+        })).digest('hex')
         const session = await this.redisService.redis.HGETALL(refreshKey)
         if (fingerprint !== session['fingerprint']) throw new HttpException(ERROR.UNAUTHENTICATED, HttpStatus.UNAUTHORIZED)
         const newRt = nodeCrypto.randomBytes(32).toString('base64url')

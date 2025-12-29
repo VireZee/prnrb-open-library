@@ -25,29 +25,21 @@ export class VerificationService {
         const rt = nodeCrypto.randomBytes(32).toString('base64url')
         const refreshKey = `refresh:${rt}`
         const ua = req.headers['user-agent'] ?? ''
-        const lang = req.headers['accept-language'] ?? ''
-        const encoding = req.headers['accept-encoding'] ?? ''
-        const secChUa = req.headers['sec-ch-ua'] ?? ''
-        const secChUaPlatform = req.headers['sec-ch-ua-platform'] ?? ''
         const tz = identity.tz ?? ''
         const screenRes = identity.screenRes ?? ''
         const colorDepth = identity.colorDepth ?? ''
         const devicePixelRatio = identity.devicePixelRatio ?? ''
         const touchSupport = identity.touchSupport ?? ''
         const hardwareConcurrency = identity.hardwareConcurrency ?? ''
-        const fingerprint = nodeCrypto.createHash('sha256').update(
-            ua +
-            lang +
-            encoding +
-            secChUa +
-            secChUaPlatform +
-            tz +
-            screenRes +
-            colorDepth +
-            devicePixelRatio +
-            touchSupport +
+        const fingerprint = nodeCrypto.createHash('sha256').update(JSON.stringify({
+            ua,
+            tz,
+            screenRes,
+            colorDepth,
+            devicePixelRatio,
+            touchSupport,
             hardwareConcurrency
-        ).digest('hex')
+        })).digest('hex')
         await this.redisService.redis.HSET(refreshKey, {
             id,
             fingerprint

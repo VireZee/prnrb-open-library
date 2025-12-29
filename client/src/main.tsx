@@ -25,7 +25,6 @@ const splitLink = ApolloLink.split(
 )
 const authLink = new ApolloLink((operation, forward) => {
     const at = store.getState().app.accessToken
-    console.log('[AuthLink] ', at)
     if (at) {
         operation.setContext(({ headers = {} }) => ({
             headers: {

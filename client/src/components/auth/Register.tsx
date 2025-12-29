@@ -52,7 +52,7 @@ const Register: FC = () => {
             })
             if (data!.register) {
                 dispatch(setAccessToken(data!.register))
-                // location.href = '/verify'
+                location.href = '/verify'
             }
         } catch (e) {
             if (e instanceof CombinedGraphQLErrors) {

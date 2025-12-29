@@ -4,8 +4,9 @@ import { useQuery } from '@apollo/client/react'
 import AUTH from '@features/auth/queries/Auth'
 import type AuthQuery from '@type/graphql/core/app'
 import { useDispatch, useSelector } from 'react-redux'
-import { setUser, setVerified, setSearch } from '@store/slices/core/app'
+import { setAccessToken, setUser, setVerified, setSearch } from '@store/slices/core/app'
 import type { RootState } from '@store/store'
+import axios from 'axios'
 import '@assets/styles/global.css'
 import Navbar from '@components/layouts/Navbar'
 import Home from '@components/views/Home'
@@ -34,16 +35,40 @@ const App: FC = () => {
     const { accessToken, search, user, verified } = appState
     const { loading, data, error } = useQuery<AuthQuery>(AUTH, { skip: !accessToken, fetchPolicy: 'no-cache' })
     useEffect(() => {
+        if (accessToken) return
+        (async () => {
+            try {
+                const res = await axios.post(
+                    `http://${import.meta.env['VITE_DOMAIN']}:${import.meta.env['VITE_SERVER_PORT']}/auth`,
+                    {
+                        identity: {
+                            tz: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+                            screenRes: `${window.screen.width}x${window.screen.height}`,
+                            colorDepth: String(window.screen.colorDepth),
+                            devicePixelRatio: String(window.devicePixelRatio || 1),
+                            touchSupport: ('ontouchstart' in window).toString(),
+                            hardwareConcurrency: String(navigator.hardwareConcurrency || '')
+                        }
+                    },
+                    { withCredentials: true }
+                )
+                dispatch(setAccessToken(res.data))
+            } catch {
+                dispatch(setAccessToken(null))
+                dispatch(setUser(null))
+            }
+        })()
+    }, [])
+    useEffect(() => {
         console.log('[App] ', accessToken)
-        console.log(data)
+        console.log(data, data?.auth)
         if (!loading) {
             if (data) {
                 dispatch(setUser(data.auth))
                 dispatch(setVerified(data.auth!.verified))
-            }
-            else if (error) dispatch(setUser(null))
+            } else if (error) dispatch(setUser(null))
         }
-    }, [accessToken, loading, data, error])
+    }, [loading, data, error])
     const searchHandler = (search: string) => dispatch(setSearch(search))
     if (loading) return <Load />
     return (
