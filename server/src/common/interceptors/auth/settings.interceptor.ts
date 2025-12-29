@@ -14,10 +14,8 @@ export class SettingsInterceptor implements NestInterceptor {
     ) {}
     intercept(context: ExecutionContext, next: CallHandler<Partial<UserSettings>>): Observable<Partial<UserSettings>> {
         const ctx = GqlExecutionContext.create(context)
-        const { args } = ctx.getArgs()
         const { req } = ctx.getContext()
         const { user } = req
-        args.id = user.id
         return next.handle().pipe(
             tap(async (update) => {
                 if (Object.keys(update).length === 0) return

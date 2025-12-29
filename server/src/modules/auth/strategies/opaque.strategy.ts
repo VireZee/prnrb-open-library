@@ -17,9 +17,6 @@ export class OpaqueStrategy extends PassportStrategy(Strategy, 'opaque') {
     ) { super() }
     async validate(req: Req): Promise<unknown> {
         const at = req.headers.authorization
-        const rt = req.cookies['!']
-        if (!at && !rt) return null
-        else if (!at && rt) throw { code: ERROR.TOKEN_EXPIRED }
         if (!at!.startsWith('Bearer ')) return null
         const token = at!.slice(7)
         if (!token) return null

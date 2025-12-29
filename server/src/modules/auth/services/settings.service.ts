@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { ApolloServerErrorCode } from '@apollo/server/errors'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
+import { ValidationService } from '@shared/utils/services/validation.service.js'
 import type { Settings } from '../dto/settings.dto.js'
 import type { User, UserSettings } from '@type/auth/user.d.ts'
 
@@ -9,12 +10,17 @@ import type { User, UserSettings } from '@type/auth/user.d.ts'
 export class SettingService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly securityService: SecurityService
+        private readonly securityService: SecurityService,
+        private readonly validationService: ValidationService
     ) {}
     async settings(args: Settings, user: User): Promise<Partial<UserSettings>> {
         const { photo, name, username, email, oldPass, newPass } = args
         const authUser = await this.prismaService.user.findUnique({ where: { id: user.id } })
         const errors: Record<string, string> = {}
+        const usernameError = await this.validationService.validateUsername(username, user.id)
+        const emailError = await this.validationService.validateEmail(email, user.id)
+        if (usernameError) errors['username'] = usernameError
+        if (emailError) errors['email'] = emailError
         if (authUser!.pass !== null) {
             if (oldPass && !newPass) errors['newPass'] = 'New password can\'t be empty!'
             if ((newPass && !oldPass) || (newPass && !(await this.securityService.verifyHash(oldPass!, authUser!.pass)))) errors['oldPass'] = 'Invalid current password'

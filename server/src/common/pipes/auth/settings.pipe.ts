@@ -10,20 +10,16 @@ export class SettingsPipe implements PipeTransform {
         private readonly validationService: ValidationService,
         private readonly formatterService: FormatterService
     ) {}
-    async transform(value: BaseUser & { id: string, newPass: string, rePass: string, show: boolean }): Promise<BaseUser & {
+    async transform(value: BaseUser & { newPass: string, rePass: string, show: boolean }): Promise<BaseUser & {
         newPass: string
         rePass: string
         show: boolean
     }> {
-        const { id, photo, name, username, email, newPass, rePass, show } = value
+        const { photo, name, username, newPass, rePass, show } = value
         const errors: Record<string, string> = {}
         const nameError = this.validationService.validateName(name)
-        const usernameError = await this.validationService.validateUsername(username, id)
-        const emailError = await this.validationService.validateEmail(email, id)
         if (Buffer.byteLength(photo, 'base64') > 5592405) errors['photo'] = 'Image size must not exceed 8MB (MiB)'
         if (nameError) errors['name'] = nameError
-        if (usernameError) errors['username'] = usernameError
-        if (emailError) errors['email'] = emailError
         if (!show && newPass !== rePass) errors['rePass'] = 'Password do not match!'
         if (Object.keys(errors).length > 0) throw { code: ApolloServerErrorCode.BAD_USER_INPUT, errors }
         return {
