@@ -1,5 +1,5 @@
 import { UseGuards, UseInterceptors } from '@nestjs/common'
-import { Resolver, Query, Args, Context } from '@nestjs/graphql'
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql'
 import { AuthGuard } from '@common/guards/auth.guard.js'
 import { HomeInterceptor } from '@common/interceptors/book/home.interceptor.js'
 import { FetchInterceptor } from '@common/interceptors/book/fetch.interceptor.js'
@@ -10,6 +10,7 @@ import { Fetch } from './dto/fetch.dto.js'
 import { Added } from './dto/added.dto.js'
 import { Search } from './dto/search.dto.js'
 import type { User } from '@type/auth/user.d.ts'
+import { Add } from './dto/add.dto.js'
 
 @Resolver()
 export class BookResolver {
@@ -27,8 +28,16 @@ export class BookResolver {
     @Query(() => Added)
     async fetch(
         @Args() args: Fetch,
-        @Context('req') ctx: Req & { user: User }
+        @Context('req') ctx: { user: User }
     ): Promise<Boolean> {
         return this.fetchService.fetch(args, ctx.user)
+    }
+    @UseGuards(AuthGuard)
+    @Mutation(() => Boolean)
+    async add(
+        @Args() args: Add,
+        @Context('req') ctx: { user: User }
+    ): Promise<Boolean> {
+        return this.addRemoveService.addRemove(args, ctx.user)
     }
 }

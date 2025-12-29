@@ -11,7 +11,7 @@ export class RateLimiterService {
         private readonly securityService: SecurityService,
         private readonly formatService: FormatterService
     ) {}
-    async rateLimiter(keyName: string, id: string, minutes: number, otherKeyName = keyName) {
+    async rateLimiter(keyName: string, id: string, minutes: number, otherKeyName = keyName): Promise<void> {
         const key = this.securityService.sanitizeRedisKey(keyName, id)
         const otherKey = this.securityService.sanitizeRedisKey(otherKeyName, id)
         const increment = await this.redisService.redis.HINCRBY(key, 'attempts', 1)
@@ -24,7 +24,7 @@ export class RateLimiterService {
             throw { message: `Too many attempts! Try again in ${timeLeft}!`, code: ERROR.RATE_LIMITED }
         }
     }
-    async checkBlock(keyName: string, id: string, message: string) {
+    async checkBlock(keyName: string, id: string, message: string): Promise<void> {
         const key = this.securityService.sanitizeRedisKey(keyName, id)
         const block = await this.redisService.redis.HEXISTS(key, 'block')
         if (block) {
