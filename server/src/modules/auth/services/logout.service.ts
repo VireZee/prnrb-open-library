@@ -9,8 +9,9 @@ export class LogoutService {
         private readonly redisService: RedisService,
         private readonly securityService: SecurityService
     ) {}
-    async logout(ctx: { req: Req, user: User }): Promise<true> {
-        const { req, user } = ctx
+    async logout(ctx: { req: Req & { user: User } }): Promise<true> {
+        const { req } = ctx
+        const { user } = req
         let key: string[] = []
         const sources: Record<string, string | null | undefined> = {
             access: req.headers.authorization?.startsWith('Bearer ')

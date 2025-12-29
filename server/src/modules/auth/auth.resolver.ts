@@ -34,7 +34,7 @@ export class AuthResolver {
     ) {}
     @UseGuards(AuthGuard)
     @Query(() => Auth)
-    auth(@Context('req') req: Req): Express.User | undefined {
+    auth(@Context('req') req: Req): User | undefined {
         return req.user
     }
     @UseInterceptors(RegisterInterceptor)
@@ -46,13 +46,13 @@ export class AuthResolver {
     @Mutation(() => Boolean)
     async verify(
         @Args() args: Verify,
-        @Context() ctx: { user: User }
+        @Context('req') ctx: { user: User }
     ): Promise<true> {
         return this.verifyService.verify(args, ctx.user)
     }
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
-    async resend(@Context() ctx: { user: User }): Promise<true> {
+    async resend(@Context('req') ctx: { user: User }): Promise<true> {
         return this.resendService.resend(ctx.user)
     }
     @UseInterceptors(LoginInterceptor)
@@ -65,7 +65,7 @@ export class AuthResolver {
     @Mutation(() => Boolean)
     async settings(
         @Args(SettingsPipe) args: Settings,
-        @Context() ctx: { user: User }
+        @Context('req') ctx: { user: User }
     ): Promise<true> {
         await this.settingService.settings(args, ctx.user)
         return true
@@ -73,7 +73,7 @@ export class AuthResolver {
     @UseGuards(AuthGuard)
     @UseInterceptors(LogoutInterceptor)
     @Mutation(() => Boolean)
-    async logout(@Context() ctx: { req: Req, user: User }): Promise<true> {
+    async logout(@Context('req') ctx: { req: Req & { user: User } }): Promise<true> {
         return this.logoutService.logout(ctx)
     }
 }

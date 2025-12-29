@@ -60,8 +60,6 @@ const App: FC = () => {
         })()
     }, [])
     useEffect(() => {
-        console.log('[App] ', accessToken)
-        console.log(data, data?.auth)
         if (!loading) {
             if (data) {
                 dispatch(setUser(data.auth))
