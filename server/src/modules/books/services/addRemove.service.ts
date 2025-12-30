@@ -10,7 +10,7 @@ export class AddRemoveService {
         private readonly prismaService: PrismaService,
         private readonly redisService: RedisService
     ) {}
-    private async publish(action: string, user_id: string, author_key: string[], cover_edition_key: string, cover_i: number): Promise<void> {
+    private async publish(action: 'ADD' | 'REMOVE', user_id: string, author_key: string[], cover_edition_key: string, cover_i: number): Promise<void> {
         await this.redisService.pub.PUBLISH('collection:update', JSON.stringify({
             action,
             user_id,
@@ -29,20 +29,30 @@ export class AddRemoveService {
                 cover_i
             }
         })
-        if (existing) await this.prismaService.collection.delete({ where: { id: existing.id } })
-        else {
-            await this.prismaService.collection.create({
-                data: {
-                    user_id: user.id,
-                    author_key,
-                    cover_edition_key,
-                    cover_i,
-                    title,
-                    author_name
-                }
-            })
-        }
-        this.publish('ADD')
+        if (!existing) await this.prismaService.collection.create({
+            data: {
+                user_id: user.id,
+                author_key,
+                cover_edition_key,
+                cover_i,
+                title,
+                author_name
+            }
+        })
+        await this.publish('ADD', user.id, author_key, cover_edition_key, cover_i)
+        // if (existing) await this.prismaService.collection.delete({ where: { id: existing.id } })
+        // else {
+        //     await this.prismaService.collection.create({
+        //         data: {
+        //             user_id: user.id,
+        //             author_key,
+        //             cover_edition_key,
+        //             cover_i,
+        //             title,
+        //             author_name
+        //         }
+        //     })
+        // }
         return true
     }
 }
