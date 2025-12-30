@@ -46,7 +46,7 @@ export class BookResolver {
     // @UseGuards(AuthGuard)
     // @Mutation(() => Boolean)
     // async remove(
-    //     @Args(AddRemovePipe) args: Add,
+    //     @Args(AddRemovePipe) args: Add, TES
     //     @Context('req') ctx: { user: User }
     // ): Promise<true> {
     //     return this.addRemoveService.remove(args, ctx.user)
