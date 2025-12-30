@@ -43,12 +43,12 @@ export class BookResolver {
     ): Promise<true> {
         return this.addRemoveService.add(args, ctx.user)
     }
-    // @UseGuards(AuthGuard)
-    // @Mutation(() => Boolean)
-    // async remove(
-    //     @Args(AddRemovePipe) args: Add,
-    //     @Context('req') ctx: { user: User }
-    // ): Promise<true> {
-    //     return this.addRemoveService.remove(args, ctx.user)
-    // }
+    @UseGuards(AuthGuard)
+    @Mutation(() => Boolean)
+    async remove(
+        @Args(AddRemovePipe) args: Fetch,
+        @Context('req') ctx: { user: User }
+    ): Promise<true> {
+        return this.addRemoveService.remove(args, ctx.user)
+    }
 }
