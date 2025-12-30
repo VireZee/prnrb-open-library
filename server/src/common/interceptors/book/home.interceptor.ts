@@ -4,7 +4,7 @@ import { GqlExecutionContext } from '@nestjs/graphql'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { from, of, switchMap, tap, map, Observable } from 'rxjs'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
-import type Collection from '@type/book/collection.js'
+import type Collection from '@type/book/collection.d.ts'
 
 @Injectable()
 export class HomeInterceptor implements NestInterceptor {
@@ -26,13 +26,7 @@ export class HomeInterceptor implements NestInterceptor {
                 return next.handle().pipe(
                     map(books => ({
                         numFound: books.numFound,
-                        docs: books.docs.map((book: {
-                            author_key: string[]
-                            cover_edition_key: string
-                            cover_i: number
-                            title: string
-                            author_name: string[]
-                        }) => ({
+                        docs: books.docs.map((book: Collection) => ({
                             author_key: book.author_key ?? [],
                             cover_edition_key: book.cover_edition_key ?? '',
                             cover_i: book.cover_i ?? 0,
