@@ -50,5 +50,5 @@ export class BookResolver {
     //     @Context('req') ctx: { user: User }
     // ): Promise<true> {
     //     return this.addRemoveService.remove(args, ctx.user)
-    // } tes github
+    // }
 }
