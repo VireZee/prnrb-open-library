@@ -7,6 +7,7 @@ import { AddRemovePipe } from '@common/pipes/book/addRemove.pipe.js'
 import { HomeService } from './services/home.service.js'
 import { FetchService } from './services/fetch.service.js'
 import { AddRemoveService } from './services/addRemove.service.js'
+import { CollectionService } from './services/collection.service.js'
 import { Home } from './dto/home.dto.js'
 import { Fetch } from './dto/fetch.dto.js'
 import { Added } from './dto/added.dto.js'
@@ -20,11 +21,12 @@ export class BookResolver {
     constructor(
         private readonly homeService: HomeService,
         private readonly fetchService: FetchService,
-        private readonly addRemoveService: AddRemoveService
+        private readonly addRemoveService: AddRemoveService,
+        private readonly collectionService: CollectionService
     ) {}
     @UseInterceptors(HomeInterceptor)
     @Query(() => Home)
-    async home(@Args() args: Search) {
+    async home(@Args() args: Search): Promise<Home> {
         return this.homeService.home(args)
     }
     @UseGuards(AuthGuard)
@@ -57,8 +59,7 @@ export class BookResolver {
     async collection(
         @Args() args: Search,
         @Context('req') ctx: { user: User }
-    ): Promise<true> {
-        // return this.addRemoveService.remove(args, ctx.user)
-        return true
+    ): Promise<Collection> {
+        return this.collectionService.collection(args, ctx.user)
     }
 }
