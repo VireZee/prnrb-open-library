@@ -12,6 +12,7 @@ import { Fetch } from './dto/fetch.dto.js'
 import { Added } from './dto/added.dto.js'
 import { Search } from './dto/search.dto.js'
 import { Add } from './dto/add.dto.js'
+import { Collection } from './dto/collection.dto.js'
 import type { User } from '@type/auth/user.d.ts'
 
 @Resolver()
@@ -50,5 +51,14 @@ export class BookResolver {
         @Context('req') ctx: { user: User }
     ): Promise<true> {
         return this.addRemoveService.remove(args, ctx.user)
+    }
+    @UseGuards(AuthGuard)
+    @Mutation(() => Collection)
+    async collection(
+        @Args() args: Search,
+        @Context('req') ctx: { user: User }
+    ): Promise<true> {
+        // return this.addRemoveService.remove(args, ctx.user)
+        return true
     }
 }
