@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
-import { RedisService } from '@infrastructure/cache/services/redis.service.js'
+import { PublisherService } from '@infrastructure/cache/services/publisher.service.js'
 import type { Add } from '../dto/add.dto.js'
 import type { Fetch } from '../dto/fetch.dto.js'
 import type { User } from '@type/auth/user.d.ts'
@@ -10,7 +10,7 @@ import type Collection from '@type/book/collection.d.ts'
 export class AddRemoveService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly redisService: RedisService
+        private readonly publisherService: PublisherService,
     ) {}
     private async exist(user_id: string, author_key: string[], cover_edition_key: string, cover_i: number): Promise<Collection & { id: string, user_id: string | null, created: Date } | null> {
         return await this.prismaService.collection.findFirst({
@@ -21,15 +21,6 @@ export class AddRemoveService {
                 cover_i
             }
         })
-    }
-    private async publish(action: 'ADD' | 'REMOVE', user_id: string, author_key: string[], cover_edition_key: string, cover_i: number): Promise<void> {
-        await this.redisService.pub.PUBLISH('collection:update', JSON.stringify({
-            action,
-            user_id,
-            author_key,
-            cover_edition_key,
-            cover_i
-        }))
     }
     async add(args: Add, user: User): Promise<true> {
         const { author_key, cover_edition_key, cover_i, title, author_name } = args
@@ -45,7 +36,7 @@ export class AddRemoveService {
                     author_name
                 }
             })
-            await this.publish('ADD', user.id, author_key, cover_edition_key, cover_i)
+            await this.publisherService.publish('collection:update', user.id)
         }
         return true
     }
@@ -54,7 +45,7 @@ export class AddRemoveService {
         const exist = await this.exist(user.id, author_key, cover_edition_key, cover_i)
         if (exist) {
             await this.prismaService.collection.delete({ where: { id: exist.id } })
-            await this.publish('REMOVE', user.id, author_key, cover_edition_key, cover_i)
+            await this.publisherService.publish('collection:update', user.id)
         }
         return true
     }
