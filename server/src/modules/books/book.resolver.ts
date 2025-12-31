@@ -3,6 +3,7 @@ import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql'
 import { AuthGuard } from '@common/guards/auth.guard.js'
 import { HomeInterceptor } from '@common/interceptors/book/home.interceptor.js'
 import { FetchInterceptor } from '@common/interceptors/book/fetch.interceptor.js'
+import { CollectionInterceptor } from '@common/interceptors/book/collection.interceptor.js'
 import { AddRemovePipe } from '@common/pipes/book/addRemove.pipe.js'
 import { HomeService } from './services/home.service.js'
 import { FetchService } from './services/fetch.service.js'
@@ -39,6 +40,7 @@ export class BookResolver {
         return this.fetchService.fetch(args, ctx.user)
     }
     @UseGuards(AuthGuard)
+    @UseInterceptors(CollectionInterceptor)
     @Query(() => Collection)
     async collection(
         @Args() args: Search,

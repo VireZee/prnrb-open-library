@@ -17,7 +17,8 @@ export class CollectionInterceptor implements NestInterceptor {
         const ctx = GqlExecutionContext.create(context)
         const args = ctx.getArgs()
         const { search, page } = args
-        const { user } = ctx.getContext()
+        const { req } = ctx.getContext()
+        const { user } = req
         const baseKey = this.securityService.sanitizeRedisKey('collection', user.id)
         const key = search?.trim()
             ? `${baseKey}|${search}|${page}`
