@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import type { NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common'
 import { GqlExecutionContext } from '@nestjs/graphql'
-import { from, of, switchMap, tap, map, Observable } from 'rxjs'
+import { from, of, switchMap, tap, map, type Observable } from 'rxjs'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
-import type Collection from '@type/book/collection.d.ts'
+import type { Home } from '@modules/books/dto/home.dto.js'
+import type Collection from '@type/book/collection.js'
 
 @Injectable()
 export class HomeInterceptor implements NestInterceptor {
@@ -12,7 +13,7 @@ export class HomeInterceptor implements NestInterceptor {
         private readonly redisService: RedisService,
         private readonly formatterService: FormatterService
     ) {}
-    intercept(context: ExecutionContext, next: CallHandler<{ numFound: number, docs: Collection[] }>): Observable<{ numFound: number, docs: Collection[] }> {
+    intercept(context: ExecutionContext, next: CallHandler<Home>): Observable<Home> {
         const ctx = GqlExecutionContext.create(context)
         const args = ctx.getArgs()
         const { search, page } = args

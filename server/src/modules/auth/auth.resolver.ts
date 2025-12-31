@@ -1,5 +1,5 @@
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql'
 import { UseGuards, UseInterceptors } from '@nestjs/common'
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql'
 import { AuthGuard } from '@common/guards/auth.guard.js'
 import { RegisterInterceptor } from '@common/interceptors/auth/register.interceptor.js'
 import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'

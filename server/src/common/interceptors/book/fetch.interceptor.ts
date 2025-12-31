@@ -5,6 +5,7 @@ import { from, of, switchMap, map, type Observable } from 'rxjs'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
+import type { Added } from '@modules/books/dto/added.dto.js'
 import type Collection from '@type/book/collection.d.ts'
 
 @Injectable()
@@ -14,7 +15,7 @@ export class FetchInterceptor implements NestInterceptor {
         private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService
     ) {}
-    intercept(context: ExecutionContext, next: CallHandler<boolean>): Observable<{ id: string, added: boolean }> {
+    intercept(context: ExecutionContext, next: CallHandler<boolean>): Observable<Added> {
         const ctx = GqlExecutionContext.create(context)
         const { author_key, cover_edition_key, cover_i } = ctx.getArgs()
         const { req } = ctx.getContext()
