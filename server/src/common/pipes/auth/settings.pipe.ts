@@ -10,11 +10,7 @@ export class SettingsPipe implements PipeTransform {
         private readonly validationService: ValidationService,
         private readonly formatterService: FormatterService
     ) {}
-    async transform(value: BaseUser & { newPass: string, rePass: string, show: boolean }): Promise<BaseUser & {
-        newPass: string
-        rePass: string
-        show: boolean
-    }> {
+    transform(value: BaseUser & { newPass: string, rePass: string, show: boolean }): BaseUser & { newPass: string, rePass: string, show: boolean } {
         const { photo, name, username, newPass, rePass, show } = value
         const errors: Record<string, string> = {}
         const nameError = this.validationService.validateName(name)

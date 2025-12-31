@@ -8,17 +8,20 @@ import { LoginPipe } from '@common/pipes/auth/login.pipe.js'
 import { SettingsInterceptor } from '@common/interceptors/auth/settings.interceptor.js'
 import { SettingsPipe } from '@common/pipes/auth/settings.pipe.js'
 import { LogoutInterceptor } from '@common/interceptors/auth/logout.interceptor.js'
+import { ForgetPipe } from '@common/pipes/auth/forget.pipe.js'
 import { RegisterService } from './services/register.service.js'
 import { VerifyService } from './services/verify.service.js'
 import { ResendService } from './services/resend.service.js'
 import { LoginService } from './services/login.service.js'
 import { SettingService } from './services/settings.service.js'
 import { LogoutService } from './services/logout.service.js'
+import { ForgetService } from './services/forget.service.js'
 import { Auth } from './dto/auth.dto.js'
 import { Register } from './dto/register.dto.js'
 import { Verify } from './dto/verify.dto.js'
 import { Login } from './dto/login.dto.js'
 import { Settings } from './dto/settings.dto.js'
+import { Forget } from './dto/forget.dto.js'
 import type { RegisterResult, LoginResult } from '@type/auth/auth-result.d.ts'
 import type { User } from '@type/auth/user.d.ts'
 
@@ -30,7 +33,8 @@ export class AuthResolver {
         private readonly resendService: ResendService,
         private readonly loginService: LoginService,
         private readonly settingService: SettingService,
-        private readonly logoutService: LogoutService
+        private readonly logoutService: LogoutService,
+        private readonly forgetService: ForgetService
     ) {}
     @UseGuards(AuthGuard)
     @Query(() => Auth)
@@ -75,5 +79,9 @@ export class AuthResolver {
     @Mutation(() => Boolean)
     async logout(@Context('req') ctx: Req & { user: User }): Promise<true> {
         return this.logoutService.logout(ctx)
+    }
+    @Mutation(() => String)
+    async forget(@Args(ForgetPipe) args: Forget): Promise<string> {
+        return this.forgetService.forget(args)
     }
 }
