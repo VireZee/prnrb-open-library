@@ -10,6 +10,8 @@ import { LoginPipe } from '@common/pipes/auth/login.pipe.js'
 import { SettingsInterceptor } from '@common/interceptors/auth/settings.interceptor.js'
 import { SettingsPipe } from '@common/pipes/auth/settings.pipe.js'
 import { LogoutInterceptor } from '@common/interceptors/auth/logout.interceptor.js'
+import { ForgetPipe } from '@common/pipes/auth/forget.pipe.js'
+import { ResetPipe } from '@common/pipes/auth/reset.pipe.js'
 import { AuthResolver } from './auth.resolver.js'
 import { VerificationService } from './services/verification.service.js'
 import { RateLimiterService } from './services/rate-limiter.service.js'
@@ -19,6 +21,10 @@ import { ResendService } from './services/resend.service.js'
 import { LoginService } from './services/login.service.js'
 import { SettingService } from './services/settings.service.js'
 import { LogoutService } from './services/logout.service.js'
+import { ForgetService } from './services/forget.service.js'
+import { ValidateService } from './services/validate.service.js'
+import { ResetService } from './services/reset.service.js'
+// import { TerminateService } from './services/terminate.service.js'
 
 @Module({
     controllers: [AuthController],
@@ -32,6 +38,8 @@ import { LogoutService } from './services/logout.service.js'
         SettingsInterceptor,
         SettingsPipe,
         LogoutInterceptor,
+        ForgetPipe,
+        ResetPipe,
         AuthResolver,
         VerificationService,
         RateLimiterService,
@@ -40,7 +48,11 @@ import { LogoutService } from './services/logout.service.js'
         ResendService,
         LoginService,
         SettingService,
-        LogoutService
+        LogoutService,
+        ForgetService,
+        ValidateService,
+        ResetService,
+        // TerminateService
     ]
 })
 export class AuthModule {}
