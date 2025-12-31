@@ -11,7 +11,7 @@ export class ForgetService {
         private readonly verificationService: VerificationService,
         private readonly rateLimiterService: RateLimiterService
     ) {}
-    async forget(args: Forget) {
+    async forget(args: Forget): Promise<string> {
         const { email } = args
         const user = await this.prismaService.user.findUnique({ where: { email } })
         if (user) {
