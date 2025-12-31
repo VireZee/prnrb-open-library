@@ -15,7 +15,7 @@ export class VerifyService {
         private readonly securityService: SecurityService,
         private readonly rateLimiterService: RateLimiterService,
     ) {}
-    private async setToVerified(id: string): Promise<void> {
+    async setToVerified(id: string): Promise<void> {
         const userKey = this.securityService.sanitizeRedisKey('user', id)
         const verifyKey = this.securityService.sanitizeRedisKey('verify', id)
         const resendKey = this.securityService.sanitizeRedisKey('resend', id)

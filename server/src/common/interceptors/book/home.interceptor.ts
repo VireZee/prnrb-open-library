@@ -5,7 +5,7 @@ import { from, of, switchMap, tap, map, type Observable } from 'rxjs'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import type { Home } from '@modules/books/dto/home.dto.js'
-import type Collection from '@type/book/collection.js'
+import type Collection from '@type/book/collection.d.ts'
 
 @Injectable()
 export class HomeInterceptor implements NestInterceptor {

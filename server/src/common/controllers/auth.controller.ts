@@ -10,7 +10,10 @@ export class AuthController {
         private readonly securityService: SecurityService
     ) {}
     @Post()
-    async auth(@Req() req: Req, @Res({ passthrough: true }) res: Res): Promise<string | never> {
+    async _(
+        @Req() req: Req,
+        @Res({ passthrough: true }) res: Res
+    ): Promise<string | never> {
         const rt = req.cookies['!']
         const at = nodeCrypto.randomBytes(32).toString('base64url')
         if (!rt) throw new HttpException(ERROR.UNAUTHENTICATED, HttpStatus.UNAUTHORIZED)
