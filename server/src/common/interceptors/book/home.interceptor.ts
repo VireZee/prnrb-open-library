@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import type { NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common'
 import { GqlExecutionContext } from '@nestjs/graphql'
-import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { from, of, switchMap, tap, map, Observable } from 'rxjs'
+import { RedisService } from '@infrastructure/cache/services/redis.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import type Collection from '@type/book/collection.d.ts'
 

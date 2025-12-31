@@ -7,6 +7,7 @@ import { BookResolver } from './book.resolver.js'
 import { HomeService } from './services/home.service.js'
 import { FetchService } from './services/fetch.service.js'
 import { AddRemoveService } from './services/addRemove.service.js'
+import { CollectionService } from './services/collection.service.js'
 
 @Module({
     imports: [UtilModule],
@@ -17,7 +18,8 @@ import { AddRemoveService } from './services/addRemove.service.js'
         BookResolver,
         HomeService,
         FetchService,
-        AddRemoveService
+        AddRemoveService,
+        CollectionService
     ]
 })
 export class BookModule {}
