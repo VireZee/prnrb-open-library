@@ -13,16 +13,16 @@ export class CacheService {
         private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService
     ) {}
-    // async createCollection(keyName: string, user: { id: string }): Promise<Collection[]> {
-    //     const key = this.securityService.sanitizeRedisKey(keyName, user.id)
-    //     const cache = await this.redisService.redis.json.GET(key)
-    //     if (cache) return cache as Collection[]
-    //     const collection = await this.prismaService.collection.findMany({ where: { user_id: user.id } })
-    //     const books = this.formatterService.formatBooksMap(collection)
-    //     await this.redisService.redis.json.SET(key, '$', books)
-    //     await this.redisService.redis.EXPIRE(key, 86400)
-    //     return books
-    // }
+    async createCollection(keyName: string, user: { id: string }): Promise<Collection[]> {
+        const key = this.securityService.sanitizeRedisKey(keyName, user.id)
+        const cache = await this.redisService.redis.json.GET(key)
+        if (cache) return cache as Collection[]
+        const collection = await this.prismaService.collection.findMany({ where: { user_id: user.id } })
+        const books = this.formatterService.formatBooksMap(collection)
+        await this.redisService.redis.json.SET(key, '$', books)
+        await this.redisService.redis.EXPIRE(key, 86400)
+        return books
+    }
     async scanAndDelete(key: string): Promise<void> {
         let cursor = '0'
         do {
