@@ -3,7 +3,9 @@ import { useParams } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/client/react'
 import { HOME, FETCH } from '@features/book/queries/Home'
 import ADD from '@features/book/mutations/Add'
+import REMOVE from '@features/book/mutations/Remove'
 import type { HomeQuery, FetchQuery, AddMutation } from '@type/graphql/views/home'
+import type { RemoveMutation } from '@type/graphql/views/collection'
 import { useSelector, useDispatch } from 'react-redux'
 import { setOnline, setLoad, setBooks, setTotalPages, setStatus } from '@store/slices/views/home'
 import type { RootState } from '@store/store'
@@ -19,6 +21,7 @@ const Home: FC<HomeProps> = ({ isUser, search }) => {
     const { refetch: homeRefetch } = useQuery<HomeQuery>(HOME, { skip: true })
     const { refetch: fetchRefetch } = useQuery<FetchQuery>(FETCH, { skip: true })
     const [add] = useMutation<AddMutation>(ADD)
+    const [remove] = useMutation<RemoveMutation>(REMOVE)
     const dispatch = useDispatch()
     const homeState = useSelector((state: RootState) => state.home)
     const { online, load, books, totalPages, status } = homeState
@@ -73,11 +76,14 @@ const Home: FC<HomeProps> = ({ isUser, search }) => {
         }
     }
     const getValidKey = (author_key: string[], cover_edition_key: string, cover_i: number): string => `${[...author_key].sort().join(',')}|${cover_edition_key}|${cover_i}`
-    const addToCollection = async (author_key: string[], cover_edition_key: string, cover_i: number, title: string, author_name: string[]) => {
+    const toggleCollection = async (author_key: string[], cover_edition_key: string, cover_i: number, title: string, author_name: string[]) => {
         if (!isUser) location.href = '/login'
         else if (isUser) {
+            const key = getValidKey(author_key, cover_edition_key, cover_i)
+            const isCollected = status[key]
             try {
-                const { data } = await add({
+                if (isCollected) await remove({ variables: { author_key, cover_edition_key, cover_i } })
+                else await add({
                     variables: {
                         author_key,
                         cover_edition_key,
@@ -86,7 +92,7 @@ const Home: FC<HomeProps> = ({ isUser, search }) => {
                         author_name
                     }
                 })
-                if (data!.add) fetchStatus(author_key, cover_edition_key, cover_i)
+                fetchStatus(author_key, cover_edition_key, cover_i)
             } catch (err) {
                 if (err instanceof Error) alert(err.message)
                 else alert('An unexpected error occurred.')
@@ -161,7 +167,7 @@ const Home: FC<HomeProps> = ({ isUser, search }) => {
                                                         <input
                                                             type="checkbox"
                                                             checked={(book.author_key && book.cover_edition_key && book.cover_i) ? status[getValidKey(book.author_key, book.cover_edition_key, book.cover_i)] || false : false}
-                                                            onChange={() => { if (book.author_key && book.cover_edition_key && book.cover_i) addToCollection(book.author_key, book.cover_edition_key, book.cover_i, book.title, book.author_name) }}
+                                                            onChange={() => { if (book.author_key && book.cover_edition_key && book.cover_i) toggleCollection(book.author_key, book.cover_edition_key, book.cover_i, book.title, book.author_name) }}
                                                             disabled={!(book.author_key && book.cover_edition_key && book.cover_i)}
                                                         />
                                                         <span>Add to Collection</span>

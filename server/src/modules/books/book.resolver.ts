@@ -39,6 +39,14 @@ export class BookResolver {
         return this.fetchService.fetch(args, ctx.user)
     }
     @UseGuards(AuthGuard)
+    @Query(() => Collection)
+    async collection(
+        @Args() args: Search,
+        @Context('req') ctx: { user: User }
+    ): Promise<Collection> {
+        return this.collectionService.collection(args, ctx.user)
+    }
+    @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
     async add(
         @Args(AddRemovePipe) args: Add,
@@ -53,13 +61,5 @@ export class BookResolver {
         @Context('req') ctx: { user: User }
     ): Promise<true> {
         return this.addRemoveService.remove(args, ctx.user)
-    }
-    @UseGuards(AuthGuard)
-    @Mutation(() => Collection)
-    async collection(
-        @Args() args: Search,
-        @Context('req') ctx: { user: User }
-    ): Promise<Collection> {
-        return this.collectionService.collection(args, ctx.user)
     }
 }

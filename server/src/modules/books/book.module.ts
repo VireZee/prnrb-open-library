@@ -6,8 +6,8 @@ import { AddRemovePipe } from '@common/pipes/book/addRemove.pipe.js'
 import { BookResolver } from './book.resolver.js'
 import { HomeService } from './services/home.service.js'
 import { FetchService } from './services/fetch.service.js'
-import { AddRemoveService } from './services/addRemove.service.js'
 import { CollectionService } from './services/collection.service.js'
+import { AddRemoveService } from './services/addRemove.service.js'
 
 @Module({
     imports: [UtilModule],
@@ -18,8 +18,8 @@ import { CollectionService } from './services/collection.service.js'
         BookResolver,
         HomeService,
         FetchService,
-        AddRemoveService,
-        CollectionService
+        CollectionService,
+        AddRemoveService
     ]
 })
 export class BookModule {}
