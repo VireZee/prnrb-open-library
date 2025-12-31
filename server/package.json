@@ -5,11 +5,10 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "nest build",
-        "start": "nest start",
-        "start:dev": "nest start --watch -b swc",
-        "start:debug": "nest start --debug --watch",
-        "start:prod": "bun dist/main"
+        "build": "nest build -b swc",
+        "start": "bun dist/main.js",
+        "start:dev": "bun --watch src/main.ts",
+        "start:debug": "nest start --debug --watch"
     },
     "dependencies": {
         "@as-integrations/express5": "^1.1.2",
