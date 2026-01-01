@@ -27,41 +27,31 @@ export class BookResolver {
     ) {}
     @UseInterceptors(HomeInterceptor)
     @Query(() => Home)
-    async home(@Args() args: Search): Promise<Home> {
-        return this.homeService.home(args)
-    }
+    async home(@Args() args: Search): Promise<Home> { return this.homeService.home(args) }
     @UseGuards(AuthGuard)
     @UseInterceptors(FetchInterceptor)
     @Query(() => Added)
     async fetch(
         @Args() args: Fetch,
         @Context('req') ctx: { user: User }
-    ): Promise<Boolean> {
-        return this.fetchService.fetch(args, ctx.user)
-    }
+    ): Promise<boolean> { return this.fetchService.fetch(args, ctx.user) }
     @UseGuards(AuthGuard)
     @UseInterceptors(CollectionInterceptor)
     @Query(() => Collection)
     async collection(
         @Args() args: Search,
         @Context('req') ctx: { user: User }
-    ): Promise<Collection> {
-        return this.collectionService.collection(args, ctx.user)
-    }
+    ): Promise<Collection> { return this.collectionService.collection(args, ctx.user) }
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
     async add(
         @Args(AddRemovePipe) args: Add,
         @Context('req') ctx: { user: User }
-    ): Promise<true> {
-        return this.addRemoveService.add(args, ctx.user)
-    }
+    ): Promise<true> { return this.addRemoveService.add(args, ctx.user) }
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
     async remove(
         @Args(AddRemovePipe) args: Fetch,
         @Context('req') ctx: { user: User }
-    ): Promise<true> {
-        return this.addRemoveService.remove(args, ctx.user)
-    }
+    ): Promise<true> { return this.addRemoveService.remove(args, ctx.user) }
 }

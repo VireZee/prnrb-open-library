@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import type { User } from '@type/auth/user.js'
-import type Collection from '@type/book/collection.js'
+import type { User } from '@type/auth/user.d.ts'
+import type Collection from '@type/book/collection.d.ts'
 
 @Injectable()
 export class FormatterService {

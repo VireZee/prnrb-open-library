@@ -10,7 +10,7 @@ import type Collection from '@type/book/collection.d.ts'
 export class AddRemoveService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly publisherService: PublisherService,
+        private readonly publisherService: PublisherService
     ) {}
     private async exist(user_id: string, author_key: string[], cover_edition_key: string, cover_i: number): Promise<Collection & { id: string, user_id: string | null, created: Date } | null> {
         return await this.prismaService.collection.findFirst({

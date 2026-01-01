@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import type { Search } from '../dto/search.dto.js'
-import type { User } from '@type/auth/user.d.ts'
 import type { Collection } from '../dto/collection.dto.js'
+import type { User } from '@type/auth/user.d.ts'
 
 @Injectable()
 export class CollectionService {
