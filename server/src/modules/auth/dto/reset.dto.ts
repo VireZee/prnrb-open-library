@@ -6,5 +6,5 @@ export class Reset {
     @Field(() => String) token: string
     @Field(() => String) pass: string
     @Field(() => String, { nullable: true }) rePass?: string
-    @Field(() => String) show: boolean
+    @Field(() => Boolean) show: boolean
 }

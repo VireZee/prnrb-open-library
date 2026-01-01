@@ -12,7 +12,6 @@ export class ForgetService {
         private readonly rateLimiterService: RateLimiterService
     ) {}
     async forget(args: Forget): Promise<string> {
-        console.log(args)
         const { email } = args
         const user = await this.prismaService.user.findUnique({ where: { email } })
         if (user) {
@@ -22,4 +21,4 @@ export class ForgetService {
         }
         return 'A verification code has been sent to your email address, provided it is registered in our system.'
     }
-}
+}  

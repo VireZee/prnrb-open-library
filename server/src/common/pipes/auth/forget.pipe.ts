@@ -5,10 +5,10 @@ import REGEX from '@shared/constants/regex.constant.js'
 
 @Injectable()
 export class ForgetPipe implements PipeTransform {
-    transform(value: Forget): string {
+    transform(value: Forget): Forget {
         const { email } = value
         if (!email) throw { message: 'Email can\'t be empty!', code: ApolloServerErrorCode.BAD_USER_INPUT }
         if (!REGEX.EMAIL_REGEX.test(email)) throw { message: 'Email must be valid!', code: ApolloServerErrorCode.BAD_USER_INPUT }
-        return email
+        return value
     }
 }
