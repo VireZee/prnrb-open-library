@@ -22,8 +22,8 @@ export class BookResolver {
     constructor(
         private readonly homeService: HomeService,
         private readonly fetchService: FetchService,
-        private readonly addRemoveService: AddRemoveService,
-        private readonly collectionService: CollectionService
+        private readonly collectionService: CollectionService,
+        private readonly addRemoveService: AddRemoveService
     ) {}
     @UseInterceptors(HomeInterceptor)
     @Query(() => Home)
