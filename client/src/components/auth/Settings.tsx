@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { FC, ChangeEvent, FormEvent } from 'react'
+import { CombinedGraphQLErrors } from '@apollo/client'
 import { useMutation } from '@apollo/client/react'
 import { SETTINGS, TERMINATE } from '@features/auth/mutations/Settings'
 import type { SettingsMutation, TerminateMutation } from '@type/graphql/auth/settings'
@@ -7,7 +8,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setIsDropdownOpen, change, setShow, setErrors } from '@store/slices/auth/settings'
 import type { RootState } from '@store/store'
 import type SettingsProps from '@type/components/auth/settings'
-import type ExtendedError from '@type/redux/auth/extendedError'
 
 const Settings: FC<SettingsProps> = ({ isUser }) => {
     const [settings, { loading: settingsLoad }] = useMutation<SettingsMutation>(SETTINGS)
@@ -92,8 +92,8 @@ const Settings: FC<SettingsProps> = ({ isUser }) => {
                 location.href = '/'
             }
         } catch (e) {
-            if (e instanceof Error) {
-                const { errors } = (e.cause as { extensions: { errors: ExtendedError } }).extensions
+            if (e instanceof CombinedGraphQLErrors) {
+                const { errors } = e.errors[0]!.extensions as { errors: Record<string, string> }
                 dispatch(setErrors(errors))
             } else alert('An unexpected error occurred.')
         }

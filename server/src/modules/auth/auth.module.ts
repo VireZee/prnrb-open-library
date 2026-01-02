@@ -8,7 +8,6 @@ import { RegisterInterceptor } from '@common/interceptors/auth/register.intercep
 import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
 import { LoginInterceptor } from '@common/interceptors/auth/login.interceptor.js'
 import { LoginPipe } from '@common/pipes/auth/login.pipe.js'
-import { SettingsInterceptor } from '@common/interceptors/auth/settings.interceptor.js'
 import { SettingsPipe } from '@common/pipes/auth/settings.pipe.js'
 import { LogoutInterceptor } from '@common/interceptors/auth/logout.interceptor.js'
 import { ForgetPipe } from '@common/pipes/auth/forget.pipe.js'
@@ -36,7 +35,6 @@ import { TerminateService } from './services/terminate.service.js'
         RegisterPipe,
         LoginInterceptor,
         LoginPipe,
-        SettingsInterceptor,
         SettingsPipe,
         LogoutInterceptor,
         ForgetPipe,

@@ -5,7 +5,6 @@ import { RegisterInterceptor } from '@common/interceptors/auth/register.intercep
 import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
 import { LoginInterceptor } from '@common/interceptors/auth/login.interceptor.js'
 import { LoginPipe } from '@common/pipes/auth/login.pipe.js'
-import { SettingsInterceptor } from '@common/interceptors/auth/settings.interceptor.js'
 import { SettingsPipe } from '@common/pipes/auth/settings.pipe.js'
 import { LogoutInterceptor } from '@common/interceptors/auth/logout.interceptor.js'
 import { ForgetPipe } from '@common/pipes/auth/forget.pipe.js'
@@ -64,7 +63,6 @@ export class AuthResolver {
     @Mutation(() => String)
     async login(@Args(LoginPipe) args: Login): Promise<LoginResult> { return this.loginService.login(args) }
     @UseGuards(AuthGuard)
-    @UseInterceptors(SettingsInterceptor)
     @Mutation(() => Boolean)
     async settings(
         @Args(SettingsPipe) args: Settings,
