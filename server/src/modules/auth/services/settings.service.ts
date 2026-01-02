@@ -28,11 +28,10 @@ export class SettingService {
             if ((newPass && !oldPass) || (newPass && !(await this.securityService.verifyHash(oldPass!, authUser!.pass)))) errors['oldPass'] = 'Invalid current password'
             if (newPass && await this.securityService.verifyHash(newPass, authUser!.pass)) errors['newPass'] = 'The new password can\'t be the same as the current password!'
         } else if (authUser!.pass === null && oldPass) errors['oldPass'] = 'You don\'t need to enter current password!'
-        console.log(errors)
         if (Object.keys(errors).length > 0) throw { code: ApolloServerErrorCode.BAD_USER_INPUT, errors }
         const update: Partial<UserSettings> = {}
         const photoBuf = Buffer.from(photo, 'base64')
-        if (photo && Buffer.from(authUser!.photo).equals(photoBuf)) update.photo = photo
+        if (photo && !Buffer.from(authUser!.photo).equals(photoBuf)) update.photo = photo
         if (name && name !== authUser!.name) update.name = name
         if (username && username !== authUser!.username) update.username = username
         if (email && email !== authUser!.email) update.email = email

@@ -16,6 +16,17 @@ export class SubscriberService implements OnModuleInit {
     ) {}
     async onModuleInit() {
         await this.redisService.sub.subscribe(
+            'user:update',
+            async (message) => {
+                const { id, update } = JSON.parse(message)
+                const key = this.securityService.sanitizeRedisKey('user', id)
+                if (update.photo) await this.redisService.redis.json.SET(key, '$.photo', update.photo)
+                if (update.name) await this.redisService.redis.json.SET(key, '$.name', update.name)
+                if (update.username) await this.redisService.redis.json.SET(key, '$.username', update.username)
+                if (update.email) await this.redisService.redis.json.SET(key, '$.email', update.email)
+            }
+        )
+        await this.redisService.sub.subscribe(
             'collection:update',
             async (user_id) => {
                 const key = this.securityService.sanitizeRedisKey('collection', user_id)
@@ -24,17 +35,6 @@ export class SubscriberService implements OnModuleInit {
                 await this.redisService.redis.json.SET(key, '$', this.formatterService.formatBooksMap(updatedBooks))
                 await this.redisService.redis.EXPIRE(key, 86400, 'NX')
                 await this.cacheService.scanAndDelete(keysToDelete)
-            }
-        )
-        await this.redisService.sub.subscribe(
-            'user:update',
-            async (message) => {
-                const { id, update } = JSON.parse(message)
-                const key = this.securityService.sanitizeRedisKey('user', id)
-                if (update.photo) await this.redisService.redis.json.SET(key, '$.photo', Buffer.from(update.photo).toString('base64'))
-                if (update.name) await this.redisService.redis.json.SET(key, '$.name', update.name)
-                if (update.username) await this.redisService.redis.json.SET(key, '$.username', update.username)
-                if (update.email) await this.redisService.redis.json.SET(key, '$.email', update.email)
             }
         )
     }
