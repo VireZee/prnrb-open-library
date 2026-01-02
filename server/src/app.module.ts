@@ -17,7 +17,7 @@ import { GraphqlFilter, HttpExceptionFilter } from '@common/filters/exception.fi
             path: '/gql',
             driver: ApolloDriver,
             autoSchemaFile: true,
-            context: ({ req, res }: ReqRes) => ({ req, res })
+            context: ({ req, res }: ReqRes) => ({ req, res, reqres: { req, res } })
         }),
         DatabaseModule,
         CacheModule,

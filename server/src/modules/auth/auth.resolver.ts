@@ -89,5 +89,5 @@ export class AuthResolver {
     @UseGuards(AuthGuard)
     @UseInterceptors(LogoutInterceptor)
     @Mutation(() => Boolean)
-    async terminate(@Context('res') ctx: Res & { user: User }): Promise<true> { return this.terminateService.terminate(ctx) }
+    async terminate(@Context('req') ctx: Req & { user: User }): Promise<true> { return this.terminateService.terminate(ctx) }
 }

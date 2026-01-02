@@ -11,8 +11,8 @@ export class TerminateService {
         private readonly cacheService: CacheService,
         private readonly securityService: SecurityService
     ) {}
-    async terminate(res: Res & { user: User }): Promise<true> {
-        const { user } = res
+    async terminate(req: Req & { user: User }): Promise<true> {
+        const { user } = req
         const key = this.securityService.sanitize(user.id)
         const keysToDelete = `*${key}*`
         await this.prismaService.collection.deleteMany({ where: { user_id: user.id } })
