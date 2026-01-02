@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ApolloServerErrorCode } from '@apollo/server/errors'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
+import { PublisherService } from '@infrastructure/cache/services/publisher.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { ValidationService } from '@shared/utils/services/validation.service.js'
 import type { Settings } from '../dto/settings.dto.js'
@@ -10,10 +11,11 @@ import type { User, UserSettings } from '@type/auth/user.d.ts'
 export class SettingService {
     constructor(
         private readonly prismaService: PrismaService,
+        private readonly publisherService: PublisherService,
         private readonly securityService: SecurityService,
         private readonly validationService: ValidationService
     ) {}
-    async settings(args: Settings, user: User): Promise<Partial<UserSettings>> {
+    async settings(args: Settings, user: User): Promise<true> {
         const { photo, name, username, email, oldPass, newPass } = args
         const authUser = await this.prismaService.user.findUnique({ where: { id: user.id } })
         const errors: Record<string, string> = {}
@@ -43,7 +45,11 @@ export class SettingService {
                     photo: Buffer.from(photo, 'base64')
                 }
             })
+            await this.publisherService.publish('user:update', JSON.stringify({
+                id: user.id,
+                update
+            }))
         }
-        return update
+        return true
     }
 }

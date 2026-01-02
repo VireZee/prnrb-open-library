@@ -69,10 +69,7 @@ export class AuthResolver {
     async settings(
         @Args(SettingsPipe) args: Settings,
         @Context('req') ctx: { user: User }
-    ): Promise<true> {
-        await this.settingService.settings(args, ctx.user)
-        return true
-    }
+    ): Promise<true> { return this.settingService.settings(args, ctx.user) }
     @UseGuards(AuthGuard)
     @UseInterceptors(LogoutInterceptor)
     @Mutation(() => Boolean)

@@ -26,5 +26,16 @@ export class SubscriberService implements OnModuleInit {
                 await this.cacheService.scanAndDelete(keysToDelete)
             }
         )
+        await this.redisService.sub.subscribe(
+            'user:update',
+            async (message) => {
+                const { id, update } = JSON.parse(message)
+                const key = this.securityService.sanitizeRedisKey('user', id)
+                if (update.photo) await this.redisService.redis.json.SET(key, '$.photo', Buffer.from(update.photo).toString('base64'))
+                if (update.name) await this.redisService.redis.json.SET(key, '$.name', update.name)
+                if (update.username) await this.redisService.redis.json.SET(key, '$.username', update.username)
+                if (update.email) await this.redisService.redis.json.SET(key, '$.email', update.email)
+            }
+        )
     }
 }
