@@ -19,7 +19,7 @@ import { LogoutService } from './services/logout.service.js'
 import { ForgetService } from './services/forget.service.js'
 import { ValidateService } from './services/validate.service.js'
 import { ResetService } from './services/reset.service.js'
-// import { TerminateService } from './services/terminate.service.js'
+import { TerminateService } from './services/terminate.service.js'
 import { Auth } from './dto/auth.dto.js'
 import { Register } from './dto/register.dto.js'
 import { Verify } from './dto/verify.dto.js'
@@ -43,8 +43,8 @@ export class AuthResolver {
         private readonly forgetService: ForgetService,
         private readonly validateService: ValidateService,
         private readonly resetService: ResetService,
-        // private readonly terminateService: TerminateService
-    ) { }
+        private readonly terminateService: TerminateService
+    ) {}
     @UseGuards(AuthGuard)
     @Query(() => Auth)
     auth(@Context('req') req: Req): User | undefined {
@@ -52,27 +52,19 @@ export class AuthResolver {
     }
     @UseInterceptors(RegisterInterceptor)
     @Mutation(() => String)
-    async register(@Args(RegisterPipe) args: Register): Promise<RegisterResult> {
-        return this.registerService.register(args)
-    }
+    async register(@Args(RegisterPipe) args: Register): Promise<RegisterResult> { return this.registerService.register(args) }
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
     async verify(
         @Args() args: Verify,
         @Context('req') ctx: { user: User }
-    ): Promise<true> {
-        return this.verifyService.verify(args, ctx.user)
-    }
+    ): Promise<true> { return this.verifyService.verify(args, ctx.user) }
     @UseGuards(AuthGuard)
     @Mutation(() => Boolean)
-    async resend(@Context('req') ctx: { user: User }): Promise<true> {
-        return this.resendService.resend(ctx.user)
-    }
+    async resend(@Context('req') ctx: { user: User }): Promise<true> { return this.resendService.resend(ctx.user) }
     @UseInterceptors(LoginInterceptor)
     @Mutation(() => String)
-    async login(@Args(LoginPipe) args: Login): Promise<LoginResult> {
-        return this.loginService.login(args)
-    }
+    async login(@Args(LoginPipe) args: Login): Promise<LoginResult> { return this.loginService.login(args) }
     @UseGuards(AuthGuard)
     @UseInterceptors(SettingsInterceptor)
     @Mutation(() => Boolean)
@@ -86,22 +78,18 @@ export class AuthResolver {
     @UseGuards(AuthGuard)
     @UseInterceptors(LogoutInterceptor)
     @Mutation(() => Boolean)
-    async logout(@Context('req') ctx: Req & { user: User }): Promise<true> {
-        return this.logoutService.logout(ctx)
-    }
+    async logout(@Context('req') ctx: Req & { user: User }): Promise<true> { return this.logoutService.logout(ctx) }
     @Mutation(() => String)
-    async forget(@Args(ForgetPipe) args: Forget): Promise<string> {
-        return this.forgetService.forget(args)
-    }
+    async forget(@Args(ForgetPipe) args: Forget): Promise<string> { return this.forgetService.forget(args) }
     @Mutation(() => Boolean)
-    async validate(@Args() args: Validate): Promise<boolean> {
-        return this.validateService.validate(args)
-    }
+    async validate(@Args() args: Validate): Promise<boolean> { return this.validateService.validate(args) }
     @Mutation(() => Boolean)
     async reset(
         @Args(ResetPipe) args: Reset,
         @Context('res') ctx: { res: Res }
-    ): Promise<boolean> {
-        return this.resetService.reset(args, ctx.res)
-    }
+    ): Promise<boolean> { return this.resetService.reset(args, ctx.res) }
+    @UseGuards(AuthGuard)
+    @UseInterceptors(LogoutInterceptor)
+    @Mutation(() => Boolean)
+    async terminate(@Context('res') ctx: Res & { user: User }): Promise<true> { return this.terminateService.terminate(ctx) }
 }
