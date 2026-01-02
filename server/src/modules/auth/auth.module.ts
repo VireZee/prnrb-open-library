@@ -25,7 +25,7 @@ import { LogoutService } from './services/logout.service.js'
 import { ForgetService } from './services/forget.service.js'
 import { ValidateService } from './services/validate.service.js'
 import { ResetService } from './services/reset.service.js'
-// import { TerminateService } from './services/terminate.service.js'
+import { TerminateService } from './services/terminate.service.js'
 
 @Module({
     controllers: [AuthController, VerifyController],
@@ -53,7 +53,7 @@ import { ResetService } from './services/reset.service.js'
         ForgetService,
         ValidateService,
         ResetService,
-        // TerminateService
+        TerminateService
     ]
 })
 export class AuthModule {}
