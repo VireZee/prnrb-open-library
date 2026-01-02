@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
-import { SecurityService } from '@shared/utils/services/security.service.js'
 import { RateLimiterService } from './rate-limiter.service.js'
+import { SecurityService } from '@shared/utils/services/security.service.js'
 import type { Verify } from '../dto/verify.dto.js'
 import ERROR from '@common/constants/error.constant.js'
 import type { User } from '@type/auth/user.d.ts'
@@ -12,8 +12,8 @@ export class VerifyService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly redisService: RedisService,
-        private readonly securityService: SecurityService,
         private readonly rateLimiterService: RateLimiterService,
+        private readonly securityService: SecurityService
     ) {}
     async setToVerified(id: string): Promise<void> {
         const userKey = this.securityService.sanitizeRedisKey('user', id)

@@ -10,7 +10,7 @@ export class ResetService {
         private readonly prismaService: PrismaService,
         private readonly redisService: RedisService,
         private readonly securityService: SecurityService
-    ) { }
+    ) {}
     async reset(args: Reset, res: Res): Promise<boolean> {
         const { id, token, pass } = args
         const verifyKey = this.securityService.sanitizeRedisKey('verify', id)

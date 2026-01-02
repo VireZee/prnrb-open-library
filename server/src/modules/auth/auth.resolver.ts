@@ -47,9 +47,7 @@ export class AuthResolver {
     ) {}
     @UseGuards(AuthGuard)
     @Query(() => Auth)
-    auth(@Context('req') req: Req): User | undefined {
-        return req.user
-    }
+    auth(@Context('req') req: Req): User | undefined { return req.user }
     @UseInterceptors(RegisterInterceptor)
     @Mutation(() => String)
     async register(@Args(RegisterPipe) args: Register): Promise<RegisterResult> { return this.registerService.register(args) }

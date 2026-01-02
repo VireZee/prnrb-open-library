@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { RedisService } from '@infrastructure/cache/services/redis.service.js'
-import { SecurityService } from '@shared/utils/services/security.service.js'
 import { EmailService } from '@infrastructure/email/email.service.js'
+import { SecurityService } from '@shared/utils/services/security.service.js'
 import type Identity from '@type/auth/identity.d.ts'
 
 @Injectable()
 export class VerificationService {
     constructor(
         private readonly redisService: RedisService,
-        private readonly securityService: SecurityService,
-        private readonly emailService: EmailService
+        private readonly emailService: EmailService,
+        private readonly securityService: SecurityService
     ) {}
     async generateCode(keyName: string, user: { id: string, email: string }, isForget: boolean): Promise<void> {
         const { id, email } = user

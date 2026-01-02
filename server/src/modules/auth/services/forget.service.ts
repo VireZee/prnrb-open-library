@@ -21,4 +21,4 @@ export class ForgetService {
         }
         return 'A verification code has been sent to your email address, provided it is registered in our system.'
     }
-}  
+}
