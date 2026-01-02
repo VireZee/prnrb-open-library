@@ -8,6 +8,7 @@ import { RedisModule } from '@infrastructure/redis/redis.module.js'
 import { WorkerModule } from '@common/workers/worker.module.js'
 import { AuthModule } from '@modules/auth/auth.module.js'
 import { BookModule } from '@modules/books/book.module.js'
+import { ApiModule } from '@modules/api/api.module.js'
 import { GraphqlFilter, HttpExceptionFilter } from '@common/filters/exception.filter.js'
 
 @Module({
@@ -23,7 +24,8 @@ import { GraphqlFilter, HttpExceptionFilter } from '@common/filters/exception.fi
         RedisModule,
         WorkerModule,
         AuthModule,
-        BookModule
+        BookModule,
+        ApiModule
     ],
     providers: [GraphqlFilter, HttpExceptionFilter]
 })
