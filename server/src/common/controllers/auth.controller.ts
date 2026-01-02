@@ -1,5 +1,5 @@
 import { Controller, HttpException, HttpStatus, Post, Req, Res } from '@nestjs/common'
-import { RedisService } from '@infrastructure/cache/services/redis.service.js'
+import { RedisService } from '@infrastructure/redis/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import ERROR from '../constants/error.constant.js'
 

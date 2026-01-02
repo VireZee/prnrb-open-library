@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
-import { RedisService } from '@infrastructure/cache/services/redis.service.js'
+import { RedisService } from '@infrastructure/redis/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import type { Reset } from '../dto/reset.dto.js'
 

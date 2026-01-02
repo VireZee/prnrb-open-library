@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { RedisService } from '@infrastructure/cache/services/redis.service.js'
+import { RedisService } from '@infrastructure/redis/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import ERROR from '@common/constants/error.constant.js'

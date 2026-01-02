@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
-import { RedisService } from '@infrastructure/cache/services/redis.service.js'
-import { CacheService } from '@infrastructure/cache/services/cache.service.js'
+import { RedisService } from '@infrastructure/redis/services/redis.service.js'
+import { CacheService } from '@infrastructure/redis/services/cache.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import type { User } from '@type/auth/user.d.ts'
 

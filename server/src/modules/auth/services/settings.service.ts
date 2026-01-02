@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ApolloServerErrorCode } from '@apollo/server/errors'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
-import { PublisherService } from '@infrastructure/cache/services/publisher.service.js'
+import { PublisherService } from '@infrastructure/redis/services/publisher.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { ValidationService } from '@shared/utils/services/validation.service.js'
 import type { Settings } from '../dto/settings.dto.js'

@@ -4,8 +4,8 @@ import { ConfigModule } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo'
 import { DatabaseModule } from '@infrastructure/database/database.module.js'
-import { CacheModule } from '@infrastructure/cache/cache.module.js'
-import { WorkerModule } from '@common/utils/workers/worker.module.js'
+import { RedisModule } from '@infrastructure/redis/redis.module.js'
+import { WorkerModule } from '@common/workers/worker.module.js'
 import { AuthModule } from '@modules/auth/auth.module.js'
 import { BookModule } from '@modules/books/book.module.js'
 import { GraphqlFilter, HttpExceptionFilter } from '@common/filters/exception.filter.js'
@@ -17,10 +17,10 @@ import { GraphqlFilter, HttpExceptionFilter } from '@common/filters/exception.fi
             path: '/gql',
             driver: ApolloDriver,
             autoSchemaFile: true,
-            context: ({ req, res }: ReqRes) => ({ req, res, reqres: { req, res } })
+            context: ({ req, res }: ReqRes) => ({ req, res })
         }),
         DatabaseModule,
-        CacheModule,
+        RedisModule,
         WorkerModule,
         AuthModule,
         BookModule

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { RedisService } from '@infrastructure/cache/services/redis.service.js'
+import { RedisService } from '@infrastructure/redis/services/redis.service.js'
 import { RetryService } from './retry.service.js'
 
 @Injectable()
@@ -18,7 +18,7 @@ export class QueueService {
         if (this.processing) return
         this.processing = true
         while (this.pending.length > 0) {
-            const updates = this.pending.splice(0, pending.length)
+            const updates = this.pending.splice(0, this.pending.length)
             try {
                 for (const update of updates) await this.retryService.retry(() => this.redisService.pub.publish('collection:update', update), {})
             } catch {

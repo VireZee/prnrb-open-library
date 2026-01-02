@@ -1,7 +1,7 @@
 import './global.js'
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module.js'
 import cp from 'cookie-parser'
+import { AppModule } from './app.module.js'
 import { GraphqlFilter, HttpExceptionFilter } from '@common/filters/exception.filter.js'
 
 (async () => {

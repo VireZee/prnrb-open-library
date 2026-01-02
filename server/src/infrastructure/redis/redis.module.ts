@@ -11,4 +11,4 @@ import { CacheService } from './services/cache.service.js'
     providers: [RedisService, PublisherService, SubscriberService, CacheService],
     exports: [RedisService, PublisherService, SubscriberService, CacheService]
 })
-export class CacheModule {}
+export class RedisModule {}

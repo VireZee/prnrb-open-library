@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
-import { PublisherService } from '@infrastructure/cache/services/publisher.service.js'
+import { PublisherService } from '@infrastructure/redis/services/publisher.service.js'
 import type { Add } from '../dto/add.dto.js'
 import type { Fetch } from '../dto/fetch.dto.js'
 import type { User } from '@type/auth/user.d.ts'

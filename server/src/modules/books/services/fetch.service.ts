@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { CacheService } from '@infrastructure/cache/services/cache.service.js'
+import { CacheService } from '@infrastructure/redis/services/cache.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import type { Fetch } from '../dto/fetch.dto.js'
 import type { User } from '@type/auth/user.d.ts'

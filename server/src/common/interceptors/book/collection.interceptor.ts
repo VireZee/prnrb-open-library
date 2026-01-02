@@ -3,7 +3,7 @@ import type { NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/com
 import { GqlExecutionContext } from '@nestjs/graphql'
 import type { RedisJSON } from 'redis'
 import { from, of, switchMap, tap, type Observable } from 'rxjs'
-import { RedisService } from '@infrastructure/cache/services/redis.service.js'
+import { RedisService } from '@infrastructure/redis/services/redis.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import type { Collection } from '@modules/books/dto/collection.dto.js'
 
