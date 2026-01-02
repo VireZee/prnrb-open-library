@@ -5,7 +5,7 @@ export const SETTINGS = gql`
     }
 `
 export const TERMINATE = gql`
-    mutation {
+    mutation Terminate{
         terminate
     }
 `

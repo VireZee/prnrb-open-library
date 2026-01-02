@@ -19,7 +19,7 @@ const httpLinkInclude = new HttpLink({
     credentials: 'include'
 })
 const splitLink = ApolloLink.split(
-    operation => ['Register', 'Login', 'Logout'].includes(operation.operationName!),
+    operation => ['Register', 'Login', 'Logout', 'Terminate'].includes(operation.operationName!),
     httpLinkInclude,
     httpLinkOmit
   )
