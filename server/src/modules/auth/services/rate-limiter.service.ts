@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { RedisService } from '@infrastructure/redis/services/redis.service.js'
-import { RetryService } from '@common/workers/services/retry.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import ERROR from '@common/constants/error.constant.js'
@@ -9,7 +8,6 @@ import ERROR from '@common/constants/error.constant.js'
 export class RateLimiterService {
     constructor(
         private readonly redisService: RedisService,
-        private readonly retryService: RetryService,
         private readonly securityService: SecurityService,
         private readonly formatService: FormatterService
     ) {}
@@ -30,9 +28,9 @@ export class RateLimiterService {
     }
     async checkBlock(keyName: string, id: string, message: string): Promise<void> {
         const key = this.securityService.sanitizeRedisKey(keyName, id)
-        const block = await this.retryService.retry(() => this.redisService.redis.HEXISTS(key, 'block'), {})
+        const block = await this.redisService.redis.HEXISTS(key, 'block')
         if (block) {
-            const blockTTL = await this.retryService.retry(() => this.redisService.redis.HTTL(key, 'block'), {})
+            const blockTTL = await this.redisService.redis.HTTL(key, 'block')
             const timeLeft = this.formatService.formatTimeLeft(blockTTL![0]!)
             throw { message: `${message} ${timeLeft}!`, code: ERROR.RATE_LIMITED }
         }

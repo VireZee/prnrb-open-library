@@ -15,17 +15,6 @@ export class VerifyService {
         private readonly rateLimiterService: RateLimiterService,
         private readonly securityService: SecurityService
     ) {}
-    async setToVerified(id: string): Promise<void> {
-        const userKey = this.securityService.sanitizeRedisKey('user', id)
-        const verifyKey = this.securityService.sanitizeRedisKey('verify', id)
-        const resendKey = this.securityService.sanitizeRedisKey('resend', id)
-        const user = await this.prismaService.user.update({
-            where: { id },
-            data: { verified: true }
-        })
-        await this.redisService.redis.json.SET(userKey, '$.verified', user.verified)
-        await this.redisService.redis.DEL([verifyKey, resendKey])
-    }
     async verify(args: Verify, user: User): Promise<true> {
         const { code } = args
         const key = this.securityService.sanitizeRedisKey('verify', user.id)
@@ -39,5 +28,16 @@ export class VerifyService {
         }
         await this.setToVerified(user.id)
         return true
+    }
+    async setToVerified(id: string): Promise<void> {
+        const userKey = this.securityService.sanitizeRedisKey('user', id)
+        const verifyKey = this.securityService.sanitizeRedisKey('verify', id)
+        const resendKey = this.securityService.sanitizeRedisKey('resend', id)
+        await this.prismaService.user.update({
+            where: { id },
+            data: { verified: true }
+        })
+        await this.redisService.redis.json.SET(userKey, '$.verified', true)
+        await this.redisService.redis.DEL([verifyKey, resendKey])
     }
 }

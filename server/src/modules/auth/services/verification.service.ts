@@ -18,8 +18,10 @@ export class VerificationService {
         const key = this.securityService.sanitizeRedisKey(keyName, id)
         const randomString = nodeCrypto.randomBytes(32).toString('hex')
         const verificationCode = nodeCrypto.createHash('sha256').update(randomString).digest('hex')
-        await this.retryService.retry(() => this.redisService.redis.HSET(key, 'code', verificationCode), {})
-        await this.retryService.retry(() => this.redisService.redis.HEXPIRE(key, 'code', 60 * 5), {})
+        const tx = this.redisService.redis.multi()
+        tx.HSET(key, 'code', verificationCode)
+        tx.HEXPIRE(key, 'code', 60 * 5)
+        await tx.EXEC()
         if (isForget) return await this.retryService.retry(() => this.emailService.resetPassword(email, verificationCode, id), {})
         return await this.retryService.retry(() => this.emailService.verifyEmail(email, verificationCode, id), {})
     }
