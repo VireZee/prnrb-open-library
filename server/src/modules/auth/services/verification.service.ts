@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { RedisService } from '@infrastructure/redis/services/redis.service.js'
 import { EmailService } from '@infrastructure/email/email.service.js'
+import { RetryService } from '@common/workers/services/retry.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import type Identity from '@type/auth/identity.d.ts'
 
@@ -9,6 +10,7 @@ export class VerificationService {
     constructor(
         private readonly redisService: RedisService,
         private readonly emailService: EmailService,
+        private readonly retryService: RetryService,
         private readonly securityService: SecurityService
     ) {}
     async generateCode(keyName: string, user: { id: string, email: string }, isForget: boolean): Promise<void> {
@@ -16,10 +18,10 @@ export class VerificationService {
         const key = this.securityService.sanitizeRedisKey(keyName, id)
         const randomString = nodeCrypto.randomBytes(32).toString('hex')
         const verificationCode = nodeCrypto.createHash('sha256').update(randomString).digest('hex')
-        await this.redisService.redis.HSET(key, 'code', verificationCode)
-        await this.redisService.redis.HEXPIRE(key, 'code', 60 * 5)
-        if (isForget) return await this.emailService.resetPassword(email, verificationCode, id)
-        return await this.emailService.verifyEmail(email, verificationCode, id)
+        await this.retryService.retry(() => this.redisService.redis.HSET(key, 'code', verificationCode), {})
+        await this.retryService.retry(() => this.redisService.redis.HEXPIRE(key, 'code', 60 * 5), {})
+        if (isForget) return await this.retryService.retry(() => this.emailService.resetPassword(email, verificationCode, id), {})
+        return await this.retryService.retry(() => this.emailService.verifyEmail(email, verificationCode, id), {})
     }
     async generateToken(req: Req, res: Res, identity: Identity, id: string): Promise<string> {
         const rt = nodeCrypto.randomBytes(32).toString('base64url')
