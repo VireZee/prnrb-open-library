@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { MailerService } from '@nestjs-modules/mailer'
+import { RetryService } from '@common/workers/services/retry.service.js'
 
 @Injectable()
 export class EmailService {
-    constructor(private readonly mailerService: MailerService) {}
+    constructor(
+        private readonly retryService: RetryService,
+        private readonly mailerService: MailerService
+    ) {}
     async verifyEmail(email: string, verificationCode: string, id: string): Promise<void> {
-        await this.mailerService.sendMail({
+        await this.retryService.retry(() => this.mailerService.sendMail({
             to: email,
             from: process.env['MAIL_FROM']!,
             subject: 'Verify Your Email',
@@ -14,10 +18,10 @@ export class EmailService {
                 verificationCode,
                 link: `http://${process.env['DOMAIN']}:${process.env['PORT']}/verify/${id}/${verificationCode}`
             }
-        })
+        }), {})
     }
     async resetPassword(email: string, verificationCode: string, id: string): Promise<void> {
-        await this.mailerService.sendMail({
+        await this.retryService.retry(() => this.mailerService.sendMail({
             to: email,
             from: process.env['MAIL_FROM']!,
             subject: 'Reset Your Password',
@@ -25,6 +29,6 @@ export class EmailService {
             context: {
                 link: `http://${process.env['DOMAIN']}:${process.env['CLIENT_PORT']}/reset/${id}/${verificationCode}`
             }
-        })
+        }), {})
     }
 }
