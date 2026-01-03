@@ -33,18 +33,21 @@ export class AuthController {
         if (fingerprint !== session['fingerprint']) throw new HttpException(ERROR.UNAUTHENTICATED, HttpStatus.UNAUTHORIZED)
         const newRt = nodeCrypto.randomBytes(32).toString('base64url')
         const newRefreshKey = `refresh:${newRt}`
-        await this.redisService.redis.HSET(newRefreshKey, {
+        const accessKey = `access:${session['at']}`
+        const newAccessKey = `access:${at}`
+        const ttl = await this.redisService.redis.TTL(refreshKey)
+        if (ttl <= 0) throw new HttpException(ERROR.UNAUTHENTICATED, HttpStatus.UNAUTHORIZED)
+        const tx = this.redisService.redis.multi()
+        tx.HSET(newRefreshKey, {
             id: session['id']!,
             at,
             fingerprint
         })
-        const ttl = await this.redisService.redis.TTL(refreshKey)
-        if (ttl <= 0) throw new HttpException(ERROR.UNAUTHENTICATED, HttpStatus.UNAUTHORIZED)
-        await this.redisService.redis.EXPIRE(newRefreshKey, ttl)
-        const accessKey = `access:${session['at']}`
-        await this.redisService.redis.DEL([accessKey, refreshKey])
-        const newAccessKey = `access:${at}`
-        await this.redisService.redis.SET(newAccessKey, session['id']!, { expiration: { type: 'EX', value: 60 * 5 } })
+        tx.EXPIRE(newRefreshKey, ttl)
+        tx.DEL(refreshKey)
+        tx.DEL(accessKey)
+        tx.SET(newAccessKey, session['id']!, { expiration: { type: 'EX', value: 60 * 5 } })
+        await tx.exec()
         res.cookie('!', newRt, {
             path: '/',
             maxAge: 1000 * ttl,
