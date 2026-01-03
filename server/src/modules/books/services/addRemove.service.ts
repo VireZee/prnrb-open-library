@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
-import { QueueService } from '@common/workers/services/queue.service.js'
+import { PublisherService } from '@infrastructure/redis/services/publisher.service.js'
 import type { Add } from '../dto/add.dto.js'
 import type { Fetch } from '../dto/fetch.dto.js'
 import type { User } from '@type/auth/user.d.ts'
@@ -10,7 +10,7 @@ import type Collection from '@type/book/collection.d.ts'
 export class AddRemoveService {
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly queueService: QueueService
+        private readonly publisherService: PublisherService
     ) {}
     private async exist(user_id: string, author_key: string[], cover_edition_key: string, cover_i: number): Promise<Collection & { id: string, user_id: string | null, created: Date } | null> {
         return await this.prismaService.collection.findFirst({
@@ -36,7 +36,7 @@ export class AddRemoveService {
                     author_name
                 }
             })
-            this.queueService.queue('collection:update', user.id)
+            this.publisherService.publish('collection:update', user.id)
         }
         return true
     }
@@ -45,7 +45,7 @@ export class AddRemoveService {
         const exist = await this.exist(user.id, author_key, cover_edition_key, cover_i)
         if (exist) {
             await this.prismaService.collection.delete({ where: { id: exist.id } })
-            this.queueService.queue('collection:update', user.id)
+            this.publisherService.publish('collection:update', user.id)
         }
         return true
     }
