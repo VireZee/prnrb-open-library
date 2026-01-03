@@ -9,7 +9,7 @@ import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
 import { LoginInterceptor } from '@common/interceptors/auth/login.interceptor.js'
 import { LoginPipe } from '@common/pipes/auth/login.pipe.js'
 import { SettingsPipe } from '@common/pipes/auth/settings.pipe.js'
-import { LogoutInterceptor } from '@common/interceptors/auth/clear-cookie.interceptor.js'
+import { ClearCookieInterceptor } from '@common/interceptors/auth/clear-cookie.interceptor.js'
 import { ForgetPipe } from '@common/pipes/auth/forget.pipe.js'
 import { ResetPipe } from '@common/pipes/auth/reset.pipe.js'
 import { AuthResolver } from './auth.resolver.js'
@@ -36,7 +36,7 @@ import { TerminateService } from './services/terminate.service.js'
         LoginInterceptor,
         LoginPipe,
         SettingsPipe,
-        LogoutInterceptor,
+        ClearCookieInterceptor,
         ForgetPipe,
         ResetPipe,
         AuthResolver,
