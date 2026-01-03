@@ -23,13 +23,13 @@ export class CollectionInterceptor implements NestInterceptor {
         const key = search?.trim()
             ? `${baseKey}|${search}|${page}`
             : `${baseKey}|${page}`
-        return from(this.redisService.redis.json.GET(key)).pipe(
+        return from(this.redisService.redis.json.GET(key).catch(() => null)).pipe(
             switchMap(cache => {
                 if (cache) return of(cache)
                 return next.handle().pipe(
                     tap(collection => {
-                        this.redisService.redis.json.SET(key, '$', collection as unknown as RedisJSON)
-                        this.redisService.redis.EXPIRE(key, 86400)
+                        this.redisService.redis.json.SET(key, '$', collection as unknown as RedisJSON).catch(() => null)
+                        this.redisService.redis.EXPIRE(key, 86400).catch(() => null)
                     })
                 )
             })
