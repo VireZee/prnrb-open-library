@@ -27,7 +27,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             passReqToCallback: true
         })
     }
-    async validate(req: Req, _: string, __: string, profile: Profile): Promise<any> {
+    async validate(req: Req, _: never, __: never, profile: Profile): Promise<any> {
         const googleId = profile.id
         const name = [profile.name?.givenName, profile.name?.familyName].filter(Boolean).join(' ')
         const email = profile.emails![0]!.value
