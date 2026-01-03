@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@infrastructure/database/prisma.service.js'
 import { RedisService } from './redis.service.js'
+import { RetryService } from '@common/workers/services/retry.service.js'
 import { SecurityService } from '@shared/utils/services/security.service.js'
 import { FormatterService } from '@shared/utils/services/formatter.service.js'
 import type Collection from '@type/book/collection.js'
@@ -10,17 +11,18 @@ export class CacheService {
     constructor(
         private readonly prismaService: PrismaService,
         private readonly redisService: RedisService,
+        private readonly retryService: RetryService,
         private readonly securityService: SecurityService,
         private readonly formatterService: FormatterService
     ) {}
     async createCollection(keyName: string, user: { id: string }): Promise<Collection[]> {
         const key = this.securityService.sanitizeRedisKey(keyName, user.id)
-        const cache = await this.redisService.redis.json.GET(key)
+        const cache = await this.retryService.retry(() => this.redisService.redis.json.GET(key), {})
         if (cache) return cache as Collection[]
         const collection = await this.prismaService.collection.findMany({ where: { user_id: user.id } })
         const books = this.formatterService.formatBooksMap(collection)
-        await this.redisService.redis.json.SET(key, '$', books)
-        await this.redisService.redis.EXPIRE(key, 86400)
+        await this.retryService.retry(() => this.redisService.redis.json.SET(key, '$', books), {})
+        await this.retryService.retry(() => this.redisService.redis.EXPIRE(key, 86400), {})
         return books
     }
     async scanAndDelete(key: string): Promise<void> {
