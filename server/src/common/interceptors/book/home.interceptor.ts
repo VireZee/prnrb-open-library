@@ -36,8 +36,8 @@ export class HomeInterceptor implements NestInterceptor {
                         }))
                     })),
                     tap(result => {
-                        this.redisService.redis.json.SET(key, '$', result)
-                        this.redisService.redis.EXPIRE(key, 86400)
+                        this.redisService.redis.json.SET(key, '$', result).catch(() => null)
+                        this.redisService.redis.EXPIRE(key, 86400).catch(() => null)
                     })
                 )
             })
