@@ -10,23 +10,23 @@ export class QueueService {
         private readonly redisService: RedisService,
         private readonly retryService: RetryService
     ) {}
-    queue(key: string): void {
+    queue(key: string, channel: string): void {
         this.pending.push(key)
-        this.republish()
+        this.republish(channel)
     }
-    private async republish(): Promise<void> {
+    private async republish(channel: string): Promise<void> {
         if (this.processing) return
         this.processing = true
         while (this.pending.length > 0) {
             const updates = this.pending.splice(0, this.pending.length)
             try {
-                for (const update of updates) await this.retryService.retry(() => this.redisService.pub.publish('collection:update', update), {})
+                for (const update of updates) await this.retryService.retry(() => this.redisService.pub.publish(channel, update), {})
             } catch {
                 this.pending.unshift(...updates)
                 break
             }
         }
         this.processing = false
-        if (this.pending.length > 0) this.republish()
+        if (this.pending.length > 0) this.republish(channel)
     }
 }
