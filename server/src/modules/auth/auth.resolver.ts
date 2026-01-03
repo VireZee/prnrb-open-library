@@ -6,7 +6,7 @@ import { RegisterPipe } from '@common/pipes/auth/register.pipe.js'
 import { LoginInterceptor } from '@common/interceptors/auth/login.interceptor.js'
 import { LoginPipe } from '@common/pipes/auth/login.pipe.js'
 import { SettingsPipe } from '@common/pipes/auth/settings.pipe.js'
-import { LogoutInterceptor } from '@common/interceptors/auth/clear-cookie.interceptor.js'
+import { ClearCookieInterceptor } from '@common/interceptors/auth/clear-cookie.interceptor.js'
 import { ForgetPipe } from '@common/pipes/auth/forget.pipe.js'
 import { ResetPipe } from '@common/pipes/auth/reset.pipe.js'
 import { RegisterService } from './services/register.service.js'
@@ -69,7 +69,7 @@ export class AuthResolver {
         @Context('req') ctx: { user: User }
     ): Promise<true> { return this.settingService.settings(args, ctx.user) }
     @UseGuards(AuthGuard)
-    @UseInterceptors(LogoutInterceptor)
+    @UseInterceptors(ClearCookieInterceptor)
     @Mutation(() => Boolean)
     async logout(@Context('req') ctx: Req & { user: User }): Promise<true> { return this.logoutService.logout(ctx) }
     @Mutation(() => String)
@@ -82,7 +82,7 @@ export class AuthResolver {
         @Context('res') ctx: { res: Res }
     ): Promise<boolean> { return this.resetService.reset(args, ctx.res) }
     @UseGuards(AuthGuard)
-    @UseInterceptors(LogoutInterceptor)
+    @UseInterceptors(ClearCookieInterceptor)
     @Mutation(() => Boolean)
     async terminate(@Context('req') ctx: Req & { user: User }): Promise<true> { return this.terminateService.terminate(ctx) }
 }

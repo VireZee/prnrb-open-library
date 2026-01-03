@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { setTimeout } from 'node:timers/promises'
 
 @Injectable()
@@ -26,6 +26,7 @@ export class RetryService {
                 delay *= backoff
             }
         }
-        throw lastErr
+        const message = lastErr instanceof Error ? lastErr.message : 'Internal server error!'
+        throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 }
