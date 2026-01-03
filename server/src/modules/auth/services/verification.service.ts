@@ -27,6 +27,7 @@ export class VerificationService {
         const rt = nodeCrypto.randomBytes(32).toString('base64url')
         const at = nodeCrypto.randomBytes(32).toString('base64url')
         const refreshKey = `refresh:${rt}`
+        const accessKey = `access:${at}`
         const ua = req.headers['user-agent'] ?? ''
         const { tz = '', screenRes = '', colorDepth = '', devicePixelRatio = '', touchSupport = '', hardwareConcurrency = '' } = identity
         const fingerprint = nodeCrypto.createHash('sha256').update(JSON.stringify({
@@ -38,14 +39,15 @@ export class VerificationService {
             touchSupport,
             hardwareConcurrency
         })).digest('hex')
-        await this.redisService.redis.HSET(refreshKey, {
+        const tx = this.redisService.redis.multi()
+        tx.HSET(refreshKey, {
             id,
             at,
             fingerprint
         })
-        await this.redisService.redis.EXPIRE(refreshKey, 60 * 60 * 24 * 30)
-        const accessKey = `access:${at}`
-        await this.redisService.redis.SET(accessKey, id, { expiration: { type: 'EX', value: 60 * 5 } })
+        tx.EXPIRE(refreshKey, 60 * 60 * 24 * 30)
+        tx.SET(accessKey, id, { expiration: { type: 'EX', value: 60 * 5 } })
+        await tx.EXEC()
         res.cookie('!', rt, {
             path: '/',
             maxAge: 1000 * 60 * 60 * 24 * 30,
