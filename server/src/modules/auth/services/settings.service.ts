@@ -45,7 +45,7 @@ export class SettingService {
                     photo: Buffer.from(photo, 'base64')
                 }
             })
-            await this.publisherService.publish('user:update', JSON.stringify({
+            this.publisherService.publish('user:update', JSON.stringify({
                 id: user.id,
                 update
             }))
