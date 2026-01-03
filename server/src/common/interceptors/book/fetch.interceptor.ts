@@ -21,7 +21,7 @@ export class FetchInterceptor implements NestInterceptor {
         const { req } = ctx.getContext()
         const { user } = req
         const key = this.securityService.sanitizeRedisKey('collection', user.id)
-        return from(this.redisService.redis.json.GET(key)).pipe(
+        return from(this.redisService.redis.json.GET(key).catch(() => null)).pipe(
             switchMap(rawCache => {
                 const cache = rawCache as Collection[]
                 if (Array.isArray(cache)) {

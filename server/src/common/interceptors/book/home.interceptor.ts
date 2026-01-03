@@ -18,7 +18,7 @@ export class HomeInterceptor implements NestInterceptor {
         const args = ctx.getArgs()
         const { search, page } = args
         const key = `book:${search}|${page}`
-        return from(this.redisService.redis.json.GET(key)).pipe(
+        return from(this.redisService.redis.json.GET(key).catch(() => null)).pipe(
             switchMap(cache => {
                 if (cache) return of({
                     numFound: (cache as { numFound: number }).numFound,
