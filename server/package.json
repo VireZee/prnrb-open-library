@@ -44,6 +44,7 @@
         "@types/express": "^5.0.6",
         "@types/node": "^25.0.3",
         "@types/nodemailer": "^7.0.4",
+        "@types/passport-google-oauth20": "^2.0.17",
         "prisma": "^7.2.0",
         "typescript": "^5.9.3"
     }
